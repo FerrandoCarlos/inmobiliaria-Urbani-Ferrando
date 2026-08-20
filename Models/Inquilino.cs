@@ -8,7 +8,7 @@ namespace InmobiliariaApp.Models
 
         [Key]
         [Display(Name="Código Int.")]
-        public Id idInquilino { get; set; }
+        public int Id { get; set; }
 
         [Required(ErrorMessage = " El DNI es obligatorio.")]
         [StringLength(15, ErrorMessage = " El DNI no puede superar los {1} caracteres.")]
@@ -17,7 +17,7 @@ namespace InmobiliariaApp.Models
 
         [Required(ErrorMessage = " El nombre es obligatorio.")]
         [StringLength(100, ErrorMessage = " El nombre no puede superar los {1} caracteres.")]
-        [Dsiplay(Name = "Nombre")]
+        [Display(Name = "Nombre")]
         public string Nombre { get; set; } = string.Empty;
 
         [Required(ErrorMessage = " El apellido es obligatorio.")]
@@ -35,10 +35,10 @@ namespace InmobiliariaApp.Models
         public string? Email { get; set; }
 
         [Display(Name = "Activo")]
-        public boolean Activo { get; set; } = true;
+        public bool Activo { get; set; } = true;
 
         [Display(Name = "Fecha de creción")]
-        public boolean FechaCreacion { get; set; }
+        public DateTime FechaCreacion { get; set; }
 
         public string NombreCompleto => $"{Apellido}, {Nombre}";
     }

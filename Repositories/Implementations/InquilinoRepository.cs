@@ -1,10 +1,7 @@
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using Microsoft.Data.SqlClient;
-using System.Linq;
-using System.Threading.Tasks;
+using InmobiliariaApp.Models;
+using InmobiliariaApp.Repositories.Interfaces;
+using MySqlConnector;
 
 namespace InmobiliariaApp.Repositories.Implementations
 
@@ -25,13 +22,13 @@ namespace InmobiliariaApp.Repositories.Implementations
         public int Alta(Inquilino entidad)
         {
             int res = -1;
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"INSERT INTO inquilino
                     (Dni, Nombre, Apellido, Telefono, Email, Activo)
                     VALUES (@dni, @nombre, @apellido, @telefono, @email, @activo, @fechaCreacion);
-                    SELECT SCOPE_IDENTITY();" // Para devolver el ID insertado
-                using (SqlCommand command = new SqlCommand(sql, connection))
+                    SELECT SCOPE_IDENTITY()"; // Para devolver el ID insertado
+                using (var command = new MySqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@dni", entidad.Dni);
@@ -40,7 +37,7 @@ namespace InmobiliariaApp.Repositories.Implementations
                     command.Parameters.AddWithValue("@telefono", entidad.Telefono);
                     command.Parameters.AddWithValue("@email", entidad.Email);
                     command.Parameters.AddWithValue("@activo", entidad.Activo);
-                    command.Parameters.AddWithValue("@fechaCreacion", DataTime.Now)
+                    command.Parameters.AddWithValue("@fechaCreacion", DateTime.Now);
                     connection.Open();
                     res = Convert.ToInt32(command.ExecuteScalar());
                     entidad.Id = res; // Se asigna el ID devuelto al inquilino
@@ -56,13 +53,13 @@ namespace InmobiliariaApp.Repositories.Implementations
             // Baja lógica: nunca DELETE físico, para preservar integridad
             // referencial con Inmueble/Reserva en entregas futuras.
             int res = -1;
-            using (SqlConecction connection = new SqlConnection(connectionString))
+            using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = "UPDATE FROM inquilino SET Activo = 0 WHERE Id = @id";
-                using(SqlCommand command = new SqlCommand(sql, connection))
+                using(var command = new MySqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
-                    commandParameters.AddWithValue("@id", id);
+                    command.Parameters.AddWithValue("@id", id);
                     connection.Open();
                     res = command.ExecuteNonQuery();
                     connection.Close();
@@ -71,15 +68,15 @@ namespace InmobiliariaApp.Repositories.Implementations
             return res;
         }
 
-        public int Modificion(Inquilino entidad)
+        public int Modificacion(Inquilino entidad)
         {
             int res = -1;
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"UPDATE inquilino
                     SET Dni=@dni, Nombre=@nombre, Apellido=@apellido, Telefono=@telefono, Email=@email
                     WHERE Id=@id";
-                using (SqlCommand command = new SqlCommand(sql, connection))
+                using (var command = new MySqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@dni", entidad.Dni);
@@ -100,21 +97,21 @@ namespace InmobiliariaApp.Repositories.Implementations
         public IList<Inquilino> ObtenerLista(int paginaNro = -1, int tamPagina = 10)
         {
             IList<Inquilino> res = new List<Inquilino>();
-            using (SqlCommand connection = new MySqlConnection(connectionString))
+            using (var connection = new MySqlConnection(connectionString))
             {
-                sintrg sql = @"SELECT Id, Dni, Nombre, Apellido, Telefono, Email, Activo, FechaCreacion
+                string sql = @"SELECT Id, Dni, Nombre, Apellido, Telefono, Email, Activo, FechaCreacion
                 FROM inquilino
                 WHERE Activo = 1
                 ORDER BY Apellido, Nombre
                 LIMIT @tamPagina OFFSET @offset";
 
-                using (SqlCommand command = new MySqlCommand(sql, connection))
+                using (var command = new MySqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@tamPagina", tamPagina);
                     command.Parameters.AddWithValue("@offset", (paginaNro - 1) * tamPagina);
 
-                    connection Open();
+                    connection.Open();
                     var reader = command.ExecuteReader();
                     while (reader.Read())
                     {
@@ -129,10 +126,10 @@ namespace InmobiliariaApp.Repositories.Implementations
         public int ObtenerCantidad()
         {
             int res = 0;
-            using (SqlCommand connection = new MySqlConnection(connectionString))
+            using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = "SELECT COUNT(Id) FROM inquilino WHERE Activo = 1";
-                using (SqlCommand command = new MySqlCommand(sql, connection))
+                using (var command = new MySqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
                     connection.Open();
@@ -149,12 +146,12 @@ namespace InmobiliariaApp.Repositories.Implementations
         public Inquilino? ObtenerPorId(int id)
         {
             Inquilino? i = null;
-            using (SqlCommand connection = new MySqlConnection(connectionString))
+            using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"SELECT Id, Dni, Nombre, Apellido, Telefono, Email, Activo, FechaCreacion
                 FROM inquilino
                 WHERE Id = @id";
-                using (SqlCommand command = new MySqlCommand(sql, connection))
+                using (var command = new MySqlCommand(sql, connection))
                 {
                     command.Parameters.Add("@id", MySqlDbType.Int32).Value = id;
                     command.CommandType = CommandType.Text;
@@ -171,22 +168,22 @@ namespace InmobiliariaApp.Repositories.Implementations
             return i;
         }
 
-        public bool ExisteDni(string dni, int idExluir = 0)
+        public bool ExisteDni(string dni, int idExcluir = 0)
         {
             bool existe = false;
-            using(SqlCommand connection = new MySqlConnection(connectionString))
+            using(var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"SELECT COUNT(1) FROM inquilino
                 WHERE Dni = @dni AND Id <> @idExcluir";
-                using(SqlCommand command = new MySqlCommand(sql, connection))
+                using(var command = new MySqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@dni", dni);
                     command.Parameters.AddWithValue("@idExcluir", idExcluir);
 
                     connection.Open();
-                    existe = Conver.ToInt32(command.ExecuteScalar()) > 0;
-                    conection.Close();
+                    existe = Convert.ToInt32(command.ExecuteScalar()) > 0;
+                    connection.Close();
                 }
             }
             return existe;
