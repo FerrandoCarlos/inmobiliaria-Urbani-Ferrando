@@ -5,6 +5,7 @@ namespace InmobiliariaApp.Repositories.Implementations
     public abstract class BaseRepository
     {
         protected readonly string connectionString;
+        // comentario de prueba en rama joseBranch
 
         protected BaseRepository(IConfiguration configuration)
         {
