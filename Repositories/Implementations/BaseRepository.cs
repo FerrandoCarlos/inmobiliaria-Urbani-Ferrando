@@ -2,6 +2,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace InmobiliariaApp.Repositories.Implementations
 {
+    //Conexión
     public abstract class BaseRepository
     {
         protected readonly string connectionString;
