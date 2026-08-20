@@ -1,4 +1,4 @@
-namespace inmobiliaria_Urbani_Ferrando.Models;
+namespace inmobiliariaApp.Models;
 
 public class ErrorViewModel
 {
