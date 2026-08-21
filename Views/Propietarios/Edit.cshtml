@@ -1,0 +1,13 @@
+@model InmobiliariaApp.Models.Propietario
+@{
+    ViewData["Title"] = "Editar Propietario";
+}
+
+<h1>Editar Propietario</h1>
+
+@await Html.PartialAsync("_Form", Model)
+
+@section Scripts {
+    <script src="~/js/abm-persona.js"></script>
+    <script>inicializarAbmPersona("Propietarios");</script>
+}
