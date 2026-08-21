@@ -25,9 +25,9 @@ namespace InmobiliariaApp.Repositories.Implementations
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"INSERT INTO inquilino
-                    (Dni, Nombre, Apellido, Telefono, Email, Activo)
+                    (Dni, Nombre, Apellido, Telefono, Email, Activo, FechaCreacion)
                     VALUES (@dni, @nombre, @apellido, @telefono, @email, @activo, @fechaCreacion);
-                    SELECT SCOPE_IDENTITY()"; // Para devolver el ID insertado
+                    SELECT LAST_INSERT_ID()"; // Para devolver el ID insertado
                 using (var command = new MySqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
@@ -55,7 +55,7 @@ namespace InmobiliariaApp.Repositories.Implementations
             int res = -1;
             using (var connection = new MySqlConnection(connectionString))
             {
-                string sql = "UPDATE FROM inquilino SET Activo = 0 WHERE Id = @id";
+                string sql = "UPDATE inquilino SET Activo = 0 WHERE Id = @id";
                 using(var command = new MySqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;

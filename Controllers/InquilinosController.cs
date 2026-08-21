@@ -63,7 +63,7 @@ namespace InmobiliariaApp.Controllers
                     .Where(kvp => kvp.Value?.Errors.Count > 0)
                     .SelectMany(kvp => kvp.Value!.Errors.Select(e => e.ErrorMessage));
 
-                return BadRequest(new { success = false, message = string.Join("", errores) });
+                return BadRequest(new { success = false, message = string.Join(" ", errores) });
             }
 
             try
