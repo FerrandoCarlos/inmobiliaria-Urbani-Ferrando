@@ -14,6 +14,8 @@ builder.Services.AddControllersWithViews();
 // con conexiones a base de datos (ni Singleton ni Transient).
 builder.Services.AddScoped<IPropietarioRepository, PropietarioRepository>();
 builder.Services.AddScoped<IPropietarioService, PropietarioService>();
+builder.Services.AddScoped<IInquilinoRepository, InquilinoRepository>();
+builder.Services.AddScoped<IInquilinoService, InquilinoService>();
 
 var app = builder.Build();
 
