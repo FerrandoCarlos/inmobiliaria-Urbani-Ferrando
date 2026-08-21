@@ -1,0 +1,43 @@
+@model InmobiliariaApp.Models.Inquilino
+
+<form id="formInquilino">
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="Id" name="Id" value="@Model.Id" />
+
+    <div class="mb-3">
+        <label for="Dni" class="form-label">DNI</label>
+        <input type="text" class="form-control" id="Dni" name="Dni" value="@Model.Dni" maxlength="9" required />
+        <span class="text-danger" id="error-Dni"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="Nombre" class="form-label">Nombre</label>
+        <input type="text" class="form-control" id="Nombre" name="Nombre" value="@Model.Nombre" maxlength="100"
+               required />
+        <span class="text-danger" id="error-Nombre"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="Apellido" class="form-label">Apellido</label>
+        <input type="text" class="form-control" id="Apellido" name="Apellido" value="@Model.Apellido" maxlength="100"
+               required />
+        <span class="text-danger" id="error-Apellido"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="Telefono" class="form-label">Teléfono</label>
+        <input type="text" class="form-control" id="Telefono" name="Telefono" value="@Model.Telefono" maxlength="20" />
+        <span class="text-danger" id="error-Telefono"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="Email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="Email" name="Email" value="@Model.Email" maxlength="150" />
+        <span class="text-danger" id="error-Email"></span>
+    </div>
+
+    <div id="mensajeGeneral" class="alert alert-danger d-none"></div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>
