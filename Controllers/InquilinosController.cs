@@ -52,17 +52,6 @@ namespace InmobiliariaApp.Controllers
             return View(inquilino);
         }
 
-        // POST : /Inquilinos/Edit/ID
-        public IActionResult Edit(int id)
-        {
-            var inquilino = _service.ObtenerPorId(id);
-            if(inquilino == null)
-            {
-                return NotFound();
-            }
-            return View(inquilino);
-        }
-
         // POST : /Inquilinos/Guardar
         [HttpPost]
         [ValidateAntiForgeryToken]
