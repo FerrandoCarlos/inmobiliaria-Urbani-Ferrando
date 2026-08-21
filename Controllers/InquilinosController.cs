@@ -5,12 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace InmobiliariaApp.Controllers
 {
-    public class InquilinosControllers : Controller
+    public class InquilinosController : Controller
     {
         private readonly IInquilinoService _service;
         private const int TamPaginaDefault = 10;
 
-        public InquilinosControllers(IInquilinoService service)
+        public InquilinosController(IInquilinoService service)
         {
             _service = service;
         }
