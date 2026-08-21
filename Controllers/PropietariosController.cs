@@ -42,7 +42,7 @@ namespace InmobiliariaApp.Controllers
             return View();
         }
 
-        //GET : /Propietarios/Edit/5
+        //GET : /Propietarios/Edit/ID
         public IActionResult Edit(int id)
         {
             var propietario = _service.ObtenerPorId(id);
@@ -90,7 +90,7 @@ namespace InmobiliariaApp.Controllers
             }
         }
 
-        // POST: /Propietarios/Eliminar/5
+        // POST: /Propietarios/Eliminar/ID
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Eliminar(int id)

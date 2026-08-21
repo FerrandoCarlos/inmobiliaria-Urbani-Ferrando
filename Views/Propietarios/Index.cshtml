@@ -1,0 +1,75 @@
+@model IList<InmobiliariaApp.Models.Propietario>
+@{
+    ViewData["Title"] = "Propietarios";
+    int paginaNro = ViewBag.PaginaNro ?? 1;
+    int totalPaginas = ViewBag.TotalPaginas ?? 1;
+}
+
+<h1>
+    Propietarios
+</h1>
+<form style="display:none">@Html.AntiForgeryToken()</form>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div id="alertContainer"></div>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Nuevo Propietario</a>
+</p>
+
+<table class="table table-striped" id="tablaPropietarios">
+    <thead>
+        <tr>
+            <th>DNI</th>
+            <th>Apellido</th>
+            <th>Nombre</th>
+            <th>Teléfono</th>
+            <th>Email</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var propietario in Model)
+        {
+            <tr id="fila-@propietario.Id">
+                <td>@propietario.Dni</td>
+                <td>@propietario.Apellido</td>
+                <td>@propietario.Nombre</td>
+                <td>@propietario.Telefono</td>
+                <td>@propietario.Email</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@propietario.Id" class="btn btn-sm btn-outline-secondary">Editar</a>
+                    <button type="button" class="btn btn-sm btn-outline-danger btn-eliminar" data-id="@propietario.Id">
+                        Eliminar
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@if (!Model.Any())
+{
+    <p>No hay propietarios cargados.</p>
+}
+
+@if (totalPaginas > 1)
+{
+    <nav>
+        <ul class="pagination">
+            @for (int i = 1; i <= totalPaginas; i++)
+            {
+                <li class="page-item @(i == paginaNro ? "active" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-paginaNro="@i">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
+
+@section Scripts {
+    <script src="~/js/propietarios.js"></script>
+}
