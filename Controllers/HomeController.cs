@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using InmobiliariaApp.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using InmobiliariaApp.Models;
 
@@ -6,13 +7,18 @@ namespace InmobiliariaApp.Controllers;
 
 public class HomeController : Controller
 {
+    private readonly IPropietarioService _propietarioService;
+    private readonly IInquilinoService _inquilinoService;
+
+    public HomeController(IPropietarioService propietarioService, IInquilinoService inquilinoService)
+    {
+        _propietarioService = propietarioService;
+        _inquilinoService = inquilinoService;
+    }
     public IActionResult Index()
     {
-        return View();
-    }
-
-    public IActionResult Privacy()
-    {
+        ViewBag.CantidadPropietarios = _propietarioService.ObtenerCantidad();
+        ViewBag.CantidadInquilinos = _inquilinoService.ObtenerCantidad();
         return View();
     }
 

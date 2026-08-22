@@ -1,31 +1,348 @@
-html {
-  font-size: 14px;
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  --ink: #1c2b39;
+  --ink-soft: #46586a;
+  --canvas: #eef1ed;
+  --white: #ffffff;
+  --brass: #b08d57;
+  --brass-dark: #8f6f41;
+  --forest: #35503f;
+  --line: #d7dbd3;
+  --danger: #9a3b3b;
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Public Sans', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+body {
+  font-family: var(--font-body);
+  background-color: var(--canvas);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  color: var(--ink);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+a {
+  color: var(--forest);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--brass-dark);
+  text-decoration: underline;
+}
+
+/* --- Navbar --- */
+
+.navbar {
+  background-color: var(--white) !important;
+  border-bottom: 2px solid var(--brass);
+  padding-top: 0.9rem;
+  padding-bottom: 0.9rem;
+}
+
+.navbar-brand {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.4rem;
+  color: var(--ink) !important;
+  letter-spacing: -0.01em;
+}
+
+.navbar-brand i {
+  color: var(--brass);
+  margin-right: 0.4rem;
+  font-size: 1.1rem;
+}
+
+.navbar .nav-link {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.92rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft) !important;
+  padding: 0.4rem 0.9rem !important;
+  transition: color 0.15s ease;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link.active {
+  color: var(--brass-dark) !important;
+}
+
+/* --- Hero (HOME) --- */
+
+.hero {
+  position: relative;
+  padding: 4.5rem 1rem 3.5rem;
+  text-align: left;
+  max-width: 760px;
+}
+
+.hero .eyebrow {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--brass-dark);
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+}
+
+.hero p {
+  font-size: 1.1rem;
+  color: var(--ink-soft);
+  max-width: 560px;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 2.5rem;
+  margin-top: 2.5rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--line);
+}
+
+.hero-stats .stats-value {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--ink);
+  display: block;
+}
+
+.hero-stats .stats-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+}
+
+/* --- Corner-bracket signature (motivo "plano") --- */
+
+.blueprint-card {
+  position: relative;
+  background: var(--white);
+  border: 1px solid var(--line);
+  padding: 1.75rem;
+}
+.blueprint-card::before,
+.blueprint-card::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: var(--brass);
+  border-style: solid;
+}
+
+.blueprint-card::after {
+  bottom: -1px;
+  right: -1px;
+  border-width: 0 2px 2px 0;
+}
+
+/* --- Botones --- */
+
+.btn {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.9rem;
+  border-radius: 2px;
+  padding: 0.5rem 1.1rem;
+  letter-spacing: 0.01em;
+}
+
+.btn-primary {
+  background-color: var(--ink);
+  border-color: var(--ink);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--forest);
+  border-color: var(--forest);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  border-color: var(--line);
+  color: var(--ink-soft);
+}
+
+.btn-secondary:hover {
+  background-color: var(--canvas);
+  border-color: var(--ink-soft);
+  color: var(--ink);
+}
+
+.btn-outline-secondary {
+  border-color: var(--line);
+  color: var(--ink-soft);
+}
+
+.btn-outline-danger {
+  background-color: var(--danger);
+  border-color: var(--danger);
+}
+
+.btn-outline-danger:hover {
+  background-color: var(--danger);
+  border-color: var(--danger);
+}
+
+/* --- Tablas (listados ABM) --- */
+
+.table {
+  background-color: var(--white);
+  border: 1px solid var(--line);
+}
+
+.table thead th {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+  border-bottom: 2px solid var(--brass);
+  background-color: var(--canvas);
+  font-weight: 700;
+  padding: 0.85rem 0.75rem;
+}
+
+.table tbody td {
+  padding: 0.85rem 0.75rem;
+  border-color: var(--line);
+  vertical-align: middle;
+}
+
+.table tbody tr:hover {
+  border-color: var(--canvas);
+}
+
+/* --- Formularios (Create/Edit) --- */
+
+.form-label {
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--ink);
+  margin-bottom: 0.3rem;
+}
+
+.form-control {
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: 0.55rem 0.75rem;
+  font-family: var(--font-body);
+}
+
+.form-control:focus {
+  border-color: var(--brass);
+  box-shadow: 0 0 0 3px rgba(176, 141, 87, 0.18);
+}
+
+.text-danger {
+  font-size: 0.82rem;
+}
+
+/* --- Alertas --- */
+
+.alert-danger {
+  background-color: #f7ecec;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  border-radius: 2px;
+}
+
+/* --- Paginación --- */
+
+.pagination .page-link {
+  color: var(--ink-soft);
+  border-color: var(--line);
+}
+
+.pagination .page-item.active .page-link {
+  background-color: var(--ink);
+  border-color: var(--ink);
+}
+
+/* --- Footer --- */
+
+.footer {
+  background-color: var(--white);
+  border-top: 1px solid var(--line);
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+  padding: 1.25rem 0;
+}
+
+/* --- Accesibilidad : Foco visible --- */
+
+a:focus-visible,
+button:focus-visible,
+.btn:focus-visible,
+.form-control:focus-visible {
+  outline: 2px solid var(--brass);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+/* --- Página de Error --- */
+
+.error-card {
+  max-width: 560px;
+  margin-top: 3rem;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+.error-eyebrow {
+  color: var(--danger);
 }
 
-body {
-  margin-bottom: 60px;
+.error-title {
+  font-size: 2rem;
+  margin-top: 0.5rem;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+.error-text {
+  color: var(--ink-soft);
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+.error-request-id {
+  font-size: 0.85rem;
 }

@@ -1,8 +1,24 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Inicio";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="hero">
+    <span class="eyebrow">Gestión Inmobiliaria</span>
+    <h1>Un registro claro de cada propietario y de cada inquilino</h1>
+    <p>
+        Cargá, editá y dá de baja los datos de propietarios e inquilinos
+        desde un mismo lugar, con la información siempre a mano para
+        cuando la necesites
+    </p>
+
+    <div class="hero-stats">
+        <div>
+            <span class="stat-value">@ViewBag.CantidadPropietarios</span>
+            <span class="stat-label">Propietarios activos</span>
+        </div>
+        <div>
+            <span class="stat-value">@ViewBag.CantidadInquilinos</span>
+            <span class="stat-label">Inquilinos activos</span>
+        </div>
+    </div>
 </div>
