@@ -69,9 +69,7 @@ function obtenerTokenAntiForgery() {
 }
 
 function inicializarFormulario(nombreEntidad) {
-  const form =
-    document.getElementById('formPropietario') ||
-    document.getElementById('formInquilino');
+  const form = document.getElementById('formPersona');
   if (!form) return;
 
   form.addEventListener('submit', async (event) => {
