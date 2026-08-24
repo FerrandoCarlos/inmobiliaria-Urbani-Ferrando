@@ -3,9 +3,15 @@
     ViewData["Title"] = "Nuevo Propietario";
 }
 
-<h1>Nuevo Propietario</h1>
+<div class="form-panel">
+    <div class="form-panel-header is-create">
+        <h2>Nuevo Propietario</h2>
+    </div>
+    <div class="form-panel-body">
+        @await Html.PartialAsync("_Form", Model ?? new InmobiliariaApp.Models.Propietario())
+    </div>
+</div>
 
-@await Html.PartialAsync("_Form", Model ?? new InmobiliariaApp.Models.Propietario())
 
 @section Scripts {
     <script src="~/js/abm-persona.js"></script>

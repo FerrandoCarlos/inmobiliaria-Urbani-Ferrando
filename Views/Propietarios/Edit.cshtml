@@ -2,10 +2,15 @@
 @{
     ViewData["Title"] = "Editar Propietario";
 }
+<div class="form-panel">
+    <div class="form-panel-header is-edit">
+        <h2>Editar Propietario</h2>
+    </div>
+    <div class="form-panel-body">
+        @await Html.PartialAsync("_Form", Model)
+    </div>
+</div>
 
-<h1>Editar Propietario</h1>
-
-@await Html.PartialAsync("_Form", Model)
 
 @section Scripts {
     <script src="~/js/abm-persona.js"></script>

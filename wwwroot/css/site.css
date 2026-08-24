@@ -10,6 +10,7 @@
   --forest: #35503f;
   --line: #d7dbd3;
   --danger: #9a3b3b;
+  --danger-dark: #7a2f2f;
 
   --font-display: 'Fraunces', Georgia, serif;
   --font-body: 'Public Sans', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -23,12 +24,20 @@ html,
 body {
   height: 100%;
 }
+
 body {
   font-family: var(--font-body);
   background-color: var(--canvas);
   color: var(--ink);
   font-size: 16px;
   line-height: 1.55;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
 }
 
 h1,
@@ -101,6 +110,7 @@ a:hover {
   padding: 4.5rem 1rem 3.5rem;
   text-align: left;
   max-width: 760px;
+  margin: 0 auto;
 }
 
 .hero .eyebrow {
@@ -179,9 +189,10 @@ a:hover {
   font-family: var(--font-body);
   font-weight: 600;
   font-size: 0.9rem;
-  border-radius: 2px;
+  border-radius: 5px;
   padding: 0.5rem 1.1rem;
   letter-spacing: 0.01em;
+  gap: 1rem;
 }
 
 .btn-primary {
@@ -213,13 +224,25 @@ a:hover {
 }
 
 .btn-outline-danger {
-  background-color: var(--danger);
-  border-color: var(--danger);
+  background-color: var(--danger-dark);
+  border-color: var(--danger-dark);
+  color: var(--white);
 }
 
 .btn-outline-danger:hover {
   background-color: var(--danger);
   border-color: var(--danger);
+  color: var(--white);
+}
+
+/* --- Encabezados de página (listados ABM) --- */
+
+.page-header {
+  padding: 2.5rem 1rem 1.5rem;
+}
+
+.page-header h1 {
+  margin-bottom: 0;
 }
 
 /* --- Tablas (listados ABM) --- */
@@ -229,6 +252,13 @@ a:hover {
   border: 1px solid var(--line);
 }
 
+.table-panel {
+  padding: 0 1rem 3rem;
+}
+
+.table-panel .table {
+  margin-bottom: 0;
+}
 .table thead th {
   font-family: var(--font-body);
   font-size: 0.78rem;
@@ -251,7 +281,81 @@ a:hover {
   border-color: var(--canvas);
 }
 
+/* --- Tarjetas de acceso rápido (Home) --- */
+
+.quick-access-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  max-width: 900px;
+  padding: 0 1rem;
+  margin-top: 1rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.quick-access-card {
+  text-align: center;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.quick-access-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(28, 43, 57, 0.08);
+}
+
+.quick-access-icon {
+  font-size: 1.8rem;
+  color: var(--brass);
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.quick-access-card h3 {
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+}
+
+.quick-access-card p {
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+  margin-bottom: 1.25rem;
+}
+
 /* --- Formularios (Create/Edit) --- */
+
+.form-panel {
+  background: var(--white);
+  border: 1px solid var(--line);
+  max-width: 640px;
+  margin: 2rem auto 0;
+  overflow: hidden;
+}
+
+.form-panel-header {
+  padding: 1.1rem 1.75rem;
+  color: var(--white);
+}
+
+.form-panel-header.is-create {
+  background-color: var(--brass-dark);
+}
+
+.form-panel-header.is-edit {
+  background-color: var(--forest);
+}
+
+.form-panel-header h2 {
+  color: var(--white);
+  font-size: 1.3rem;
+  margin: 0;
+}
+
+.form-panel-body {
+  padding: 1.75rem;
+}
 
 .form-label {
   font-weight: 600;
@@ -317,12 +421,6 @@ button:focus-visible,
   outline-offset: 2px;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  * {
-    transition: none !important;
-  }
-}
-
 /* --- Página de Error --- */
 
 .error-card {
@@ -345,4 +443,10 @@ button:focus-visible,
 
 .error-request-id {
   font-size: 0.85rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
 }

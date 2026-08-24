@@ -13,12 +13,25 @@
 
     <div class="hero-stats">
         <div>
-            <span class="stat-value">@ViewBag.CantidadPropietarios</span>
-            <span class="stat-label">Propietarios activos</span>
+            <span class="stats-value">@ViewBag.CantidadPropietarios</span>
+            <span class="stats-label">Propietarios activos</span>
         </div>
         <div>
-            <span class="stat-value">@ViewBag.CantidadInquilinos</span>
-            <span class="stat-label">Inquilinos activos</span>
+            <span class="stats-value">@ViewBag.CantidadInquilinos</span>
+            <span class="stats-label">Inquilinos activos</span>
         </div>
     </div>
-</div>
+    <div class="quick-access-grid">
+        <div class="blueprint-card quick-access-card">
+            <i class="bi bi-building quick-access-icon"></i>
+            <h3>Propietarios</h3>
+            <p>Gestiona los datos de cada propietario.</p>
+            <a asp-controller="Propietarios" asp-action="Index" class="btn btn-secondary"> Ir a Propietarios</a>
+        </div>
+        <div class="blueprint-card quick-access-card">
+            <i class="bi bi-people-fill quick-access-icon"></i>
+            <h3>Inquilinos</h3>
+            <p>Gestiona los datos de cada Inquilino.</p>
+            <a asp-controller="Inquilinos" asp-action="Index" class="btn btn-secondary">Ir a Inquilinos</a>
+        </div>
+    </div>

@@ -5,9 +5,10 @@
     int totalPaginas = ViewBag.TotalPaginas ?? 1;
 }
 
-<h1>
-    Propietarios
-</h1>
+<div class="page-header">
+    <h1>Propietarios</h1>
+</div>
+
 <form style="display:none">@Html.AntiForgeryToken()</form>
 
 @if (TempData["Error"] != null)
@@ -17,58 +18,60 @@
 
 <div id="alertContainer"></div>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Nuevo Propietario</a>
-</p>
+<div class="table-panel">
+    <p><a asp-action="Create" class="btn btn-primary">Nuevo Propietario</a></p>
 
-<table class="table table-striped" id="tablaPropietarios">
-    <thead>
-        <tr>
-            <th>DNI</th>
-            <th>Apellido</th>
-            <th>Nombre</th>
-            <th>Teléfono</th>
-            <th>Email</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var propietario in Model)
-        {
-            <tr id="fila-@propietario.Id">
-                <td>@propietario.Dni</td>
-                <td>@propietario.Apellido</td>
-                <td>@propietario.Nombre</td>
-                <td>@propietario.Telefono</td>
-                <td>@propietario.Email</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@propietario.Id" class="btn btn-sm btn-outline-secondary">Editar</a>
-                    <button type="button" class="btn btn-sm btn-outline-danger btn-eliminar" data-id="@propietario.Id">
-                        Eliminar
-                    </button>
-                </td>
+    <table class="table table-striped" id="tablaPropietarios">
+        <thead>
+            <tr>
+                <th>DNI</th>
+                <th>Apellido</th>
+                <th>Nombre</th>
+                <th>Teléfono</th>
+                <th>Email</th>
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
-@if (!Model.Any())
-{
-    <p>No hay propietarios cargados.</p>
-}
+        </thead>
 
-@if (totalPaginas > 1)
-{
-    <nav>
-        <ul class="pagination">
-            @for (int i = 1; i <= totalPaginas; i++)
+        <tbody>
+            @foreach (var propietario in Model)
             {
-                <li class="page-item @(i == paginaNro ? "active" : "")">
-                    <a class="page-link" asp-action="Index" asp-route-paginaNro="@i">@i</a>
-                </li>
+                <tr id="fila-@propietario.Id">
+                    <td>@propietario.Dni</td>
+                    <td>@propietario.Apellido</td>
+                    <td>@propietario.Nombre</td>
+                    <td>@propietario.Telefono</td>
+                    <td>@propietario.Email</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@propietario.Id"
+                           class="btn btn-sm btn-outline-secondary">Editar</a>
+                        <button type="button" class="btn btn-sm btn-outline-danger btn-eliminar" data-id="@propietario.Id">
+                            Eliminar
+                        </button>
+                    </td>
+                </tr>
             }
-        </ul>
-    </nav>
-}
+        </tbody>
+    </table>
+    @if (!Model.Any())
+    {
+        <p>No hay propietarios cargados.</p>
+    }
+
+    @if (totalPaginas > 1)
+    {
+        <nav>
+            <ul class="pagination">
+                @for (int i = 1; i <= totalPaginas; i++)
+                {
+                    <li class="page-item @(i == paginaNro ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-paginaNro="@i">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+</div>
 
 @section Scripts {
     <script src="~/js/abm-persona.js"></script>
