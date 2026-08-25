@@ -119,18 +119,30 @@ async function guardarPersona(nombreEntidad, datos) {
   }
 }
 
+let idPendienteEliminar = null;
+let nombreEntidadActual = null;
 function inicializarBotonesEliminar(nombreEntidad) {
+  nombreEntidadActual = nombreEntidad;
+  const modalElement = document.getElementById('modalConfirmarBaja');
+  const modal = modalElement ? new bootstrap.Modal(modalElement) : null;
+  const btnConfirmar = document.getElementById('btnConfirmarBaja');
+
   document.querySelectorAll('.btn-eliminar').forEach((boton) => {
-    boton.addEventListener('click', async () => {
-      const id = boton.dataset.id;
-
-      if (!confirm('¿Está seguro que desea eliminar este registro?')) {
-        return;
-      }
-
-      await eliminarPersona(nombreEntidad, id);
+    boton.addEventListener('click', () => {
+      idPendienteEliminar = boton.dataset.id;
+      if (modal) modal.show();
     });
   });
+
+  if (btnConfirmar) {
+    btnConfirmar.addEventListener('click', async () => {
+      if (modal) modal.hide();
+      if (idPendienteEliminar) {
+        await eliminarPersona(nombreEntidadActual, idPendienteEliminar);
+        idPendienteEliminar = null;
+      }
+    });
+  }
 }
 
 async function eliminarPersona(nombreEntidad, id) {

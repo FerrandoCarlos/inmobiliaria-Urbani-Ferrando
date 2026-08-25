@@ -445,6 +445,25 @@ button:focus-visible,
   font-size: 0.85rem;
 }
 
+/* --- Modal (Eliminar) --- */
+
+.modal-content {
+  border-radius: 5px;
+  border: 1px solid var(--line);
+}
+
+.modal-header.is-danger {
+  background-color: var(--danger-dark);
+  border-bottom: none;
+}
+
+.modal-header.is-danger .modal-title {
+  color: var(--white);
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  margin: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     transition: none !important;
