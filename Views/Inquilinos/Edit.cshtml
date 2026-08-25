@@ -3,11 +3,17 @@
     ViewData["Title"] = "Editar Inquilino";
 }
 
-<h1>Editar Inquilino</h1>
+<div class="form-panel">
+    <div class="from-panel-header is-edit">
+        <h2>Editar Inquilino</h2>
+    </div>
+    <div class="form-panel-body">
+        @await Html.PartialAsync("_Form", Model)
+    </div>
+</div>
 
-@await Html.PartialAsync("_Form", Model)
 
 @section Scripts {
-     <script src="~/js/abm-persona.js"></script>
+    <script src="~/js/abm-persona.js"></script>
     <script>inicializarAbmPersona("Inquilinos");</script>
 }
