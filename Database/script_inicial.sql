@@ -11,7 +11,7 @@ CREATE TABLE Propietario (
     Nombre         VARCHAR(100)  NOT NULL,
     Apellido       VARCHAR(100)  NOT NULL,
     Telefono       VARCHAR(20)   NULL,
-    Email          VARCHAR(150)  NULL,
+    Email          VARCHAR(150)  NOT NULL,
     Activo         TINYINT(1)    NOT NULL DEFAULT 1,
     FechaCreacion  DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT UQ_Propietario_Dni UNIQUE (Dni)
@@ -25,7 +25,7 @@ CREATE TABLE Inquilino (
     Nombre         VARCHAR(100)  NOT NULL,
     Apellido       VARCHAR(100)  NOT NULL,
     Telefono       VARCHAR(20)   NULL,
-    Email          VARCHAR(150)  NULL,
+    Email          VARCHAR(150)  NOT NULL,
     Activo         TINYINT(1)    NOT NULL DEFAULT 1,
     FechaCreacion  DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT UQ_Inquilino_Dni UNIQUE (Dni)

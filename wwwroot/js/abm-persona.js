@@ -21,14 +21,26 @@ function validarFormulario(datos) {
   if (!datos.Nombre || datos.Nombre.trim().length === 0) {
     mostrarError('Nombre', 'El nombre es obligatorio.');
     esValido = false;
+  } else if (!/^[a-zA-ZÀ-ÿñÑ\s]+$/.test(datos.Nombre)) {
+    mostrarError('Nombre', 'El nombre no puede contener números ni símbolos.');
+    esValido = false;
   }
 
   if (!datos.Apellido || datos.Apellido.trim().length === 0) {
     mostrarError('Apellido', 'El apellido es obligatorio.');
     esValido = false;
+  } else if (!/^[a-zA-ZÀ-ÿñÑ\s]+$/.test(datos.Apellido)) {
+    mostrarError(
+      'Apellido',
+      'El apellido no puede contener números ni símbolos.'
+    );
+    esValido = false;
   }
 
-  if (datos.Email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(datos.Email)) {
+  if (!datos.Email || datos.Email.trim().length === 0) {
+    mostrarError('Email', 'El email es obligatorio.');
+    esValido = false;
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(datos.Email)) {
     mostrarError('Email', 'El formato del email no es válido.');
     esValido = false;
   }
