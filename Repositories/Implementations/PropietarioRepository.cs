@@ -90,6 +90,26 @@ namespace InmobiliariaApp.Repositories.Implementations
             return res;
         }
 
+        public int Reactivar(int id)
+        {
+            int res = -1;
+
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = "UPDATE Propietario SET Activo = 1 WHERE Id = @id";
+
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@id", id);
+
+                    connection.Open();
+                    res = command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return res;
+        }
         public IList<Propietario> ObtenerLista(int paginaNro = 1, int tamPagina = 10)
         {
             IList<Propietario> res = new List<Propietario>();
@@ -110,6 +130,32 @@ namespace InmobiliariaApp.Repositories.Implementations
                     command.Parameters.AddWithValue("@tamPagina", tamPagina);
                     command.Parameters.AddWithValue("@offset", (paginaNro - 1) * tamPagina);
 
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        res.Add(MapearPropietario(reader));
+                    }
+                    connection.Close();
+                }
+            }
+            return res;
+        }
+
+        public IList<Propietario> ObtenerListaInactivos()
+        {
+            IList<Propietario> res = new List<Propietario>();
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = @"
+                    SELECT Id, Dni, Nombre, Apellido, Telefono, Email, Activo, FechaCreacion
+                    FORM Propietario
+                    WHERE Activo = 0
+                    ORDER BY Apellido, Nombre";
+
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
                     connection.Open();
                     var reader = command.ExecuteReader();
                     while (reader.Read())
@@ -144,6 +190,27 @@ namespace InmobiliariaApp.Repositories.Implementations
             return res;
         }
 
+        public int ObtenerCantidadInactivos()
+        {
+            int res = 0;
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = "SELECT COUNT(Id) FROM Propietario WHERE Activo = 0";
+
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        res = reader.GetInt32(0);
+                    }
+                    connection.Close();
+                }
+            }
+            return res;
+        }
         public Propietario? ObtenerPorId(int id)
         {
             Propietario? p = null;

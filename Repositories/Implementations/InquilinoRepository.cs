@@ -47,16 +47,16 @@ namespace InmobiliariaApp.Repositories.Implementations
 
             return res;
         }
-        
+
         public int Baja(int id)
-        {   
+        {
             // Baja lógica: nunca DELETE físico, para preservar integridad
             // referencial con Inmueble/Reserva en entregas futuras.
             int res = -1;
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = "UPDATE inquilino SET Activo = 0 WHERE Id = @id";
-                using(var command = new MySqlCommand(sql, connection))
+                using (var command = new MySqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@id", id);
@@ -94,6 +94,27 @@ namespace InmobiliariaApp.Repositories.Implementations
             return res;
         }
 
+        public int Reactivar(int id)
+        {
+            int res = -1;
+
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = "UPDATE Inquilino SET Activo = 1 WHERE Id = @id";
+
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@id", id);
+
+                    connection.Open();
+                    res = command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return res;
+        }
+
         public IList<Inquilino> ObtenerLista(int paginaNro = -1, int tamPagina = 10)
         {
             IList<Inquilino> res = new List<Inquilino>();
@@ -123,6 +144,31 @@ namespace InmobiliariaApp.Repositories.Implementations
             return res;
         }
 
+        public IList<Inquilino> ObtenerListaInactivos()
+        {
+            IList<Inquilino> res = new List<Inquilino>();
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = @"
+                    SELECT Id, Dni, Nombre, Apellido, Telefono, Email, Activo, FechaCreacion
+                    FORM Inquilino
+                    WHERE Activo = 0
+                    ORDER BY Apellido, Nombre";
+
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        res.Add(MapearInquilino(reader));
+                    }
+                    connection.Close();
+                }
+            }
+            return res;
+        }
         public int ObtenerCantidad()
         {
             int res = 0;
@@ -134,7 +180,8 @@ namespace InmobiliariaApp.Repositories.Implementations
                     command.CommandType = CommandType.Text;
                     connection.Open();
                     var reader = command.ExecuteReader();
-                    if (reader.Read()){
+                    if (reader.Read())
+                    {
                         res = reader.GetInt32(0);
                     }
                     connection.Close();
@@ -142,7 +189,27 @@ namespace InmobiliariaApp.Repositories.Implementations
             }
             return res;
         }
+        public int ObtenerCantidadInactivos()
+        {
+            int res = 0;
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = "SELECT COUNT(Id) FROM Inquilino WHERE Activo = 0";
 
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        res = reader.GetInt32(0);
+                    }
+                    connection.Close();
+                }
+            }
+            return res;
+        }
         public Inquilino? ObtenerPorId(int id)
         {
             Inquilino? i = null;
@@ -171,11 +238,11 @@ namespace InmobiliariaApp.Repositories.Implementations
         public bool ExisteDni(string dni, int idExcluir = 0)
         {
             bool existe = false;
-            using(var connection = new MySqlConnection(connectionString))
+            using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"SELECT COUNT(1) FROM inquilino
                 WHERE Dni = @dni AND Id <> @idExcluir";
-                using(var command = new MySqlCommand(sql, connection))
+                using (var command = new MySqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@dni", dni);
