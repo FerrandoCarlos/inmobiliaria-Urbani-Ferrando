@@ -58,6 +58,9 @@ namespace InmobiliariaApp.Models
         [Display(Name = "Porcentaje de reserva")]
         public decimal PorcentajeReserva { get; set; }
 
+        [Display(Name = "Activo")]
+        public bool Activo { get; set; } = true;
+
         [ForeignKey(nameof(ImagenesInmueble.InmuebleId))]
         public ICollection<ImagenesInmueble> Imagenes { get; set; } = new List<ImagenesInmueble>();
     }
