@@ -26,6 +26,7 @@ namespace InmobiliariaApp.Controllers
 
                 ViewBag.PaginaNro = paginaNro;
                 ViewBag.TotalPaginas = (int)Math.Ceiling(cantidadTotal / (double)TamPaginaDefault);
+                ViewBag.CantidadInactivos = _service.ObtenerCantidadInactivos();
 
                 return View(lista);
             }
@@ -52,7 +53,22 @@ namespace InmobiliariaApp.Controllers
             }
             return View(propietario);
         }
+        // GET : /Propietarios/Inactivos
+        public IActionResult Inactivos()
+        {
+            try
+            {
+                var lista = _service.ObtenerListaInactivos();
+                return View(lista);
+            }
+            catch (Exception)
+            {
+                TempData["Error"] = "Ocurrió un error al cargar el listado de propietarios inactivos.";
 
+                return View(new List<Propietario>());
+
+            }
+        }
         // POST: /Propietarios/Guardar
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -107,6 +123,26 @@ namespace InmobiliariaApp.Controllers
             catch (Exception)
             {
                 return StatusCode(500, new { success = false, message = "Ocurrió un error inesperado al eliminar el propietario." });
+            }
+        }
+
+        // POST: /Propietarios/Reactivar/ID
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Reactivar(int id)
+        {
+            try
+            {
+                _service.Reactivar(id);
+                return Ok(new { success = true, message = "Propietario reactivado correctamente." });
+            }
+            catch (AppException ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { success = false, message = "Ocurrió un error inesperado al reactivar el propietario." });
             }
         }
     }

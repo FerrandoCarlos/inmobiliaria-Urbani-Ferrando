@@ -10,5 +10,9 @@ namespace InmobiliariaApp.Services.Interfaces
         int Alta(Propietario propietario);
         int Modificacion(Propietario propietario);
         int Baja(int id);
+
+        IList<Propietario> ObtenerListaInactivos();
+        int ObtenerCantidadInactivos();
+        int Reactivar(int id);
     }
 }

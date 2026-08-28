@@ -14,7 +14,7 @@ namespace InmobiliariaApp.Repositories.Interfaces
         int Reactivar(int id);
 
         /// Lista de registros dados de baja (Activo = 0), para la vista de Inactivos.
-        /// IList<Inquilino> ObtenerListaInactivos();
+        IList<Inquilino> ObtenerListaInactivos();
 
         /// Cantidad de registros inactivos, para el contador del botón en Index.
         int ObtenerCantidadInactivos();

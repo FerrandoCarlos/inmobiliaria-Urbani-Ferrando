@@ -1,0 +1,56 @@
+@model IList<InmobiliariaApp.Models.Propietario>
+@{
+    ViewData["Title"] = "Propietarios Inactivos";
+}
+
+<div class="page_header">
+    <h1>Propietarios Inactivos</h1>
+</div>
+
+<form style="display: none;">@Html.AntiForgeryToken()</form>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div class="table-panel">
+    <p class="mb-3">
+        <a asp-action="Index" class="btn btn-secondary">Volver a Propietarios</a>
+    </p>
+
+    <table class="table table-striped" id="tablaInactivo">
+        <thead>
+            <tr>
+                <th>DNI</th>
+                <th>Apellido</th>
+                <th>Nombre</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var propietario in Model)
+            {
+                <tr id="fila-@propietario.Id">
+                    <td>@propietario.Dni</td>
+                    <td>@propietario.Apellido</td>
+                    <td>@propietario.Nombre</td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-reactivar" data-id='@propietario.Id'>
+                            Reactivar
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (!Model.Any())
+    {
+        <p class="mt-3">No hay propietarios inactivos.</p>
+    }
+</div>
+
+@section Scripts {
+    <script src="~/js/abm-persona.js"></script>
+    <script>inicializarBotonesReactivar("Propietarios");</script>
+}

@@ -22,12 +22,13 @@ namespace InmobiliariaApp.Controllers
             {
                 var lista = _service.ObtenerLista(paginaNro, TamPaginaDefault);
                 var cantidadTotal = _service.ObtenerCantidad();
-
                 ViewBag.PaginaNro = paginaNro;
                 ViewBag.TotalPaginas = (int)Math.Ceiling(cantidadTotal / (double)TamPaginaDefault);
+                ViewBag.CantidadInactivos = _service.ObtenerCantidadInactivos();
 
                 return View(lista);
-            } catch (Exception)
+            }
+            catch (Exception)
             {
                 TempData["Error"] = "Ocurrió un error al cargar el listado de inquilinos.";
 
@@ -52,6 +53,21 @@ namespace InmobiliariaApp.Controllers
             return View(inquilino);
         }
 
+        //GET : /Inquilinos/Inactivos
+        public IActionResult Inactivos()
+        {
+            try
+            {
+                var lista = _service.ObtenerListaInactivos();
+                return View(lista);
+            }
+            catch (Exception)
+            {
+                TempData["Error"] = "Ocurrió un error al cargar el listado de inquilinos inactivos.";
+                return View(new List<Inquilino>());
+            }
+        }
+
         // POST : /Inquilinos/Guardar
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -71,21 +87,21 @@ namespace InmobiliariaApp.Controllers
                 if (inquilino.Id == 0)
                 {
                     var nuevoId = _service.Alta(inquilino);
-                    return Ok(new { success = true, message = "Inquilino creado correctamente.", data = new { id = nuevoId }});
+                    return Ok(new { success = true, message = "Inquilino creado correctamente.", data = new { id = nuevoId } });
                 }
                 else
                 {
                     _service.Modificacion(inquilino);
-                    return Ok(new { success = true, message = "Inquilino actualizado correctamente."});
+                    return Ok(new { success = true, message = "Inquilino actualizado correctamente." });
                 }
             }
             catch (AppException ex)
             {
-                return BadRequest(new { success = false, message = ex.Message});
+                return BadRequest(new { success = false, message = ex.Message });
             }
             catch (Exception)
             {
-                return StatusCode(500, new { success = false, message = "Ocurrió un error inesperado al guardar el inquilino."});
+                return StatusCode(500, new { success = false, message = "Ocurrió un error inesperado al guardar el inquilino." });
             }
         }
 
@@ -97,15 +113,36 @@ namespace InmobiliariaApp.Controllers
             try
             {
                 _service.Baja(id);
-                return Ok(new { success = true, message = "Inquilino dado de baja correctamente."});
+                return Ok(new { success = true, message = "Inquilino dado de baja correctamente." });
             }
             catch (AppException ex)
             {
-                return BadRequest(new { success = false, message = ex.Message});
+                return BadRequest(new { success = false, message = ex.Message });
             }
             catch (Exception)
             {
-                return StatusCode(500, new { success = false, message = "Ocurrió un error inesperado al eliminar el inquilino."});
+                return StatusCode(500, new { success = false, message = "Ocurrió un error inesperado al eliminar el inquilino." });
+            }
+        }
+
+
+        // POST: /Propietarios/Reactivar/ID
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Reactivar(int id)
+        {
+            try
+            {
+                _service.Reactivar(id);
+                return Ok(new { success = true, message = "Inquilino reactivado correctamente." });
+            }
+            catch (AppException ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { success = false, message = "Ocurrió un error inesperado al reactivar el inquilino." });
             }
         }
     }

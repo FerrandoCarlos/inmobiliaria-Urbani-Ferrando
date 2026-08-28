@@ -8,6 +8,7 @@
   --brass: #b08d57;
   --brass-dark: #8f6f41;
   --forest: #35503f;
+  --forest-dark: #2a3f31;
   --line: #d7dbd3;
   --danger: #9a3b3b;
   --danger-dark: #7a2f2f;
@@ -235,6 +236,22 @@ a:hover {
   color: var(--white);
 }
 
+.btn-reactivar {
+  background-color: var(--forest);
+  border-color: var(--forest);
+  color: var(--white);
+}
+.btn-reactivar:hover {
+  background-color: var(--forest-dark);
+  border-color: var(--forest-dark);
+}
+
+.btn-outline-danger:disabled {
+  background-color: transparent;
+  border-color: var(--line);
+  color: var(--ink-soft);
+  opacity: 1;
+}
 /* --- Encabezados de página (listados ABM) --- */
 
 .page-header {

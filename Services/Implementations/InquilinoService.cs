@@ -52,16 +52,34 @@ namespace InmobiliariaApp.Services.Implementations
         {
             var existente = _repositorio.ObtenerPorId(id)
                 ?? throw new AppException("El inquilino que intenta eliminar no existe.");
-            
+
             return _repositorio.Baja(id);
         }
 
         private void ValidarDniUnico(string dni, int idExcluir)
         {
-            if(_repositorio.ExisteDni(dni, idExcluir))
+            if (_repositorio.ExisteDni(dni, idExcluir))
             {
-                throw new AppException($"Ya existe un inquilino registradon con el DNI {dni}.");
+                throw new AppException($"Ya existe un inquilino registrado con el DNI {dni}.");
             }
+        }
+
+        public IList<Inquilino> ObtenerListaInactivos()
+        {
+            return _repositorio.ObtenerListaInactivos();
+        }
+
+        public int ObtenerCantidadInactivos()
+        {
+            return _repositorio.ObtenerCantidadInactivos();
+        }
+
+        public int Reactivar(int id)
+        {
+            var existente = _repositorio.ObtenerPorId(id)
+                ?? throw new AppException("El propietario que intenta reactivar no existe.");
+
+            return _repositorio.Reactivar(id);
         }
     }
 }

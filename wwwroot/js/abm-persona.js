@@ -157,6 +157,59 @@ function inicializarBotonesEliminar(nombreEntidad) {
   }
 }
 
+function inicializarBotonesReactivar(nombreEntidad) {
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.btn-reactivar').forEach((boton) => {
+      boton.addEventListener('click', async () => {
+        const id = boton.dataset.id;
+        const tokenInput = document.querySelector(
+          'input[name="__RequestVerificationToken"]'
+        );
+
+        try {
+          const respuesta = await fetch(`/${nombreEntidad}/Reactivar/${id}`, {
+            method: 'POST',
+            headers: {
+              RequestVerificationToken: tokenInput ? tokenInput.value : '',
+            },
+          });
+
+          const resultado = await respuesta.json();
+
+          if (respuesta.ok && resultado.success) {
+            const fila = document.getElementById(`fila-${id}`);
+            if (fila) fila.remove();
+          } else {
+            alert(resultado.message || 'No se pudo reactivar el registro.');
+          }
+        } catch (error) {
+          alert('No se pudo conectar con el servidor. Intente nuevamente.');
+        }
+      });
+    });
+  });
+}
+
+function actualizarContadorInactivos(delta) {
+  const span = document.getElementById('cantidadInactivos');
+  const link = document.getElementById('btnInactivos');
+
+  if (!span || !link) return;
+
+  const nuevaCantidad = parseInt(span.textContent, 10) + delta;
+  span.textContent = nuevaCantidad;
+
+  if (nuevaCantidad > 0) {
+    link.classList.remove('disabled');
+    link.setAttribute('tabindex', '0');
+    link.setAttribute('aria-disabled', 'false');
+  } else {
+    link.classList.add('disabled');
+    link.setAttribute('tabindex', '-1');
+    link.setAttribute('aria-disabled', 'true');
+  }
+}
+
 async function eliminarPersona(nombreEntidad, id) {
   const tokenInput = document.querySelector(
     'input[name="__RequestVerificationToken"]'
@@ -175,6 +228,7 @@ async function eliminarPersona(nombreEntidad, id) {
     if (respuesta.ok && resultado.success) {
       const fila = document.getElementById(`fila-${id}`);
       if (fila) fila.remove();
+      actualizarContadorInactivos(1);
     } else {
       alert(resultado.message || 'No se pudo eliminar el registro.');
     }

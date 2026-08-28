@@ -61,5 +61,23 @@ namespace InmobiliariaApp.Services.Implementations
                 throw new AppException($"Ya existe un propietario registrado con el DNI {dni}.");
             }
         }
+
+        public IList<Propietario> ObtenerListaInactivos()
+        {
+            return _repositorio.ObtenerListaInactivos();
+        }
+
+        public int ObtenerCantidadInactivos()
+        {
+            return _repositorio.ObtenerCantidadInactivos();
+        }
+
+        public int Reactivar(int id)
+        {
+            var existente = _repositorio.ObtenerPorId(id)
+                ?? throw new AppException("El propietario que intenta reactivar no existe.");
+
+            return _repositorio.Reactivar(id);
+        }
     }
 }

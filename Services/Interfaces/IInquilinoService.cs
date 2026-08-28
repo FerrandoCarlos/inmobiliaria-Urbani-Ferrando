@@ -12,9 +12,12 @@ namespace InmobiliariaApp.Services.Interfaces
         int Alta(Inquilino i);
 
         int Modificacion(Inquilino i);
-        
+
         int Baja(int id);
 
+        IList<Inquilino> ObtenerListaInactivos();
+        int ObtenerCantidadInactivos();
+        int Reactivar(int id);
 
     }
 }

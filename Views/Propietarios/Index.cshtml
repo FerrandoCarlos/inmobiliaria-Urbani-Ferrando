@@ -19,7 +19,15 @@
 <div id="alertContainer"></div>
 
 <div class="table-panel">
-    <p><a asp-action="Create" class="btn btn-primary">Nuevo Propietario</a></p>
+    <p class="d-flex gap-2 align-items-center">
+        <a asp-action="Create" class="btn btn-primary">Nuevo Propietario</a>
+        <a asp-action="Inactivos" id="btnInactivos"
+           class="btn btn-outline-danger @(ViewBag.CantidadInactivos > 0 ? "" : "disabled")"
+           tabindex="@(ViewBag.CantidadInactivos > 0 ? "0" : "-1")"
+           aria-disabled="@(ViewBag.CantidadInactivos > 0 ? "false" : "true")">
+            Propietarios inactivos (<span id="cantidadInactivos">@ViewBag.CantidadInactivos</span>)
+        </a>
+    </p>
 
     <table class="table table-striped" id="tablaPropietarios">
         <thead>

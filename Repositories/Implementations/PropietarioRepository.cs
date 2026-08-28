@@ -149,7 +149,7 @@ namespace InmobiliariaApp.Repositories.Implementations
             {
                 string sql = @"
                     SELECT Id, Dni, Nombre, Apellido, Telefono, Email, Activo, FechaCreacion
-                    FORM Propietario
+                    FROM Propietario
                     WHERE Activo = 0
                     ORDER BY Apellido, Nombre";
 
