@@ -38,6 +38,11 @@ namespace InmobiliariaApp.Services.Implementations
             var inmueble = _inmuebleRepositorio.ObtenerPorId(reserva.InmuebleId)
                 ?? throw new AppException("El inmueble seleccionado no existe.");
 
+            if (!inmueble.Activo)
+            {
+                throw new AppException("El inmueble no está disponible para alquilar.");
+            }
+
             ValidarSolapamiento(reserva.InmuebleId, reserva.FechaDesde, reserva.FechaHasta, idExcluir: 0);
 
             reserva.MontoPorDia = inmueble.PrecioXDia;
