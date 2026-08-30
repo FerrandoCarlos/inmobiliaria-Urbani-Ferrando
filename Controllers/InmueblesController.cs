@@ -8,11 +8,13 @@ namespace InmobiliariaApp.Controllers
     public class InmueblesController : Controller
     {
         private readonly IInmuebleService _service;
+        private readonly IPropietarioService _propietarioService;
         private const int TamPaginaDefault = 10;
 
-        public InmueblesController(IInmuebleService service)
+        public InmueblesController(IInmuebleService service, IPropietarioService propietarioService)
         {
             _service = service;
+            _propietarioService = propietarioService;
         }
 
         //GET : /Inmuebles
@@ -21,12 +23,11 @@ namespace InmobiliariaApp.Controllers
         {
             try
             {
-                var lista = _service.ObtenerLista(paginaNro, TamPaginaDefault);
+                var lista = _service.ObtenerListaActivos(paginaNro, TamPaginaDefault);
                 var cantidadTotal = _service.ObtenerCantidad();
 
                 ViewBag.PaginaNro = paginaNro;
                 ViewBag.TotalPaginas = (int)Math.Ceiling(cantidadTotal / (double)TamPaginaDefault);
-                
                 return View(lista);
             }
 
@@ -98,6 +99,11 @@ namespace InmobiliariaApp.Controllers
 
             try
             {
+                var propietarioExiste = _propietarioService.ObtenerPorId(inmueble.PropietarioId);
+                if (propietarioExiste == null)
+                {
+                    return BadRequest(new { success = false, message = $"El propietario con ID {inmueble.PropietarioId} no existe."});
+                }
                 if (inmueble.Id == 0)
                 {
                     var nuevoId = _service.Alta(inmueble);

@@ -17,8 +17,8 @@ namespace InmobiliariaApp.Repositories.Implementations
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"INSERT INTO inmueble
-                    (PropietarioId, Cupo, Direccion, Tipo, PrecioXDia, Estado, PorcentajeReserva, Latitud, Longitud)
-                    VALUES (@propietarioid, @cupo, @direccion, @tipo, @precioxdia, @estado, @porcentajereserva, @latitud, @longitud);
+                    (PropietarioId, Cupo, Direccion, Tipo, PrecioXDia, Estado, PorcentajeReserva, Latitud, Longitud, Activo)
+                    VALUES (@propietarioid, @cupo, @direccion, @tipo, @precioxdia, @estado, @porcentajereserva, @latitud, @longitud, @activo);
                     SELECT LAST_INSERT_ID();";
 
                 using (var command = new MySqlCommand(sql, connection))
@@ -33,7 +33,7 @@ namespace InmobiliariaApp.Repositories.Implementations
                     command.Parameters.AddWithValue("@porcentajereserva", entidad.PorcentajeReserva);
                     command.Parameters.AddWithValue("@latitud", entidad.Latitud);
                     command.Parameters.AddWithValue("@longitud", entidad.Longitud);
-
+                    command.Parameters.AddWithValue("@activo", entidad.Activo);
                     connection.Open();
                     res = Convert.ToInt32(command.ExecuteScalar());
                     entidad.Id = res;
@@ -234,7 +234,12 @@ namespace InmobiliariaApp.Repositories.Implementations
                 {
                     command.CommandType = CommandType.Text;
                     connection.Open();
-                    res = Convert.ToInt32(command.ExecuteScalar());
+                    var reader = command.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        res = reader.GetInt32(0);
+                    }
+                    connection.Close();
                 }
             }
             return res;
@@ -250,7 +255,12 @@ namespace InmobiliariaApp.Repositories.Implementations
                 {
                     command.CommandType = CommandType.Text;
                     connection.Open();
-                    res = Convert.ToInt32(command.ExecuteScalar());
+                    var reader = command.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        res = reader.GetInt32(0);
+                    }
+                    connection.Close();
                 }
             }
             return res;

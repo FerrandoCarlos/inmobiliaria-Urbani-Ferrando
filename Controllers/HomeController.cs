@@ -10,15 +10,19 @@ public class HomeController : Controller
     private readonly IPropietarioService _propietarioService;
     private readonly IInquilinoService _inquilinoService;
 
-    public HomeController(IPropietarioService propietarioService, IInquilinoService inquilinoService)
+    private readonly IInmuebleService _inmuebleService;
+
+    public HomeController(IPropietarioService propietarioService, IInquilinoService inquilinoService, IInmuebleService inmuebleService)
     {
         _propietarioService = propietarioService;
         _inquilinoService = inquilinoService;
+        _inmuebleService = inmuebleService;
     }
     public IActionResult Index()
     {
         ViewBag.CantidadPropietarios = _propietarioService.ObtenerCantidad();
         ViewBag.CantidadInquilinos = _inquilinoService.ObtenerCantidad();
+        ViewBag.CantidadInmuebles = _inmuebleService.ObtenerCantidad();
         return View();
     }
 

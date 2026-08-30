@@ -1,0 +1,18 @@
+@model InmobiliariaApp.Models.Inmueble
+@{
+    ViewData["Title"] = "Editar Inmueble";
+}
+<div class="form-panel">
+    <div class="form-panel-header is-edit">
+        <h2>Editar Inmueble</h2>
+    </div>
+    <div class="form-panel-body">
+        @await Html.PartialAsync("_Form", Model)
+    </div>
+</div>
+
+
+@section Scripts {
+    <script src="~/js/abm-inmueble.js"></script>
+    <script>inicializarAbmInmueble("Inmuebles");</script>
+}
