@@ -15,6 +15,7 @@ namespace InmobiliariaApp.Repositories.Interfaces
         IList<Inmueble> ObtenerListaInactivos(int PaginaNro, int tamPagina);
         int ModificarPortada(int InmuebleId, string ruta);
         IList<Inmueble> BuscarPorPropietario(int idPropietario);
+        public int ObtenerCantidadInactivos();
 
     }
 }

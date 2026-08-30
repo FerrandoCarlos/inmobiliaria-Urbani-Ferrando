@@ -239,6 +239,22 @@ namespace InmobiliariaApp.Repositories.Implementations
             }
             return res;
         }
+        public int ObtenerCantidadInactivos()
+        {
+            int res = 0;
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = @"SELECT COUNT(Id) FROM inmueble
+                    WHERE Activo = 0";
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+                    connection.Open();
+                    res = Convert.ToInt32(command.ExecuteScalar());
+                }
+            }
+            return res;
+        }
 
         public Inmueble? ObtenerPorId(int id)
         {
