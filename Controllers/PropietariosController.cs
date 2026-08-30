@@ -8,11 +8,13 @@ namespace InmobiliariaApp.Controllers
     public class PropietariosController : Controller
     {
         private readonly IPropietarioService _service;
+        private readonly ILogger<PropietariosController> _logger;
         private const int TamPaginaDefault = 10;
 
-        public PropietariosController(IPropietarioService service)
+        public PropietariosController(IPropietarioService service, ILogger<PropietariosController> logger)
         {
             _service = service;
+            _logger = logger;
         }
 
         //GET : /Propietarios
@@ -30,8 +32,9 @@ namespace InmobiliariaApp.Controllers
 
                 return View(lista);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al cargar el listado de propietarios.");
                 TempData["Error"] = "Ocurrió un error al cargar el listado de propietarios.";
 
                 return View(new List<Propietario>());
@@ -61,8 +64,9 @@ namespace InmobiliariaApp.Controllers
                 var lista = _service.ObtenerListaInactivos();
                 return View(lista);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al cargar el listado de propietarios inactivos.");
                 TempData["Error"] = "Ocurrió un error al cargar el listado de propietarios inactivos.";
 
                 return View(new List<Propietario>());
@@ -100,8 +104,9 @@ namespace InmobiliariaApp.Controllers
             {
                 return BadRequest(new { success = false, message = ex.Message });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "Error inesperado al guardar el propietario.");
                 return StatusCode(500, new { success = false, message = "Ocurrió un error inesperado al guardar el propietario." });
             }
         }
@@ -120,8 +125,9 @@ namespace InmobiliariaApp.Controllers
             {
                 return BadRequest(new { success = false, message = ex.Message });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "Error inesperado al eliminar el propietario.");
                 return StatusCode(500, new { success = false, message = "Ocurrió un error inesperado al eliminar el propietario." });
             }
         }
@@ -140,8 +146,9 @@ namespace InmobiliariaApp.Controllers
             {
                 return BadRequest(new { success = false, message = ex.Message });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "Error inesperado al reactivar el propietario.");
                 return StatusCode(500, new { success = false, message = "Ocurrió un error inesperado al reactivar el propietario." });
             }
         }

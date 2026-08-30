@@ -17,17 +17,18 @@ namespace InmobiliariaApp.Models
 
         [Required(ErrorMessage = " El nombre es obligatorio.")]
         [StringLength(100, ErrorMessage = "El nombre no puede superar los {1} caracteres.")]
-        [RegularExpression(@"^[a-zA-ZÀ-ÿñÑ\s]+$", ErrorMessage = "El nombre no puede contener números ni símbolos.")]
+        [RegularExpression(@"^[a-zA-ZÀ-ÿñÑ\s]{2,}$", ErrorMessage = "El nombre debe tener al menos 2 caracteres y no puede contener números ni símbolos.")]
         [Display(Name = "Nombre")]
         public string Nombre { get; set; } = string.Empty;
 
         [Required(ErrorMessage = " El apellido es obligatorio.")]
         [StringLength(100, ErrorMessage = "El apellido no puede superar los {1} caracteres.")]
-        [RegularExpression(@"^[a-zA-ZÀ-ÿñÑ\s]+$", ErrorMessage = "El apellido no puede contener números ni símbolos.")]
+        [RegularExpression(@"^[a-zA-ZÀ-ÿñÑ\s]{2,}$", ErrorMessage = "El apellido debe tener al menos 2 caracteres y no puede contener números ni símbolos.")]
         [Display(Name = "Apellido")]
         public string Apellido { get; set; } = string.Empty;
 
         [StringLength(20, ErrorMessage = "El teléfono no puede superar los {1} caracteres.")]
+        [RegularExpression(@"^\d{6,20}$", ErrorMessage = "El teléfono debe contener solo números (6 a 20 dígitos).")]
         [Display(Name = "Teléfono")]
         public string? Telefono { get; set; }
 

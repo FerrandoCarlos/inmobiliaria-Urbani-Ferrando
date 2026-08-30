@@ -8,11 +8,13 @@ namespace InmobiliariaApp.Controllers
     public class InquilinosController : Controller
     {
         private readonly IInquilinoService _service;
+        ILogger<InquilinosController> _logger;
         private const int TamPaginaDefault = 10;
 
-        public InquilinosController(IInquilinoService service)
+        public InquilinosController(IInquilinoService service, ILogger<InquilinosController> logger)
         {
             _service = service;
+            _logger = logger;
         }
 
         // GET : /Inquilinos
@@ -28,8 +30,9 @@ namespace InmobiliariaApp.Controllers
 
                 return View(lista);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al cargar el listado de inquilinos.");
                 TempData["Error"] = "Ocurrió un error al cargar el listado de inquilinos.";
 
                 return View(new List<Inquilino>());
@@ -61,8 +64,9 @@ namespace InmobiliariaApp.Controllers
                 var lista = _service.ObtenerListaInactivos();
                 return View(lista);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al cargar el listado de inquilinos inactivos.");
                 TempData["Error"] = "Ocurrió un error al cargar el listado de inquilinos inactivos.";
                 return View(new List<Inquilino>());
             }
@@ -99,8 +103,9 @@ namespace InmobiliariaApp.Controllers
             {
                 return BadRequest(new { success = false, message = ex.Message });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "Error inesperado al guardar el inquilino.");
                 return StatusCode(500, new { success = false, message = "Ocurrió un error inesperado al guardar el inquilino." });
             }
         }
@@ -119,8 +124,9 @@ namespace InmobiliariaApp.Controllers
             {
                 return BadRequest(new { success = false, message = ex.Message });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "Error inesperado al eliminar el inquilino.");
                 return StatusCode(500, new { success = false, message = "Ocurrió un error inesperado al eliminar el inquilino." });
             }
         }
@@ -140,8 +146,9 @@ namespace InmobiliariaApp.Controllers
             {
                 return BadRequest(new { success = false, message = ex.Message });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "Error inesperado al reactivar el inquilino.");
                 return StatusCode(500, new { success = false, message = "Ocurrió un error inesperado al reactivar el inquilino." });
             }
         }

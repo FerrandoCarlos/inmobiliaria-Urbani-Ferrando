@@ -21,18 +21,29 @@ function validarFormulario(datos) {
   if (!datos.Nombre || datos.Nombre.trim().length === 0) {
     mostrarError('Nombre', 'El nombre es obligatorio.');
     esValido = false;
-  } else if (!/^[a-zA-ZÀ-ÿñÑ\s]+$/.test(datos.Nombre)) {
-    mostrarError('Nombre', 'El nombre no puede contener números ni símbolos.');
+  } else if (!/^[a-zA-ZÀ-ÿñÑ\s]{2,}$/.test(datos.Nombre)) {
+    mostrarError(
+      'Nombre',
+      'El nombre debe tener al menos 2 caracteres y no puede contener números ni símbolos.'
+    );
     esValido = false;
   }
 
   if (!datos.Apellido || datos.Apellido.trim().length === 0) {
     mostrarError('Apellido', 'El apellido es obligatorio.');
     esValido = false;
-  } else if (!/^[a-zA-ZÀ-ÿñÑ\s]+$/.test(datos.Apellido)) {
+  } else if (!/^[a-zA-ZÀ-ÿñÑ\s]{2,}$/.test(datos.Apellido)) {
     mostrarError(
       'Apellido',
-      'El apellido no puede contener números ni símbolos.'
+      'El apellido debe tener al menos 2 caracteres y no puede contener números ni símbolos.'
+    );
+    esValido = false;
+  }
+
+  if (datos.Telefono && !/^\d{6,20}$/.test(datos.Telefono)) {
+    mostrarError(
+      'Telefono',
+      'El teléfono debe contener solo números (6 a 20 dígitos).'
     );
     esValido = false;
   }
