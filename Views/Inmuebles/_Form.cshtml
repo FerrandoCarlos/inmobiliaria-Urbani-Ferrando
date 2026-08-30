@@ -1,0 +1,65 @@
+@model InmobiliariaApp.Models.Inmueble
+
+<form id="formInmueble">
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="Id" name="Id" value="@Model.Id" />
+
+    <div class="mb-3">
+        <label for="Propietario" class="form-label">Propietario ID</label>
+        <input type="text" class="form-control" id="PropietarioId" name="PropietarioId" value="@Model.PropietarioId" maxlength="9" required />
+        <span class="text-danger" id="error-PropietarioId"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="Cupo" class="form-label">Cupo</label>
+        <input type="text" class="form-control" id="Cupo" name="Cupo" value="@Model.Cupo" maxlength="2" required />
+        <span class="text-danger" id="error-Cupo"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="Direccion" class="form-label">Dirección</label>
+        <input type="text" class="form-control" id="Direccion" name="Direccion" value="@Model.Direccion" maxlength="100" required />
+        <span class="text-danger" id="error-Direccion"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="Tipo" class="form-label">Tipo</label>
+        <input type="text" class="form-control" id="Tipo" name="Tipo" value="@Model.Tipo" maxlength="40" required />
+        <span class="text-danger" id="error-Tipo"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="PrecioXDia" class="form-label">Precio por día</label>
+        <input type="text" class="form-control" id="PrecioXDia" name="PrecioXDia" value="@Model.PrecioXDia" maxlength="20" required />
+        <span class="text-danger" id="error-PrecioXDia"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="Estado" class="form-label">Estado</label>
+        <input type="text" class="form-control" id="Estado" name="Estado" value="@Model.Estado" maxlength="20" required />
+        <span class="text-danger" id="error-Estado"></span>
+    </div>
+    
+    <div class="mb-3">
+        <label for="PorcentajeReserva" class="form-label">Porcentaje de reserva</label>
+        <input type="text" class="form-control" id="PorcentajeReserva" name="PorcentajeReserva" value="@Model.PorcentajeReserva" maxlength="5" required />
+        <span class="text-danger" id="error-PorcentajeReserva"></span>
+    </div>
+    
+    <div class="mb-3">
+        <label for="Latitud" class="form-label">Latitud</label>
+        <input type="text" class="form-control" id="Latitud" name="Latitud" value="@Model.Latitud" maxlength="15" required />
+        <span class="text-danger" id="error-Latitud"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="Longitud" class="form-label">Longitud</label>
+        <input type="text" class="form-control" id="Longitud" name="Longitud" value="@Model.Longitud" maxlength="15" required />
+        <span class="text-danger" id="error-Longitud"></span>
+    </div>
+
+    <div id="mensajeGeneral" class="alert alert-danger d-none"></div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>
