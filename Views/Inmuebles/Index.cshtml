@@ -1,0 +1,89 @@
+@model IList<InmobiliariaApp.Models.Inmueble>
+@{
+    ViewData[index : "Title"] = "Inmuebles";
+    int paginaNro = ViewBag.PaginaNro ?? 1;
+    int totalPaginas = ViewBag.TotalPaginas ?? 1;
+}
+
+<div class="page-header">
+    <h1>Inmuebles</h1>
+</div>
+
+<form style="display:none">@Html.AntiForgeryToken()</form>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div id="alertContainer"></div>
+
+<div class="table-panel">
+
+    <p><a asp-action="Create" class="btn btn-primary">Nuevo Inmueble</a></p>
+
+    <table class="table table-striped" id="tablaInmuebles">
+        <thead>
+            <tr>
+                <th>Propietario</th>
+                <th>Cupo</th>
+                <th>Direccion</th>
+                <th>Tipo</th>
+                <th>Precio por día</th>
+                <th>Estado</th>
+                <th>Porcentaje de reserva</th>
+                <th>Latitud</th>
+                <th>Longitud</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var inmueble in Model)
+            {
+                <tr id="fila-@inmueble.Id">
+                    <td>@inmueble.PropietarioId</td>
+                    <td>@inmueble.Cupo</td>
+                    <td>@inmueble.Direccion</td>
+                    <td>@inmueble.Tipo</td>
+                    <td>@inmueble.PrecioXDia</td>
+                    <td>@inmueble.Estado</td>
+                    <td>@inmueble.PorcentajeReserva</td>
+                    <td>@inmueble.Latitud</td>
+                    <td>@inmueble.Longitud</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@inmueble.Id"
+                           class="btn btn-sm btn-outline-secondary">Editar</a>
+                        <button type="button" class="btn btn-sm btn-outline-danger btn-eliminar" data-id="@inmueble.Id">
+                            Eliminar
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (!Model.Any())
+    {
+        <p>No hay inmuebles cargados.</p>
+    }
+
+    @if (totalPaginas > 1)
+    {
+        <nav>
+            <ul class="pagination">
+                @for (int i = 1; i <= totalPaginas; i++)
+                {
+                    <li class="page-item @(i == paginaNro ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-paginaNro="@i">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+</div>
+
+@await Html.PartialAsync("_ModalConfirmarBaja")
+
+@section Scripts {
+    <script src="~/js/abm-inmueble.js"></script>
+    <script>inicializarAbmInmueble("Inmuebles");</script>
+}

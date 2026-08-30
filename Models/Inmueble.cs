@@ -29,15 +29,15 @@ namespace InmobiliariaApp.Models
 
         [Required(ErrorMessage = "Es necesario especificar la capacidad del inmueble")]
         [Display(Name = "Cupo")]
-        public int Cupo { get; set; }
+        public int Cupo { get; set; } = 0;
 
         [Required(ErrorMessage = "Es necesario especificar la dirección del inmueble")]
         [Display(Name = "Dirección")]
-        public string Direccion { get; set; }
+        public string Direccion { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Es necesario especificar el tipo de inmueble")]
         [Display(Name = "Tipo de inmueble")]
-        public string Tipo { get; set; }
+        public string Tipo { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Es necesario especificar la latitud del inmueble")]
         [Display(Name = "Latitud")]
@@ -52,7 +52,7 @@ namespace InmobiliariaApp.Models
         public decimal PrecioXDia { get; set; }
         
         [Display(Name = "Estado")]
-        public string Estado { get; set; } = "Libre";
+        public string Estado { get; set; } = "Disponible";
         
         [Required(ErrorMessage = "Es necesario especificar el porcentaje de reserva del inmueble")]
         [Display(Name = "Porcentaje de reserva")]

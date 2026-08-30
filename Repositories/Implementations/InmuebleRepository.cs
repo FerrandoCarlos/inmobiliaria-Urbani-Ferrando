@@ -17,8 +17,8 @@ namespace InmobiliariaApp.Repositories.Implementations
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"INSERT INTO inmueble
-                    (PropietarioId, Cupo, Direccion, Tipo, PrecioXDia, Estado, PorcentajeReserva, Latitud, Longitud)
-                    VALUES (@propietarioid, @cupo, @direccion, @tipo, @precioxdia, @estado, @porcentajereserva, @latitud, @longitud);
+                    (PropietarioId, Cupo, Direccion, Tipo, PrecioXDia, Estado, PorcentajeReserva, Latitud, Longitud, Activo)
+                    VALUES (@propietarioid, @cupo, @direccion, @tipo, @precioxdia, @estado, @porcentajereserva, @latitud, @longitud, @activo);
                     SELECT LAST_INSERT_ID();";
 
                 using (var command = new MySqlCommand(sql, connection))
@@ -33,7 +33,7 @@ namespace InmobiliariaApp.Repositories.Implementations
                     command.Parameters.AddWithValue("@porcentajereserva", entidad.PorcentajeReserva);
                     command.Parameters.AddWithValue("@latitud", entidad.Latitud);
                     command.Parameters.AddWithValue("@longitud", entidad.Longitud);
-
+                    command.Parameters.AddWithValue("@activo", entidad.Activo);
                     connection.Open();
                     res = Convert.ToInt32(command.ExecuteScalar());
                     entidad.Id = res;
@@ -47,13 +47,33 @@ namespace InmobiliariaApp.Repositories.Implementations
             int res = -1;
             using (var connection = new MySqlConnection(connectionString))
             {
-                string sql = "UPDATE inmueble SET Estado = 'Inactivo' WHERE Id = @id";
+                string sql = "UPDATE inmueble SET Activo = 0 WHERE Id = @id";
                 using (var command = new MySqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@id", id);
                     connection.Open();
                     res = command.ExecuteNonQuery();
+                }
+            }
+            return res;
+        }
+
+        public int ModificacionEstado(string estado, int id)
+        {
+            int res = -1;
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = @"UPDATE inmueble
+                    SET Estado=@estado
+                    WHERE Id = @id";
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@estado", estado);
+                    connection.Open();
+                    res = command.ExecuteNonQuery();
+                    connection.Close();
                 }
             }
             return res;
@@ -86,6 +106,27 @@ namespace InmobiliariaApp.Repositories.Implementations
 
                     connection.Open();
                     res = command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return res;
+        }
+        
+
+        public int Reactivar(int id)
+        {
+            int res = -1;
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = @"UPDATE inmueble SET Activo = 1 WHERE Id = @id";
+
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@id", id);
+                    connection.Open();
+                    res = command.ExecuteNonQuery();
+                    connection.Close();
                 }
             }
             return res;
@@ -113,7 +154,7 @@ namespace InmobiliariaApp.Repositories.Implementations
             return res;
         }
 
-        public IList<Inmueble> ObtenerLista(int paginaNro = 1, int tamPagina = 10)
+        public IList<Inmueble> ObtenerListaActivos(int paginaNro = 1, int tamPagina = 10)
         {
             IList<Inmueble> res = new List<Inmueble>();
             int offset = (paginaNro - 1) * tamPagina;
@@ -125,6 +166,42 @@ namespace InmobiliariaApp.Repositories.Implementations
                                       p.Nombre, p.Apellido, p.Dni
                                FROM inmueble i 
                                INNER JOIN propietario p ON i.PropietarioId = p.Id
+                               WHERE i.Activo = 1
+                               ORDER BY i.Id
+                               LIMIT @tamPagina OFFSET @offset";
+
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@tamPagina", tamPagina);
+                    command.Parameters.AddWithValue("@offset", offset);
+
+                    connection.Open();
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            res.Add(MapearInmueble(reader));
+                        }
+                    }
+                }
+            }
+            return res;
+        }
+
+        public IList<Inmueble> ObtenerListaInactivos(int paginaNro = 1, int tamPagina = 10)
+        {
+            IList<Inmueble> res = new List<Inmueble>();
+            int offset = (paginaNro - 1) * tamPagina;
+
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = @"SELECT i.Id, i.Cupo, i.Direccion, i.Tipo, i.PrecioXDia, i.Estado, 
+                                      i.PorcentajeReserva, i.Latitud, i.Longitud, i.ImgPortadaURL, i.PropietarioId, 
+                                      p.Nombre, p.Apellido, p.Dni
+                               FROM inmueble i 
+                               INNER JOIN propietario p ON i.PropietarioId = p.Id
+                               WHERE i.Activo = 0
                                ORDER BY i.Id
                                LIMIT @tamPagina OFFSET @offset";
 
@@ -157,7 +234,33 @@ namespace InmobiliariaApp.Repositories.Implementations
                 {
                     command.CommandType = CommandType.Text;
                     connection.Open();
-                    res = Convert.ToInt32(command.ExecuteScalar());
+                    var reader = command.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        res = reader.GetInt32(0);
+                    }
+                    connection.Close();
+                }
+            }
+            return res;
+        }
+        public int ObtenerCantidadInactivos()
+        {
+            int res = 0;
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = @"SELECT COUNT(Id) FROM inmueble
+                    WHERE Activo = 0";
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        res = reader.GetInt32(0);
+                    }
+                    connection.Close();
                 }
             }
             return res;
@@ -246,6 +349,11 @@ namespace InmobiliariaApp.Repositories.Implementations
                     Dni = reader.GetString(nameof(Propietario.Dni))
                 }
             };
+        }
+
+        public IList<Inmueble> ObtenerLista(int paginaNro = 1, int tamPagina = 10)
+        {
+            throw new NotImplementedException();
         }
     }
 }

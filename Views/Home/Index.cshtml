@@ -20,6 +20,10 @@
             <span class="stats-value">@ViewBag.CantidadInquilinos</span>
             <span class="stats-label">Inquilinos activos</span>
         </div>
+        <div>
+            <span class="stats-value">@ViewBag.CantidadInmuebles</span>
+            <span class="stats-label">Inmuebles activos</span>
+        </div>
     </div>
     <div class="quick-access-grid">
         <div class="blueprint-card quick-access-card">
@@ -33,5 +37,11 @@
             <h3>Inquilinos</h3>
             <p>Gestiona los datos de cada Inquilino.</p>
             <a asp-controller="Inquilinos" asp-action="Index" class="btn btn-secondary">Ir a Inquilinos</a>
+        </div>
+        <div class="blueprint-card quick-access-card">
+            <i class="bi bi-people-fill quick-access-icon"></i>
+            <h3>Inmuebles</h3>
+            <p>Gestiona los datos de cada Inmueble.</p>
+            <a asp-controller="Inmuebles" asp-action="Index" class="btn btn-secondary">Ir a Inmuebles</a>
         </div>
     </div>
