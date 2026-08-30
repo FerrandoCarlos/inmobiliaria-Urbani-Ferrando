@@ -42,3 +42,19 @@ INSERT INTO Inquilino (Dni, Nombre, Apellido, Telefono, Email, Activo) VALUES
 ('32444555', 'Ana',     'Lopez',   '3814007788', 'ana.lopez@mail.com', 1),
 ('29777111', 'Diego',   'Martinez','3814009900', 'diego.martinez@mail.com', 1),
 ('40123456', 'Carla',   'Rojas',   '3814012345', 'carla.rojas@mail.com', 1);
+
+
+CREATE TABLE IF NOT EXISTS reserva (
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    InquilinoId INT NOT NULL,
+    InmuebleId INT NOT NULL,
+    FechaDesde DATE NOT NULL,
+    FechaHasta DATE NOT NULL,
+    FechaTerminacion DATE NULL,
+    MontoPorDia DECIMAL(10,2) NOT NULL,
+    Multa DECIMAL(10,2) NULL,
+    Estado VARCHAR(20) NOT NULL DEFAULT 'Vigente',
+    FechaCreacion DATETIME NOT NULL,
+    CONSTRAINT fk_reserva_inquilino FOREIGN KEY (InquilinoId) REFERENCES inquilino(Id),
+    CONSTRAINT fk_reserva_inmueble FOREIGN KEY (InmuebleId) REFERENCES inmueble(Id)
+);
