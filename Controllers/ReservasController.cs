@@ -8,11 +8,17 @@ namespace InmobiliariaApp.Controllers
     public class ReservasController : Controller
     {
         private readonly IReservaService _service;
+        private readonly IInquilinoService _inquilinoService;
+        private readonly IInmuebleService _inmuebleService;
+        private readonly ILogger<ReservasController> _logger;
         private const int tamPaginaDefault = 10;
 
-        public ReservasController(IReservaService service)
+        public ReservasController(IReservaService service, IInquilinoService inquilinoService, IInmuebleService inmuebleService, ILogger<ReservasController> logger)
         {
             _service = service;
+            _inquilinoService = inquilinoService;
+            _inmuebleService = inmuebleService;
+            _logger = logger;
         }
 
         // GET: /Reservas
@@ -28,8 +34,9 @@ namespace InmobiliariaApp.Controllers
 
                 return View(lista);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al cargar el listado de reservas.");
                 TempData["Error"] = "Ocurrió un error al cargar el listado de reservas.";
                 return View(new List<Reserva>());
             }
@@ -50,6 +57,7 @@ namespace InmobiliariaApp.Controllers
         // GET: /Reservas/Create
         public IActionResult Create()
         {
+            CargarListasParaSelects();
             return View();
         }
 
@@ -61,6 +69,7 @@ namespace InmobiliariaApp.Controllers
             {
                 return NotFound();
             }
+            CargarListasParaSelects();
             return View(reserva);
         }
 
@@ -95,8 +104,9 @@ namespace InmobiliariaApp.Controllers
             {
                 return BadRequest(new { success = false, message = ex.Message });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al guardar la reserva.");
                 return StatusCode(500, new { success = false, message = "Ocurrió un error inesperado al guardar la reserva." });
             }
         }
@@ -115,10 +125,17 @@ namespace InmobiliariaApp.Controllers
             {
                 return BadRequest(new { success = false, message = ex.Message });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al finalizar la reserva.");
                 return StatusCode(500, new { success = false, message = "Ocurrió un error inesperado al finalizar la reserva." });
             }
+        }
+
+        private void CargarListasParaSelects()
+        {
+            ViewBag.Inquilinos = _inquilinoService.ObtenerLista(1, 1000);
+            ViewBag.Inmuebles = _inmuebleService.ObtenerListaActivos(1, 1000);
         }
     }
 }

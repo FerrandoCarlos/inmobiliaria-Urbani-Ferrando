@@ -19,7 +19,7 @@ namespace InmobiliariaApp.Repositories.Implementations
             {
                 string sql = @"
                     INSERT INTO reserva (InquilinoId, InmuebleId, FechaDesde, FechaHasta, MontoPorDia, Estado, FechaCreacion)
-                    VALUES (@inquilinoId, @inmuebleId,@fechaDesde,@fechaHasta,@montoPorDia,@estado,@fechaCreacion)
+                    VALUES (@inquilinoId, @inmuebleId,@fechaDesde,@fechaHasta,@montoPorDia,@estado,@fechaCreacion);
                     SELECT LAST_INSERT_ID();
                 ";
 
@@ -90,7 +90,7 @@ namespace InmobiliariaApp.Repositories.Implementations
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"
-                    SELECT r.Id, r.InquilinoId, r.InmuebleId, r.FechaDesde, r.FechaHasta
+                    SELECT r.Id, r.InquilinoId, r.InmuebleId, r.FechaDesde, r.FechaHasta,
                            r.FechaTerminacion, r.MontoPorDia, r.Multa, r.Estado, r.FechaCreacion,
                            i.Nombre as InquilinoNombre, i.Apellido AS InquilinoApellido, i.Dni AS InquilinoDni,
                            m.Direccion AS InmuebleDireccion
@@ -147,7 +147,7 @@ namespace InmobiliariaApp.Repositories.Implementations
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"
-                    SELECT r.Id, r.InquilinoId, r.InmuebleId, r.FechaDesde, r.FechaHasta
+                    SELECT r.Id, r.InquilinoId, r.InmuebleId, r.FechaDesde, r.FechaHasta,
                            r.FechaTerminacion, r.MontoPorDia, r.Multa, r.Estado, r.FechaCreacion,
                            i.Nombre as InquilinoNombre, i.Apellido AS InquilinoApellido, i.Dni AS InquilinoDni,
                            m.Direccion AS InmuebleDireccion

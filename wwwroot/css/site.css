@@ -184,6 +184,30 @@ a:hover {
   border-width: 0 2px 2px 0;
 }
 
+.blueprint-card::before {
+  top: -1px;
+  left: -1px;
+  border-width: 2px 0 0 2px;
+}
+
+.blueprint-card dl.row dt {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding-top: 0.6rem;
+  padding-bottom: 0.6rem;
+}
+
+.blueprint-card dl.row dd {
+  font-size: 1rem;
+  color: var(--ink);
+  padding-top: 0.6rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--line);
+}
 /* --- Botones --- */
 
 .btn {

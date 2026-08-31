@@ -1,0 +1,56 @@
+@model InmobiliariaApp.Models.Reserva
+@{
+    var inquilinos = (IList<InmobiliariaApp.Models.Inquilino>)ViewBag.Inquilinos;
+    var inmuebles = (IList<InmobiliariaApp.Models.Inmueble>)ViewBag.Inmuebles;
+}
+<form id="formReserva">
+    @Html.AntiForgeryToken()
+    <input type="hidden" value="@Model.Id" name="Id" id="Id">
+
+    <div class="mb-3">
+        <label for="InquilinoId" class="form-label">Inquilino</label>
+        <select name="InquilinoId" id="InquilinoId" class="form-control" required>
+            <option value="">Seleccione un inquilino...</option>
+            @foreach (var inquilino in inquilinos)
+            {
+                <option value="@inquilino.Id" selected="@(inquilino.Id == Model.InquilinoId)">
+                    @inquilino.Apellido, @inquilino.Nombre (DNI @inquilino.Dni)
+                </option>
+            }
+        </select>
+        <span class="text-danger" id="error-inquilinoId"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="InmuebleId" class="form-label">Inmueble</label>
+        <select name="InmuebleId" id="InmuebleId" class="form-control" required>
+            <option value="">Seleccione un inmueble...</option>
+            @foreach (var inmueble in inmuebles)
+            {
+                <option value="@inmueble.Id" selected="@(inmueble.Id == Model.InquilinoId)">
+                    @inmueble.Direccion (@inmueble.Tipo) - $@inmueble.PrecioXDia/dia
+                </option>
+            }
+        </select>
+        <span class="text-danger" id="error-inmuebleId"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="FechaDesde" class="form-label">Fecha desde</label>
+        <input type="date" class="form-control" id="FechaDesde" name="FechaDesde"
+               value="@(Model.Id != 0 ? Model.FechaDesde.ToString("yyyy-MM-dd") : "")" required />
+        <span class="text-danger" id="error-FechaDesde"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="FechaHasta" class="form-label">Fecha hasta</label>
+        <input type="date" class="form-control" id="FechaHasta" name="FechaHasta"
+               value="@(Model.Id != 0 ? Model.FechaHasta.ToString("yyyy-MM-dd") : "")" required />
+        <span class="text-danger" id="error-FechaHasta"></span>
+    </div>
+
+    <div id="mensajeGeneral" class="alert alert-danger d-none"></div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

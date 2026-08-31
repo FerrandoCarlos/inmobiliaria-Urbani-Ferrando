@@ -1,0 +1,45 @@
+@model InmobiliariaApp.Models.Reserva
+@{
+    ViewData["Title"] = "Detalle de Reserva";
+}
+
+<div class="page-header">
+    <h1>Detalle de Reserva</h1>
+</div>
+
+<div class="table-panel">
+    <div class="blueprint-card" style="max-width: 640px;">
+        <dl class="row">
+            <dt class="col-sm-4">Inquilino</dt>
+            <dd class="col-sm-8">@Model.Inquilino?.Apellido, @Model.Inquilino?.Nombre (DNI @Model.Inquilino?.Dni)</dd>
+
+            <dt class="col-sm-4">Inmueble</dt>
+            <dd class="col-sm-8">@Model.Inmueble?.Direccion</dd>
+
+            <dt class="col-sm-4">Fecha desde</dt>
+            <dd class="col-sm-8">@Model.FechaDesde.ToString("dd/MM/yyyy")</dd>
+
+            <dt class="col-sm-4">Fecha hasta</dt>
+            <dd class="col-sm-8">@Model.FechaHasta.ToString("dd/MM/yyyy")</dd>
+
+            <dt class="col-sm-4">Monto por día</dt>
+            <dd class="col-sm-8">$@Model.MontoPorDia</dd>
+
+            <dt class="col-sm-4">Estado</dt>
+            <dd class="col-sm-8">@Model.Estado</dd>
+
+            @if (Model.FechaTerminacion.HasValue)
+            {
+                <dt class="col-sm-4">Fecha de terminación</dt>
+                <dd class="col-sm-8">@Model.FechaTerminacion.Value.ToString("dd/MM/yyyy")</dd>
+            }
+            @if (Model.Multa.HasValue)
+            {
+                <dt class="col-sm-4">Multa</dt>
+                <dd class="col-sm-8">$@Model.Multa</dd>
+            }
+        </dl>
+
+        <a asp-action="Index" class="btn btn-secondary">Volver a Reservas</a>
+    </div>
+</div>

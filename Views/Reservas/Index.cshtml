@@ -1,0 +1,86 @@
+@model IList<InmobiliariaApp.Models.Reserva>
+@{
+    ViewData["Title"] = "Reservas";
+    int paginaNro = ViewBag.PaginaNro ?? 1;
+    int totalPaginas = ViewBag.TotalPaginas ?? 1;
+}
+
+<div class="page-header">
+    <h1>Reservas</h1>
+</div>
+
+<form style="display:none">@Html.AntiForgeryToken()</form>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div id="alertContainer"></div>
+
+<div class="table-panel">
+    <p class="d-flex gap-2 align-items-center">
+        <a asp-action="Create" class="btn btn-primary">Nueva Reserva</a>
+    </p>
+
+    <table class="table table-striped" id="tablaReservas">
+        <thead>
+            <tr>
+                <th>Inquilino</th>
+                <th>Inmueble</th>
+                <th>Desde</th>
+                <th>Hasta</th>
+                <th>Estado</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var reserva in Model)
+            {
+                <tr id="fila-@reserva.Id">
+                    <td>@reserva.Inquilino?.Apellido, @reserva.Inquilino?.Nombre</td>
+                    <td>@reserva.Inmueble?.Direccion</td>
+                    <td>@reserva.FechaDesde.ToString("dd/MM/yyyy")</td>
+                    <td>@reserva.FechaHasta.ToString("dd/MM/yyyy")</td>
+                    <td>@reserva.Estado</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@reserva.Id"
+                           class="btn btn-sm btn-outline-secondary">Detalles</a>
+                        @if (reserva.Estado == "Vigente")
+                        {
+                            <a asp-action="Edit" asp-route-id="@reserva.Id" class="btn btn-sm btn-outline-secondary">Editar</a>
+                            <button type="button" class="btn btn-sm btn-outline-danger btn-eliminar" data-id="@reserva.Id">
+                                Finalizar
+                            </button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (!Model.Any())
+    {
+        <p>No hay reservas cargadas.</p>
+    }
+
+    @if (totalPaginas > 1)
+    {
+        <nav>
+            <ul class="pagination">
+                @for (int i = 1; i <= totalPaginas; i++)
+                {
+                    <li class="page-item @(i == paginaNro ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-paginaNro="@i">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+</div>
+
+@await Html.PartialAsync("_ModalConfirmarBaja")
+
+@section Scripts {
+    <script src="~/js/abm-reserva.js"></script>
+    <script>inicializarBotonesEliminarReserva();</script>
+}
