@@ -211,6 +211,9 @@ namespace InmobiliariaApp.Repositories.Implementations
                 FechaHasta = reader.GetDateTime(nameof(Reserva.FechaHasta)),
                 FechaTerminacion = reader.IsDBNull(reader.GetOrdinal(nameof(Reserva.FechaTerminacion)))
                     ? null : reader.GetDateTime(nameof(Reserva.FechaTerminacion)),
+                MontoPorDia = reader.GetDecimal(nameof(Reserva.MontoPorDia)),
+                Multa = reader.IsDBNull(reader.GetOrdinal(nameof(Reserva.Multa)))
+                    ? null : reader.GetDecimal(nameof(Reserva.Multa)),
                 Estado = reader.GetString(nameof(Reserva.Estado)),
                 FechaCreacion = reader.GetDateTime(nameof(Reserva.FechaCreacion)),
                 Inquilino = new Inquilino
