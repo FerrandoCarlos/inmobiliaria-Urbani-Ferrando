@@ -435,8 +435,13 @@ a:hover {
 .pagination .page-link {
   color: var(--ink-soft);
   border-color: var(--line);
+  margin-left: 0;
+  border-radius: 5px;
 }
-
+.pagination {
+  gap: 0.4rem;
+  margin-top: 1.5rem;
+}
 .pagination .page-item.active .page-link {
   background-color: var(--ink);
   border-color: var(--ink);
