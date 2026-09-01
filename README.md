@@ -54,9 +54,48 @@ erDiagram
         boolean Activo
         datetime FechaCreacion
     }
+
+    INMUEBLE {
+        int Id PK
+        int PropietarioId FK
+        varchar ImgPortadaURL
+        int Cupo
+        varchar Direccion
+        varchar Tipo
+        decimal Latitud
+        decimal Longitud
+        boolean Activo
+        decimal PrecioXDia
+        varchar Estado
+        decimal PorcentajeReserva
+    }
+
+    IMAGENINMUEBLE {
+        int Id PK
+        int InmuebleId FK
+        varchar ImgURL
+    }
+
+    RESERVA {
+        int Id PK
+        int InquilinoId FK
+        int InmuebleId FK
+        date FechaDesde
+        date FechaHasta
+        date FechaTerminacion
+        decimal MontoPorDia
+        decimal Multa
+        varchar Estado
+        datetime FechaCreacion
+    }
+
+    PROPIETARIO ||--o{ INMUEBLE : "posee"
+    INMUEBLE ||--o{ IMAGENINMUEBLE : "tiene"
+    INMUEBLE ||--o{ RESERVA : "se reserva en"
+    INQUILINO ||--o{ RESERVA : "realiza"
 ```
 
-> **Nota:** en esta entrega, `Propietario` e `Inquilino` son entidades independientes, sin relación entre sí todavía. En entregas futuras, `Propietario` se vinculará con `Inmueble` (1 a N) e `Inquilino` con `Reserva` (1 a N), según el diseño completo del proyecto.
+> **Nota sobre alcance:** siguiendo la narrativa del proyecto, `Reserva` (llamada "Contrato" en etapas tempranas del diseño) todavía no incluye `Pago`, cálculo de multa por terminación anticipada, renovación, ni el módulo de `Usuario`/`Rol` con autenticación — funcionalidades previstas para entregas futuras. El campo `Email` es obligatorio en Propietario e Inquilino desde esta entrega.
 
 ## Instalación y puesta en marcha
 
@@ -77,10 +116,11 @@ cd inmobiliaria-Urbani-Ferrando
 
 1. Iniciá tu servidor MySQL (en Laragon: botón "Start All").
 2. Abrí tu cliente SQL preferido y conectate con las credenciales de tu instalación local (por defecto en Laragon: usuario `root`, sin contraseña, puerto `3306`).
-3. Ejecutá el script completo ubicado en `Database/script_inicial.sql`. Este script:
+3. Ejecutá el script `Database/script_inicial.sql`. Este script:
    - Crea la base de datos `inmobiliaria_db`.
-   - Crea las tablas `Propietario` e `Inquilino`.
-   - Inserta datos de prueba (3 registros en cada tabla).
+   - Crea las tablas `Propietario`, `Inquilino`, `inmueble`, `imagenesInmueble` y `reserva`.
+   - Inserta un pequeño set de datos de ejemplo (3 propietarios, 3 inquilinos, 3 inmuebles, 2 reservas).
+4. **Opcional:** para probar paginación, filtros y listados con más volumen, ejecutá también `Database/datos_prueba.sql` a continuación. Este script reemplaza los datos mínimos por un set de 20 registros por entidad.
 
 ### 3. Configurar la cadena de conexión
 
@@ -107,19 +147,25 @@ dotnet restore
 dotnet run
 ```
 
-La consola va a indicar la URL local (por ejemplo `http://localhost:5104`). Abrí esa URL en el navegador y navegá a `/Propietarios` o `/Inquilinos` para ver el ABM funcionando.
+La consola va a indicar la URL local (por ejemplo `http://localhost:5104`). Abrí esa URL en el navegador y navegá a `/Propietarios`, `/Inquilinos`, `/Inmuebles` o `/Reservas` para ver el ABM funcionando.
 
 ## Funcionalidades de esta entrega
 
-- ABM completo (Alta, Baja lógica, Modificación, Listado paginado) de Propietarios e Inquilinos.
+- ABM completo (Alta, Baja lógica, Modificación, Listado paginado) de **Propietarios**, **Inquilinos**, **Inmuebles** y **Reservas**.
+- Vista de detalle para cada entidad.
 - Validación doble: Data Annotations en el servidor (`ModelState`) + validación espejo en JavaScript antes de cada petición asincrónica.
+- Validación de negocio en `Reserva`: fechas coherentes (hasta > desde) y sin solapamiento de fechas con otra reserva Vigente del mismo inmueble.
+- El monto por día de una Reserva se fija en el servidor a partir del precio vigente del Inmueble; nunca se toma del valor enviado por el cliente.
 - Protección contra inyección SQL: 100% de las consultas parametrizadas, sin concatenación de strings.
 - Protección CSRF: `[ValidateAntiForgeryToken]` en cada endpoint de escritura, token incluido en cada `fetch` desde el cliente.
-- Baja lógica (campo `Activo`) en vez de `DELETE` físico, para preservar integridad referencial en entregas futuras.
-- Manejo de errores diferenciado: excepciones de negocio (`AppException`, ej. DNI duplicado) devuelven HTTP 400 con mensaje claro; errores técnicos inesperados devuelven HTTP 500 sin exponer detalles internos.
+- Baja lógica (campo `Activo`, o `Estado = 'Finalizada'` en el caso de Reserva) en vez de `DELETE` físico.
+- Reactivación de registros dados de baja (Propietario, Inquilino, Inmueble).
+- Manejo de errores diferenciado: excepciones de negocio (`AppException`) devuelven HTTP 400 con mensaje claro; errores técnicos inesperados se registran vía `ILogger` y devuelven HTTP 500 sin exponer detalles internos al cliente.
 
 ## Próximas entregas (fuera de alcance actual)
 
-- Entidades `Inmueble`, `Reserva`, `Pago`, `Usuario` y `Rol`.
-- Relación de `Propietario` con `Inmueble` y de `Inquilino` con `Reserva`.
-- Autenticación y autorización de usuarios.
+- Entidad `Pago`, asociada a `Reserva`.
+- Terminación anticipada de `Reserva` con cálculo de multa.
+- Renovación/extensión de `Reserva` sin modificar la original.
+- Autenticación y autorización de usuarios (`Usuario`, `Rol`).
+- Buscador con filtro en servidor para los combos de selección (Inquilino/Inmueble en el formulario de Reserva), en vez de listar todos los valores.
