@@ -20,6 +20,9 @@ builder.Services.AddScoped<IInmuebleRepository, InmuebleRepository>();
 builder.Services.AddScoped<IInmuebleService, InmuebleService>();
 builder.Services.AddScoped<IReservaRepository, ReservaRepository>();
 builder.Services.AddScoped<IReservaService, ReservaService>();
+builder.Services.AddScoped<IImagenesInmuebleRepository, ImagenesInmuebleRepository>();
+builder.Services.AddScoped<IImagenesInmuebleService, ImagenesInmuebleService>();
+
 
 var app = builder.Build();
 

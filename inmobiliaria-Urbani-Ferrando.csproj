@@ -5,6 +5,10 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>InmobiliariaApp</RootNamespace>
+
+    <DefaultItemExcludes>
+      $(DefaultItemExcludes);wwwroot/Uploads/**
+    </DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>

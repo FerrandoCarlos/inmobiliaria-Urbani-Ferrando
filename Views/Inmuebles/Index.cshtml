@@ -53,6 +53,8 @@
                     <td>
                         <a asp-action="Edit" asp-route-id="@inmueble.Id"
                            class="btn btn-sm btn-outline-secondary">Editar</a>
+                        <a asp-action="ImagenesInmueble" asp-route-id="@inmueble.Id"
+                           class="btn btn-sm btn-outline-secondary">Cargar Imágenes</a>
                         <button type="button" class="btn btn-sm btn-outline-danger btn-eliminar" data-id="@inmueble.Id">
                             Eliminar
                         </button>
