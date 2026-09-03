@@ -113,7 +113,6 @@
             }
 
             $.ajax({
-                // Ruta REST limpia directa al controlador de imágenes
                 url: `/ImagenesInmueble/Alta/${idInmueble}`,
                 type: 'POST',
                 data: formData,
@@ -147,7 +146,6 @@
             if (imagenes && imagenes.length > 0) {
                 let html = ``;
                 imagenes.forEach(img => {
-                    // Contempla todas las posibles variantes de serialización JSON en C#
                     const url = img.imgUrl || img.imgURL || img.ImgURL || img.url;
                     const imgId = img.id || img.Id;
 
