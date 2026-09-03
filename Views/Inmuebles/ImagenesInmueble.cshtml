@@ -21,7 +21,7 @@
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="InmuebleId" value="@Id" />
                         <button type="submit" class="btn btn-danger btn-sm mt-2">
-                            <i class="fas fa-trash-alt"></i> Eliminar Portada
+                            <i class="bi bi-trash-fill"></i> Eliminar Portada
                         </button>
                     </form>
                 </div>
@@ -33,7 +33,7 @@
                     <input type="file" class="form-control-file" id="Archivo" name="Archivo" accept="image/*" required>
                     <input type="hidden" name="InmuebleId" value="@Id" />
                 </div>
-                <button type="submit" class="btn btn-primary mt-2"><i class="fas fa-upload"></i> Subir Portada</button>
+                <button type="submit" class="btn btn-primary mt-2"><i class="bi bi-arrow-bar-up"></i></i> Subir Portada</button>
             </form>
         </div>
 
@@ -51,7 +51,7 @@
                                 <img src="@imagen.ImgURL" class="img-thumbnail" style="max-width: 150px; max-height: 150px;" />
                                 <button type="button" class="btn btn-danger btn-sm btn-eliminar-imagen"
                                         onclick="eliminarImagen(@imagen.Id)">
-                                    <i class="fas fa-times"></i>
+                                    <i class="bi bi-trash-fill"></i>
                                 </button>
                             </div>
                         }
@@ -68,7 +68,7 @@
                     <input type="file" class="form-control-file" id="imagenes" name="imagenes"
                            onchange="previsualizar(event)" accept="image/*" multiple required>
                 </div>
-                <button type="submit" class="btn btn-success mt-2"><i class="fas fa-upload"></i> Subir</button>
+                <button type="submit" class="btn btn-success mt-2"><i class="bi bi-arrow-bar-up"></i></i> Subir</button>
             </form>
 
             <div class="mt-3">
