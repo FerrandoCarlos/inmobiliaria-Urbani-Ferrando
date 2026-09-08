@@ -515,3 +515,74 @@ button:focus-visible,
     transition: none !important;
   }
 }
+
+#img-portada {
+  border: solid 1px #b08d57;
+  padding: 20px;
+  border-top: 0px;
+  border-bottom: 0px;
+}
+
+#img-interior {
+  border: solid 1px #b08d57;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-top: 0px;
+  border-left: 0px;
+  border-bottom: 0px;
+}
+
+#imgs-inmueble {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  object-position: center;
+}
+
+.imagen-con-hover {
+  width: 150px;
+  height: 150px;
+  display: inline-block;
+}
+
+.img-galeria {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+  object-position: center;
+}
+
+.btn-eliminar-imagen {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 10;
+}
+#formInterior {
+  margin-top: 10%;
+}
+
+.div-preview {
+  width: 150px;
+  height: 150px;
+  display: inline-block;
+}
+
+.img-preview {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+  object-position: center;
+}
+
+.contenedor-imagen-portada {
+    position: relative;
+    display: inline-block; /* O max-width: fit-content para que se ajuste exactamente al tamaño de la imagen */
+}
+
+.form-eliminar-portada {
+    position: absolute;
+    top: 10px;    /* Distancia desde arriba */
+    right: 10px;  /* Distancia desde la derecha */
+    z-index: 10;  /* Asegura que quede por encima de la imagen */
+}
