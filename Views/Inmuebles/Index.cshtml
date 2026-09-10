@@ -1,4 +1,5 @@
 @model IList<InmobiliariaApp.Models.Inmueble>
+@inject InmobiliariaApp.Services.Interfaces.IPropietarioService PropietarioService
 @{
     ViewData[index : "Title"] = "Inmuebles";
     int paginaNro = ViewBag.PaginaNro ?? 1;
@@ -25,15 +26,13 @@
     <table class="table table-striped" id="tablaInmuebles">
         <thead>
             <tr>
+                <th>Inmueble</th>
                 <th>Propietario</th>
                 <th>Cupo</th>
-                <th>Direccion</th>
                 <th>Tipo</th>
                 <th>Precio por día</th>
                 <th>Estado</th>
                 <th>Porcentaje de reserva</th>
-                <th>Latitud</th>
-                <th>Longitud</th>
             </tr>
         </thead>
 
@@ -41,15 +40,16 @@
             @foreach (var inmueble in Model)
             {
                 <tr id="fila-@inmueble.Id">
-                    <td>@inmueble.PropietarioId</td>
-                    <td>@inmueble.Cupo</td>
+                    @{
+                        var propietario = PropietarioService.ObtenerPorId(inmueble.PropietarioId);
+                    }
                     <td>@inmueble.Direccion</td>
+                    <td>@(propietario != null ? $"{propietario.Nombre} {propietario.Apellido}" : "Sin Propietario")</td>
+                    <td>@inmueble.Cupo</td>
                     <td>@inmueble.Tipo</td>
                     <td>@inmueble.PrecioXDia</td>
                     <td>@inmueble.Estado</td>
                     <td>@inmueble.PorcentajeReserva</td>
-                    <td>@inmueble.Latitud</td>
-                    <td>@inmueble.Longitud</td>
                     <td>
                         <a asp-action="Edit" asp-route-id="@inmueble.Id"
                            class="btn btn-sm btn-outline-secondary">Editar</a>
