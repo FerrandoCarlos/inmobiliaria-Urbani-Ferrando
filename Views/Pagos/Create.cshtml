@@ -1,0 +1,18 @@
+@model InmobiliariaApp.Models.Pago
+@{
+    ViewData["Title"] = "Nuevo Pago";
+}
+
+<div class="form-panel">
+    <div class="form-panel-header is-create">
+        <h2>Nuevo Pago</h2>
+    </div>
+    <div class="form-panel-body">
+        @await Html.PartialAsync("_Form", Model ?? new InmobiliariaApp.Models.Pago())
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/abm-pago.js"></script>
+    <script> inicializarAbmPago(); </script>
+}
