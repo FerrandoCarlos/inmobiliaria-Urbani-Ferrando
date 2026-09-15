@@ -1,0 +1,17 @@
+@model InmobiliariaApp.Models.TipoInmueble
+@{
+    ViewData[index: "Title"] = "Editar Tipo de Inmueble";
+}
+<div class="form-panel">
+    <div class="form-panel-header is-edit">
+        <h2>Editar tipo de inmueble</h2>
+    </div>
+    <div class="form-panel-body">
+        @await Html.PartialAsync("_Form", Model)
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/abm-tipoinmueble.js"></script>
+    <script> inicializarAbmTipoInmueble(); </script>
+}

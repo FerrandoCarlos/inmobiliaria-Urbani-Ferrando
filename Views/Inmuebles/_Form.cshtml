@@ -1,5 +1,7 @@
 @model InmobiliariaApp.Models.Inmueble
-
+@{
+    var tipoInmuebles = (IList<InmobiliariaApp.Models.TipoInmueble>)ViewBag.TipoInmueble;
+}
 <form id="formInmueble">
     @Html.AntiForgeryToken()
     <input type="hidden" id="Id" name="Id" value="@Model.Id" />
@@ -23,9 +25,18 @@
     </div>
 
     <div class="mb-3">
-        <label for="Tipo" class="form-label">Tipo</label>
-        <input type="text" class="form-control" id="Tipo" name="Tipo" value="@Model.Tipo" maxlength="40" required />
-        <span class="text-danger" id="error-Tipo"></span>
+        <label for="TipoInmuebleId" class="form-label">Tipo</label>
+        <select name="TipoInmuebleId" id="TipoInmuebleId" class="form-control" required onchange="redireccionarSiNuevoTipo(this)">
+            <option value="">Seleccione un tipo de inmueble...</option>
+            @foreach (var TipoInmueble in tipoInmuebles)
+            {
+                <option value="@TipoInmueble.Id" selected="@(TipoInmueble.Id == Model.TipoInmuebleId)">
+                    @TipoInmueble.Tipo
+                </option>
+            }
+            <option value="nuevoTipo" class="fw-bold text-primary">+ Cargar nuevo tipo de inmueble...</option>
+        </select>
+        <span class="text-danger" id="error-TipoInmuebleId"></span>
     </div>
 
     <div class="mb-3">

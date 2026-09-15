@@ -1,0 +1,17 @@
+@model InmobiliariaApp.Models.TipoInmueble
+
+<form id="formTipoInmueble">
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="Id" name="Id" value="@Model.Id" />
+
+    <div class="mb-3">
+        <label for="Tipo" class="form-label">Tipo</label>
+        <input type="text" class="form-control" id="Tipo" name="Tipo" value="@Model.Tipo" maxlength="20" required />
+        <span class="text-danger" id="error-Tipo"></span>
+    </div>
+
+    <div id="mensajeGeneral" class="alert alert-danger d-none"></div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

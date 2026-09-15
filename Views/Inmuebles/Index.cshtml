@@ -1,5 +1,6 @@
 @model IList<InmobiliariaApp.Models.Inmueble>
-@inject InmobiliariaApp.Services.Interfaces.IPropietarioService PropietarioService
+@inject InmobiliariaApp.Services.Interfaces.IPropietarioService PropietarioService;
+@inject InmobiliariaApp.Services.Interfaces.ITipoInmuebleService TipoInmuebleService;
 @{
     ViewData[index : "Title"] = "Inmuebles";
     int paginaNro = ViewBag.PaginaNro ?? 1;
@@ -22,6 +23,7 @@
 <div class="table-panel">
 
     <p><a asp-action="Create" class="btn btn-primary">Nuevo Inmueble</a></p>
+    <p><a asp-controller="TipoInmueble" class="btn btn-primary">Nuevo Tipo de inmueble</a></p>
 
     <table class="table table-striped" id="tablaInmuebles">
         <thead>
@@ -33,6 +35,7 @@
                 <th>Precio por día</th>
                 <th>Estado</th>
                 <th>Porcentaje de reserva</th>
+                <th></th>
             </tr>
         </thead>
 
@@ -42,11 +45,12 @@
                 <tr id="fila-@inmueble.Id">
                     @{
                         var propietario = PropietarioService.ObtenerPorId(inmueble.PropietarioId);
+                        var tipo = TipoInmuebleService.ObtenerPorId(inmueble.TipoInmuebleId);
                     }
                     <td>@inmueble.Direccion</td>
                     <td>@(propietario != null ? $"{propietario.Nombre} {propietario.Apellido}" : "Sin Propietario")</td>
                     <td>@inmueble.Cupo</td>
-                    <td>@inmueble.Tipo</td>
+                    <td>@(tipo != null ? $"{tipo.Tipo}" : "Sin Tipo")</td>
                     <td>@inmueble.PrecioXDia</td>
                     <td>@inmueble.Estado</td>
                     <td>@inmueble.PorcentajeReserva</td>

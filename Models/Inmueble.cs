@@ -36,8 +36,11 @@ namespace InmobiliariaApp.Models
         public string Direccion { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Es necesario especificar el tipo de inmueble")]
-        [Display(Name = "Tipo de inmueble")]
-        public string Tipo { get; set; } = string.Empty;
+        [Display(Name = "ID del Tipo de inmueble")]
+        public int TipoInmuebleId { get; set; }
+        [ForeignKey(nameof(TipoInmuebleId))]
+        [BindNever]
+        public TipoInmueble? TipoInmueble {get; set;}
 
         [Required(ErrorMessage = "Es necesario especificar la latitud del inmueble")]
         [Display(Name = "Latitud")]

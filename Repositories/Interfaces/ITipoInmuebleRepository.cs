@@ -8,6 +8,6 @@ namespace InmobiliariaApp.Repositories.Interfaces
 {
     public interface ITipoInmuebleRepository : IRepository<TipoInmueble>
     {
-        
+        bool ExistePorNombre(string tipo, int idExcluir = 0);
     }
 }

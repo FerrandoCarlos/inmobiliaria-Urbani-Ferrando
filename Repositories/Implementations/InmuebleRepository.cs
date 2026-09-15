@@ -17,17 +17,17 @@ namespace InmobiliariaApp.Repositories.Implementations
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"INSERT INTO inmueble
-                    (PropietarioId, Cupo, Direccion, Tipo, PrecioXDia, Estado, PorcentajeReserva, Latitud, Longitud, Activo)
-                    VALUES (@propietarioid, @cupo, @direccion, @tipo, @precioxdia, @estado, @porcentajereserva, @latitud, @longitud, @activo);
+                    (TipoInmuebleId, PropietarioId, Cupo, Direccion, PrecioXDia, Estado, PorcentajeReserva, Latitud, Longitud, Activo)
+                    VALUES (@tipoinmuebleid, @propietarioid, @cupo, @direccion, @precioxdia, @estado, @porcentajereserva, @latitud, @longitud, @activo);
                     SELECT LAST_INSERT_ID();";
 
                 using (var command = new MySqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@tipoinmuebleid", entidad.TipoInmuebleId);
                     command.Parameters.AddWithValue("@propietarioid", entidad.PropietarioId);
                     command.Parameters.AddWithValue("@cupo", entidad.Cupo);
                     command.Parameters.AddWithValue("@direccion", entidad.Direccion);
-                    command.Parameters.AddWithValue("@tipo", entidad.Tipo);
                     command.Parameters.AddWithValue("@precioxdia", entidad.PrecioXDia);
                     command.Parameters.AddWithValue("@estado", entidad.Estado);
                     command.Parameters.AddWithValue("@porcentajereserva", entidad.PorcentajeReserva);
@@ -85,18 +85,18 @@ namespace InmobiliariaApp.Repositories.Implementations
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"UPDATE inmueble
-                    SET PropietarioId=@propietarioid, Cupo=@cupo, Direccion=@direccion, Tipo=@tipo, 
+                    SET TipoInmuebleId=@tipoinmuebleid, PropietarioId=@propietarioid, Cupo=@cupo, Direccion=@direccion,
                         PrecioXDia=@precioxdia, Estado=@estado, PorcentajeReserva=@porcentajereserva, 
                         Latitud=@latitud, Longitud=@longitud
                     WHERE Id = @id";
 
                 using (var command = new MySqlCommand(sql, connection))
                 {
+                    command.Parameters.AddWithValue("@tipoinmuebleid", entidad.TipoInmuebleId);
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@propietarioid", entidad.PropietarioId);
                     command.Parameters.AddWithValue("@cupo", entidad.Cupo);
                     command.Parameters.AddWithValue("@direccion", entidad.Direccion);
-                    command.Parameters.AddWithValue("@tipo", entidad.Tipo);
                     command.Parameters.AddWithValue("@precioxdia", entidad.PrecioXDia);
                     command.Parameters.AddWithValue("@estado", entidad.Estado);
                     command.Parameters.AddWithValue("@porcentajereserva", entidad.PorcentajeReserva);
@@ -161,7 +161,7 @@ namespace InmobiliariaApp.Repositories.Implementations
 
             using (var connection = new MySqlConnection(connectionString))
             {
-                string sql = @"SELECT i.Id, i.Cupo, i.Direccion, i.Tipo, i.PrecioXDia, i.Estado, 
+                string sql = @"SELECT i.Id, i.TipoInmuebleId, i.Cupo, i.Direccion, i.PrecioXDia, i.Estado, 
                                       i.PorcentajeReserva, i.Latitud, i.Longitud, i.ImgPortadaURL, i.PropietarioId, 
                                       p.Nombre, p.Apellido, p.Dni
                                FROM inmueble i 
@@ -196,7 +196,7 @@ namespace InmobiliariaApp.Repositories.Implementations
 
             using (var connection = new MySqlConnection(connectionString))
             {
-                string sql = @"SELECT i.Id, i.Cupo, i.Direccion, i.Tipo, i.PrecioXDia, i.Estado, 
+                string sql = @"SELECT i.Id, i.TipoInmuebleId, i.Cupo, i.Direccion, i.PrecioXDia, i.Estado, 
                                       i.PorcentajeReserva, i.Latitud, i.Longitud, i.ImgPortadaURL, i.PropietarioId, 
                                       p.Nombre, p.Apellido, p.Dni
                                FROM inmueble i 
@@ -271,7 +271,7 @@ namespace InmobiliariaApp.Repositories.Implementations
             Inmueble? entidad = null;
             using (var connection = new MySqlConnection(connectionString))
             {
-                string sql = @"SELECT i.Id, i.Cupo, i.Direccion, i.Tipo, i.PrecioXDia, i.Estado, 
+                string sql = @"SELECT i.Id, i.TipoInmuebleId, i.Cupo, i.Direccion, i.PrecioXDia, i.Estado, 
                                       i.PorcentajeReserva, i.Latitud, i.Longitud, i.ImgPortadaURL, i.PropietarioId, 
                                       p.Nombre, p.Apellido, p.Dni
                                FROM inmueble i 
@@ -301,7 +301,7 @@ namespace InmobiliariaApp.Repositories.Implementations
             List<Inmueble> res = new List<Inmueble>();
             using (var connection = new MySqlConnection(connectionString))
             {
-                string sql = @"SELECT i.Id, i.Cupo, i.Direccion, i.Tipo, i.PrecioXDia, i.Estado, 
+                string sql = @"SELECT i.Id, i.TipoInmuebleId, i.Cupo, i.Direccion, i.PrecioXDia, i.Estado, 
                                       i.PorcentajeReserva, i.Latitud, i.Longitud, i.ImgPortadaURL, i.PropietarioId, 
                                       p.Nombre, p.Apellido, p.Dni
                                FROM inmueble i 
@@ -333,7 +333,7 @@ namespace InmobiliariaApp.Repositories.Implementations
                 Id = reader.GetInt32(nameof(Inmueble.Id)),
                 Cupo = reader.GetInt32(nameof(Inmueble.Cupo)),
                 Direccion = reader[nameof(Inmueble.Direccion)] == DBNull.Value ? "" : reader.GetString(nameof(Inmueble.Direccion)),
-                Tipo = reader[nameof(Inmueble.Tipo)] == DBNull.Value ? "" : reader.GetString(nameof(Inmueble.Tipo)),
+                TipoInmuebleId = reader.GetInt32(nameof(Inmueble.TipoInmuebleId)),
                 PrecioXDia = reader.GetDecimal(nameof(Inmueble.PrecioXDia)),
                 Estado = reader[nameof(Inmueble.Estado)] == DBNull.Value ? "" : reader.GetString(nameof(Inmueble.Estado)),
                 PorcentajeReserva = reader.GetDecimal(nameof(Inmueble.PorcentajeReserva)),

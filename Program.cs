@@ -24,6 +24,8 @@ builder.Services.AddScoped<IImagenesInmuebleRepository, ImagenesInmuebleReposito
 builder.Services.AddScoped<IImagenesInmuebleService, ImagenesInmuebleService>();
 builder.Services.AddScoped<IPagoRepository, PagoRepository>();
 builder.Services.AddScoped<IPagoService, PagoService>();
+builder.Services.AddScoped<ITipoInmuebleRepository, TipoInmuebleRepository>();
+builder.Services.AddScoped<ITipoInmuebleService, TipoInmuebleService>();
 
 
 

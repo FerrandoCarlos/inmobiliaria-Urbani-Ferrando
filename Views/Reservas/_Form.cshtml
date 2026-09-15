@@ -28,7 +28,7 @@
             @foreach (var inmueble in inmuebles)
             {
                 <option value="@inmueble.Id" selected="@(inmueble.Id == Model.InquilinoId)">
-                    @inmueble.Direccion (@inmueble.Tipo) - $@inmueble.PrecioXDia/dia
+                    @inmueble.Direccion (@inmueble.TipoInmuebleId) - $@inmueble.PrecioXDia/dia
                 </option>
             }
         </select>

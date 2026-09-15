@@ -9,12 +9,14 @@ namespace InmobiliariaApp.Controllers
     public class InmueblesController : Controller
     {
         private readonly IInmuebleService _service;
+        private readonly ITipoInmuebleService _tipoService;
         private readonly IPropietarioService _propietarioService;
         private const int TamPaginaDefault = 10;
 
-        public InmueblesController(IInmuebleService service, IPropietarioService propietarioService)
+        public InmueblesController(IInmuebleService service, ITipoInmuebleService tipoService,IPropietarioService propietarioService)
         {
             _service = service;
+            _tipoService = tipoService;
             _propietarioService = propietarioService;
         }
 
@@ -44,6 +46,7 @@ namespace InmobiliariaApp.Controllers
 
         public IActionResult Create()
         {
+            ViewBag.TipoInmueble = _tipoService.ObtenerLista(1,100) ?? new List<TipoInmueble>();
             return View();
         }
 
@@ -66,6 +69,7 @@ namespace InmobiliariaApp.Controllers
             {
                 return NotFound();
             }
+            ViewBag.TipoInmueble = _tipoService.ObtenerLista(1,100) ?? new List<TipoInmueble>();
             return View(inmueble);
         }
 
@@ -176,6 +180,11 @@ namespace InmobiliariaApp.Controllers
                 {
                     return BadRequest(new { success = false, message = $"El propietario con ID {inmueble.PropietarioId} no existe."});
                 }
+                var tipoExiste = _tipoService.ObtenerPorId(inmueble.TipoInmuebleId);
+                if (tipoExiste == null)
+                {
+                    return BadRequest(new { success = false, message = $"El TipoInmueble con ID {inmueble.TipoInmuebleId} no existe."});
+                }
                 if (inmueble.Id == 0)
                 {
                     var nuevoId = _service.Alta(inmueble);
@@ -189,9 +198,10 @@ namespace InmobiliariaApp.Controllers
             } catch (AppException ex)
             {
                 return BadRequest(new { success = false, message = ex.Message });
-            } catch (Exception)
+            } catch (Exception ex)
             {
-                return StatusCode(500, new { success = false, message = "Ocurrió un error inesperado al guardar el inmueble."});
+                return StatusCode(500, new { success = false, message = $"Error: {ex.Message}" });
+                //return StatusCode(500, new { success = false, message = "Ocurrió un error inesperado al guardar el inmueble."});
             }
         }
 

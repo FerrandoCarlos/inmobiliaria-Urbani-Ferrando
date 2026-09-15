@@ -77,7 +77,7 @@ function inicializarFormularioPago() {
 
 async function guardarPago(datos){
     try {
-        const respeusta = await fetch('/Pagos/Guardar', {
+        const respuesta = await fetch('/Pagos/Guardar', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -86,9 +86,9 @@ async function guardarPago(datos){
             body: JSON.stringify(datos),
         });
 
-        const resultado = await respeusta.json();
+        const resultado = await respuesta.json();
 
-        if (respeusta.ok && resultado.success){
+        if (respuesta.ok && resultado.success){
             window.location.href = "/Pagos";
         } else {
             mostrarMensajeGeneralPago(
