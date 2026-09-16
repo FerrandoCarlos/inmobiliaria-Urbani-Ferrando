@@ -10,5 +10,7 @@ namespace InmobiliariaApp.Services.Interfaces
         int Alta(Reserva reserva);
         int Modificacion(Reserva reserva);
         int Baja(int id);
+        IList<Reserva> ObtenerPorInmueble(int id);
+        int Finalizar(int id);
     }
 }

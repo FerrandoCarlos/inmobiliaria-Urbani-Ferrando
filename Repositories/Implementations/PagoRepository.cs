@@ -317,7 +317,7 @@ namespace InmobiliariaApp.Repositories.Implementations
             {
                 Id = reader.GetInt32("PagoId"),
                 ReservaId = reader.GetInt32(nameof(Pago.ReservaId)),
-                Monto = reader.GetDouble(nameof(Pago.Monto)),
+                Monto = reader.GetDecimal(nameof(Pago.Monto)),
                 Concepto = reader[nameof(Pago.Concepto)] == DBNull.Value ? "" : reader.GetString(nameof(Pago.Concepto)),
                 Estado = reader[nameof(Pago.Estado)] == DBNull.Value ? "" : reader.GetString(nameof(Pago.Estado)),
                 Activo = reader.GetBoolean(nameof(Pago.Activo)),

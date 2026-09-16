@@ -2,6 +2,7 @@
 @{
     var inquilinos = (IList<InmobiliariaApp.Models.Inquilino>)ViewBag.Inquilinos;
     var inmuebles = (IList<InmobiliariaApp.Models.Inmueble>)ViewBag.Inmuebles;
+    var fechaHoy = DateTime.Now.ToString("yyyy-MM-dd");
 }
 <form id="formReserva">
     @Html.AntiForgeryToken()
@@ -27,7 +28,7 @@
             <option value="">Seleccione un inmueble...</option>
             @foreach (var inmueble in inmuebles)
             {
-                <option value="@inmueble.Id" selected="@(inmueble.Id == Model.InquilinoId)">
+                <option value="@inmueble.Id" selected="@(inmueble.Id == Model.InmuebleId)">
                     @inmueble.Direccion (@inmueble.TipoInmuebleId) - $@inmueble.PrecioXDia/dia
                 </option>
             }
@@ -38,14 +39,14 @@
     <div class="mb-3">
         <label for="FechaDesde" class="form-label">Fecha desde</label>
         <input type="date" class="form-control" id="FechaDesde" name="FechaDesde"
-               value="@(Model.Id != 0 ? Model.FechaDesde.ToString("yyyy-MM-dd") : "")" required />
+               value="@(Model.FechaDesde != DateTime.MinValue ? Model.FechaDesde.ToString("yyyy-MM-dd") : "")" min ="@fechaHoy" required />
         <span class="text-danger" id="error-FechaDesde"></span>
     </div>
 
     <div class="mb-3">
         <label for="FechaHasta" class="form-label">Fecha hasta</label>
         <input type="date" class="form-control" id="FechaHasta" name="FechaHasta"
-               value="@(Model.Id != 0 ? Model.FechaHasta.ToString("yyyy-MM-dd") : "")" required />
+               value="@(Model.FechaHasta != DateTime.MinValue ? Model.FechaHasta.ToString("yyyy-MM-dd") : "")" required />
         <span class="text-danger" id="error-FechaHasta"></span>
     </div>
 

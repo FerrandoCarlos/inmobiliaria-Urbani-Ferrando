@@ -1,5 +1,8 @@
+let fechasOcupadas = [];
 function inicializarAbmReserva() {
   document.addEventListener('DOMContentLoaded', () => {
+    configurarRestriccionesFechas();
+    configurarEscuchaInmueble();
     inicializarFormularioReserva();
   });
 }
@@ -32,6 +35,12 @@ function validarFormularioReserva(datos) {
       'La fecha hasta debe ser posterior a la fecha desde.'
     );
     esValido = false;
+  }
+  if (datos.FechaDesde && datos.FechaHasta) {
+    if (!validarFechasLibres(datos.FechaDesde, datos.FechaHasta)) {
+      mostrarErrorReserva('FechaDesde', 'El inmueble ya está reservado en las fechas seleccionadas.');
+      esValido = false;
+    }
   }
 
   return esValido;
@@ -165,5 +174,93 @@ async function eliminarReserva(id) {
     }
   } catch (error) {
     alert('No se pudo conectar con el servidor. Intente nuevamente.');
+  }
+}
+
+function configurarRestriccionesFechas() {
+  const inputDesde = document.getElementById('FechaDesde');
+  const inputHasta = document.getElementById('FechaHasta');
+
+  if (inputDesde) {
+    const hoy = new Date().toISOString().split('T')[0];
+    inputDesde.setAttribute('min', hoy);
+    inputDesde.addEventListener('change', () => {
+      if (inputHasta) {
+        inputHasta.setAttribute('min', inputDesde.value);
+        if (inputHasta.value && inputHasta.value <= inputDesde.value) {
+          inputHasta.value = '';
+        }
+      }
+    })
+  }
+}
+
+function configurarEscuchaInmueble() {
+  const selectInmueble = document.getElementById('InmuebleId');
+  if (selectInmueble) {
+    selectInmueble.addEventListener('change', (e) => cargarFechasOcupadas(e.target.value));
+    if (selectInmueble.value) {
+      cargarFechasOcupadas(selectInmueble.value);
+    }
+  }
+}
+
+async function cargarFechasOcupadas(inmuebleId) {
+  if (!inmuebleId || inmuebleId === "0") {
+    fechasOcupadas = [];
+    return;
+  }
+  try {
+    const res = await fetch(`/Reservas/ObtenerFechasOcupadas?inmuebleId=${inmuebleId}`);
+    if (res.ok) {
+      fechasOcupadas = await res.json();
+    }
+  } catch (err) {
+    console.error('Error al cargar fechas ocupadas: ', err);
+  }
+}
+
+function validarFechasLibres(fechaDesdeStr, fechaHastaStr) {
+  const desde = new Date(fechaDesdeStr.replace(/-/g, '/'));
+  const hasta = new Date(fechaHastaStr.replace(/-/g, '/'));
+
+  for (const rango of fechasOcupadas) {
+    const rDesde = new Date(rango.desde.replace(/-/g, '/'));
+    const rHasta = new Date(rango.hasta.replace(/-/g, '/'));
+
+    if (desde < rHasta && hasta > rDesde) {
+      return false;
+    }
+  }
+  return true;
+}
+
+async function finalizarReserva(id) {
+  try {
+    const respuesta = await fetch(`/Reservas/Finalizar/${id}`, {
+      method: 'POST',
+      headers: {
+        'RequestVerificationToken': obtenerTokenAntiForgeryReserva(),
+      },
+    });
+    const resultado = await respuesta.json();
+    if (respuesta.ok && resultado.success) {
+      const fila = document.getElementById(`fila-${id}`);
+      if (fila) {
+        const celdaEstado = fila.querySelector('.estado-reserva');
+        if (celdaEstado) {
+          celdaEstado.className='estado-reserva';
+          celdaEstado.innerHTML= '<span class="badge bg-secondary">Finalizado</span>';
+        }
+        const btnFinalizar = fila.querySelector('.btn-finalizar');
+        const btnExtender = fila.querySelector('.btn-extender');
+        if (btnFinalizar) btnFinalizar.remove();
+        if (btnExtender) btnExtender.remove();
+      }
+    } else {
+      alert(resultado.message || 'No se pudo finalizar la reserva.');
+    }
+  } catch (err) {
+    alert('No se pudo finalizar la reserva.');
   }
 }

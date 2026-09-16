@@ -17,7 +17,7 @@ namespace InmobiliariaApp.Models
         public Reserva? Reserva { get; set; }
         [Required(ErrorMessage = "Es necesario especificar el monto del pago.")]
         [Display(Name = "Monto del pago")]
-        public double Monto { get; set; }
+        public decimal Monto { get; set; }
         [Required(ErrorMessage = "Es necesario especificar el concepto del pago.")]
         [Display(Name = "Concepto del pago")]
         public string Concepto { get; set; } = string.Empty;

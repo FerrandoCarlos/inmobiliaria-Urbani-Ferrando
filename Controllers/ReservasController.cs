@@ -42,6 +42,18 @@ namespace InmobiliariaApp.Controllers
             }
         }
 
+        // GET: /Reservas/ObtenerFechasOcupadas/ID
+        public IActionResult ObtenerFechasOcupadas(int inmuebleId)
+        {
+            var reservas = _service.ObtenerPorInmueble(inmuebleId);
+            var rangosOcupados = reservas.Select(r => new
+            {
+                desde = r.FechaDesde.ToString("yyyy-MM-dd"),
+                hasta = r.FechaHasta.ToString("yyyy-MM-dd")
+            });
+            return Ok(rangosOcupados);
+        }
+
         // GET: /Reservas/Details/ID
         public IActionResult Details(int id)
         {
@@ -55,10 +67,22 @@ namespace InmobiliariaApp.Controllers
         }
 
         // GET: /Reservas/Create
-        public IActionResult Create()
+        public IActionResult Create(int? reservaOriginalId = null)
         {
+            var nuevaReserva = new Reserva();
+            if (reservaOriginalId.HasValue && reservaOriginalId > 0)
+            {
+                var reservaAnterior = _service.ObtenerPorId(reservaOriginalId.Value);
+                if (reservaAnterior != null)
+                {
+                    nuevaReserva.InquilinoId = reservaAnterior.InquilinoId;
+                    nuevaReserva.InmuebleId = reservaAnterior.InmuebleId;
+                    nuevaReserva.FechaDesde = reservaAnterior.FechaHasta.AddDays(1);
+                    nuevaReserva.FechaHasta = reservaAnterior.FechaHasta.AddDays(2);
+                }
+            }
             CargarListasParaSelects();
-            return View();
+            return View(nuevaReserva);
         }
 
         // GET: /Reservas/Edit/ID
@@ -84,7 +108,7 @@ namespace InmobiliariaApp.Controllers
                     .Where(kvp => kvp.Value?.Errors.Count > 0)
                     .SelectMany(kvp => kvp.Value!.Errors.Select(e => e.ErrorMessage));
 
-                return BadRequest(new { succes = false, message = string.Join("", errores) });
+                return BadRequest(new { success = false, message = string.Join("", errores) });
             }
 
             try
@@ -129,6 +153,25 @@ namespace InmobiliariaApp.Controllers
             {
                 _logger.LogError(ex, "Error al finalizar la reserva.");
                 return StatusCode(500, new { success = false, message = "Ocurrió un error inesperado al finalizar la reserva." });
+            }
+        }
+
+        // POST: /Reservas/Finalizar/ID
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Finalizar(int id)
+        {
+            try
+            {
+                _service.Finalizar(id);
+                return Ok(new { success = true, message = "Reserva finalizada correctamente."});
+            } catch (AppException ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            } catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al finalizar la reserva.");
+                return StatusCode(500, new { success = false, message = "Ocurrió un error inesperado al finalizar la reserva."});
             }
         }
 
