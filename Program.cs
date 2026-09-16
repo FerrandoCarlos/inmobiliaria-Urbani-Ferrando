@@ -35,6 +35,11 @@ builder.Services.AddScoped<IImagenesInmuebleRepository, ImagenesInmuebleReposito
 builder.Services.AddScoped<IImagenesInmuebleService, ImagenesInmuebleService>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<IPagoRepository, PagoRepository>();
+builder.Services.AddScoped<IPagoService, PagoService>();
+builder.Services.AddScoped<ITipoInmuebleRepository, TipoInmuebleRepository>();
+builder.Services.AddScoped<ITipoInmuebleService, TipoInmuebleService>();
+
 
 
 var app = builder.Build();

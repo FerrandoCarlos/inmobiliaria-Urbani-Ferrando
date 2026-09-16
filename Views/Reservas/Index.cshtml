@@ -30,7 +30,7 @@
                 <th>Inmueble</th>
                 <th>Desde</th>
                 <th>Hasta</th>
-                <th>Estado</th>
+                <th class="estado-reserva">Estado</th>
                 <th></th>
             </tr>
         </thead>
@@ -42,15 +42,31 @@
                     <td>@reserva.Inmueble?.Direccion</td>
                     <td>@reserva.FechaDesde.ToString("dd/MM/yyyy")</td>
                     <td>@reserva.FechaHasta.ToString("dd/MM/yyyy")</td>
-                    <td>@reserva.Estado</td>
+                    <td class="estado-reserva">
+                        <span class="badge @(reserva.Estado == "Vigente" ? "bg-success" : "bg-secondary")">
+                            @reserva.Estado
+                        </span>
+                    </td>
                     <td>
                         <a asp-action="Details" asp-route-id="@reserva.Id"
                            class="btn btn-sm btn-outline-secondary">Detalles</a>
                         @if (reserva.Estado == "Vigente")
                         {
                             <a asp-action="Edit" asp-route-id="@reserva.Id" class="btn btn-sm btn-outline-secondary">Editar</a>
+                            <a asp-action="Create" asp-route-reservaOriginalId="@reserva.Id" class="btn btn-sm btn-outline-secondary btn-extender">
+                                Extender
+                            </a>
                             <button type="button" class="btn btn-sm btn-outline-danger btn-eliminar" data-id="@reserva.Id">
+                                Eliminar
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-danger btn-finalizar" onclick="finalizarReserva(@reserva.Id)">
                                 Finalizar
+                            </button>
+                        } else 
+                        {
+                            <a asp-action="Edit" asp-route-id="@reserva.Id" class="btn btn-sm btn-outline-secondary">Editar</a>
+                            <button type="button" class="btn btn-sm btn-outline-danger btn-eliminar" data-id="@reserva.Id">
+                                Eliminar
                             </button>
                         }
                     </td>

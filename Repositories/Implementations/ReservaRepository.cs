@@ -1,4 +1,5 @@
 using System.Data;
+using System.Runtime.InteropServices;
 using InmobiliariaApp.Models;
 using InmobiliariaApp.Repositories.Interfaces;
 using MySqlConnector;
@@ -136,6 +137,57 @@ namespace InmobiliariaApp.Repositories.Implementations
                         res = reader.GetInt32(0);
                     }
                     connection.Close();
+                }
+            }
+            return res;
+        }
+        public IList<Reserva> ObtenerPorInmueble(int id)
+        {
+            IList<Reserva> r = new List<Reserva>();
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = @"
+                SELECT r.Id, r.InquilinoId, r.InmuebleId, r.FechaDesde, r.FechaHasta,
+                           r.FechaTerminacion, r.MontoPorDia, r.Multa, r.Estado, r.FechaCreacion,
+                           i.Nombre as InquilinoNombre, i.Apellido AS InquilinoApellido, i.Dni AS InquilinoDni,
+                           m.Direccion AS InmuebleDireccion
+                    From reserva r
+                    INNER JOIN inquilino i ON r.InquilinoId = i.Id
+                    INNER JOIN inmueble m ON r.InmuebleId = m.Id
+                    WHERE r.InmuebleId = @id AND r.Estado = 'Vigente'
+                    ORDER BY r.FechaDesde DESC";
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@id", id);
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        r.Add(MapearReserva(reader));
+                    }
+                    connection.Close();
+                }
+            }
+            return r;
+        }
+
+        public int Finalizar(int id)
+        {
+            int res = -1;
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql= @"UPDATE reserva
+                                SET Estado = 'Finalizado',
+                                    FechaTerminacion = @fechaTerminacion
+                                WHERE Id = @id AND Estado = 'Vigente'";
+                using (var command = new MySqlCommand(sql,connection))
+                {
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@id", id);
+                    command.Parameters.AddWithValue("@fechaTerminacion", DateTime.Now);
+                    connection.Open();
+                    res = command.ExecuteNonQuery();
                 }
             }
             return res;

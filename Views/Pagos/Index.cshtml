@@ -1,0 +1,94 @@
+@model IList<InmobiliariaApp.Models.Pago>
+@inject InmobiliariaApp.Services.Interfaces.IReservaService ReservaService
+@inject InmobiliariaApp.Services.Interfaces.IInmuebleService InmuebleService
+@inject InmobiliariaApp.Services.Interfaces.IInquilinoService InquilinoService
+@{
+    ViewData[index : "Title"] = "Pagos";
+    int paginaNro = ViewBag.PaginaNro ?? 1;
+    int totalPaginas = ViewBag.TotalPaginas ?? 1;
+}
+
+<div class="page-header">
+    <h1>Pagos</h1>
+</div>
+
+<form style="display:none">@Html.AntiForgeryToken()</form>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div id="alertContainer"></div>
+
+<div class="table-panel">
+
+    <p><a asp-action="Create" class="btn btn-primary">Nuevo Pago</a></p>
+
+    <table class="table table-striped" id="tablaPagos">
+        <thead>
+            <tr>
+                <th>Pago</th>
+                <th>Reserva</th>
+                <th>Inquilino</th>
+                <th>Monto</th>
+                <th>Concepto</th>
+                <th>Estado</th>
+                <th>Fecha</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var pago in Model)
+            {
+                <tr id="fila-@pago.Id">
+                    @{
+                        var reserva = ReservaService.ObtenerPorId(pago.ReservaId);
+                        var inmueble = reserva != null ? InmuebleService.ObtenerPorId(reserva.InmuebleId) : null;
+                        var inquilino = reserva != null ? InquilinoService.ObtenerPorId(reserva.InquilinoId) : null;
+                    }
+                    <td>@pago.Id</td>
+                    <td>@(inmueble != null ? $"{inmueble.Direccion}" : "Sin Inmueble")</td>
+                    <td>@(inquilino != null ? $"{inquilino.Nombre} {inquilino.Apellido}" : "Sin Inquilino")</td>
+                    <td>@pago.Monto</td>
+                    <td>@pago.Concepto</td>
+                    <td>@pago.Estado</td>
+                    <td>@pago.Fecha</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@pago.Id"
+                           class="btn btn-sm btn-outline-secondary">Editar</a>
+                        <button type="button" class="btn btn-sm btn-outline-danger btn-eliminar" data-id="@pago.Id">
+                            Eliminar
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (!Model.Any())
+    {
+        <p>No hay pagos cargados.</p>
+    }
+
+    @if (totalPaginas > 1)
+    {
+        <nav>
+            <ul class="pagination">
+                @for (int i = 1; i <= totalPaginas; i++)
+                {
+                    <li class="page-item @(i == paginaNro ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-paginaNro="@i">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+</div>
+
+@await Html.PartialAsync("_ModalConfirmarBaja")
+
+@section Scripts {
+    <script src="~/js/abm-pago.js"></script>
+    <script>inicializarBotonesEliminarPago();</script>
+}

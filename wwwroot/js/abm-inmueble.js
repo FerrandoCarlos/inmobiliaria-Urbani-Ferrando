@@ -8,6 +8,10 @@ function validarFormulario(datos) {
     limpiarErrores();
     let esValido = true;
 
+    if (!datos.TipoInmuebleId || !/^\d+$/.test(datos.TipoInmuebleId)) {
+        mostrarError('TipoInmuebleId', 'Debe seleccionar un tipo de inmueble válido.');
+        esValido = false;
+    }
     if (!datos.PropietarioId || !/^\d+$/.test(datos.PropietarioId)) {
         mostrarError('PropietarioId', 'Debe seleccionar un propietario válido.');
         esValido = false;
@@ -88,10 +92,10 @@ function inicializarFormulario(entidad) {
 
         const datosCampos = {
             Id: parseInt(document.getElementById('Id')?.value) || 0,
+            TipoInmuebleId: document.getElementById('TipoInmuebleId')?.value.trim() || '',
             PropietarioId: document.getElementById('PropietarioId')?.value.trim() || '',
             Cupo: document.getElementById('Cupo')?.value.trim() || '',
             Direccion: document.getElementById('Direccion')?.value.trim() || '',
-            Tipo: document.getElementById('Tipo')?.value.trim() || '',
             PrecioXDia: document.getElementById('PrecioXDia')?.value.trim() || '',
             Estado: document.getElementById('Estado')?.value.trim() || '',
             PorcentajeReserva: document.getElementById('PorcentajeReserva')?.value.trim() || '',
@@ -104,6 +108,7 @@ function inicializarFormulario(entidad) {
 
         const datosParaEnviar = {
             ...datosCampos,
+            TipoInmuebleId: parseInt(datosCampos.TipoInmuebleId),
             PropietarioId: parseInt(datosCampos.PropietarioId),
             Cupo: parseInt(datosCampos.Cupo),
             PrecioXDia: parseFloat(datosCampos.PrecioXDia),
@@ -185,5 +190,11 @@ async function eliminarInmueble(entidad, id) {
         }
     } catch (error) {
         alert('No se pudo conectar con el servidor. Intente nuevamente.');
+    }
+}
+
+function redireccionarSiNuevoTipo(selectElement){
+    if (selectElement.value == 'nuevoTipo'){
+        window.location.href = '/TipoInmueble/Create';
     }
 }

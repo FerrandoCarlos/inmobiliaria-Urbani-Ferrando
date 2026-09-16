@@ -1,0 +1,35 @@
+@model InmobiliariaApp.Models.Pago
+
+<form id="formPago">
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="Id" name="Id" value="@Model.Id" />
+
+    <div class="mb-3">
+        <label for="Reserva" class="form-label">Reserva ID</label>
+        <input type="text" class="form-control" id="ReservaId" name="ReservaId" value="@Model.ReservaId" maxlength="9" required />
+        <span class="text-danger" id="error-ReservaId"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="Monto" class="form-label">Monto</label>
+        <input type="text" class="form-control" id="Monto" name="Monto" value="@Model.Monto" maxlength="20" required />
+        <span class="text-danger" id="error-Monto"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="Concepto" class="form-label">Concepto</label>
+        <input type="text" class="form-control" id="Concepto" name="Concepto" value="@Model.Concepto" maxlength="100" required />
+        <span class="text-danger" id="error-Concepto"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="Estado" class="form-label">Estado</label>
+        <input type="text" class="form-control" id="Estado" name="Estado" value="@Model.Estado" maxlength="40" required />
+        <span class="text-danger" id="error-Estado"></span>
+    </div>
+
+    <div id="mensajeGeneral" class="alert alert-danger d-none"></div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

@@ -1,0 +1,75 @@
+@model IList<InmobiliariaApp.Models.TipoInmueble>
+@{
+    ViewData[index : "Title"] = "Tipos de inmuebles";
+    int paginaNro = ViewBag.PaginaNro ?? 1;
+    int totalPaginas = ViewBag.TotalPaginas ?? 1;
+}
+
+<div class="page-header">
+    <h1>Tipos de inmueble</h1>
+</div>
+<form style="display:none">@Html.AntiForgeryToken()</form>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div id="alertContainer"></div>
+
+<div class="table-panel">
+
+    <p><a asp-action="Create" class="btn btn-primary">Nuevo Tipo de inmueble</a></p>
+
+    <table class="table table-striped" id="tablaTipoInmueble">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Tipo de inmueble</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var tipoInmueble in Model)
+            {
+                <tr id="fila-@tipoInmueble.Id">
+                    <td>@tipoInmueble.Id</td>
+                    <td>@tipoInmueble.Tipo</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@tipoInmueble.Id"
+                           class="btn btn-sm btn-outline-secondary">Editar</a>
+                        <button type="button" class="btn btn-sm btn-outline-danger btn-eliminar" data-id="@tipoInmueble.Id">
+                            Eliminar
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (!Model.Any())
+    {
+        <p>No hay tipos de inmueble cargados.</p>
+    }
+
+    @if (totalPaginas > 1)
+    {
+        <nav>
+            <ul class="pagination">
+                @for (int i = 1; i <= totalPaginas; i++)
+                {
+                    <li class="page-item @(i == paginaNro ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-paginaNro="@i">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+</div>
+
+@await Html.PartialAsync("_ModalConfirmarBaja")
+
+@section Scripts {
+    <script src="~/js/abm-tipoinmueble.js"></script>
+    <script> inicializarBotonesEliminarTipoInmueble(); </script>
+}
