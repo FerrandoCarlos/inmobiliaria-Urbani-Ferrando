@@ -576,13 +576,103 @@ button:focus-visible,
 }
 
 .contenedor-imagen-portada {
-    position: relative;
-    display: inline-block; /* O max-width: fit-content para que se ajuste exactamente al tamaño de la imagen */
+  position: relative;
+  display: inline-block; /* O max-width: fit-content para que se ajuste exactamente al tamaño de la imagen */
 }
 
 .form-eliminar-portada {
-    position: absolute;
-    top: 10px;    /* Distancia desde arriba */
-    right: 10px;  /* Distancia desde la derecha */
-    z-index: 10;  /* Asegura que quede por encima de la imagen */
+  position: absolute;
+  top: 10px; /* Distancia desde arriba */
+  right: 10px; /* Distancia desde la derecha */
+  z-index: 10; /* Asegura que quede por encima de la imagen */
+}
+
+/* --- Login --- */
+.login-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--canvas), #e4e8e1);
+}
+.login-card {
+  background: var(--white);
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(28, 43, 57, 0.15);
+  width: 100%;
+  max-width: 400px;
+  padding: 2.5rem;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.login-header i {
+  font-size: 2rem;
+  color: var(--brass);
+}
+
+.login-header h1 {
+  font-size: 1.4rem;
+  margin-top: 0.5rem;
+}
+
+.login-card h2 {
+  font-size: 1.2rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: var(--ink-soft);
+  font-weight: 600;
+  font-family: var(--font-body);
+}
+
+.login-card .input-box {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.login-card .input-box input {
+  width: 100%;
+  padding: 0.75rem 2.75rem 0.75rem 1rem;
+  background: var(--canvas);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: var(--font-body);
+}
+
+.login-card .input-box input:focus {
+  outline: none;
+  border-color: var(--brass);
+  box-shadow: 0 0 0 3px rgba(176, 141, 87, 0.18);
+}
+
+.login-card .input-box i {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ink-soft);
+  font-size: 1.1rem;
+}
+
+.avatar-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.avatar-iniciales {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--brass);
+  color: var(--white);
+  font-weight: 700;
+  font-size: 0.8rem;
+  font-family: var(--font-body);
 }

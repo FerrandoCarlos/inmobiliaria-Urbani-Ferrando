@@ -1,0 +1,39 @@
+@model InmobiliariaApp.Models.LoginViewModel
+@{
+    ViewData["Title"] = "Iniciar Sesión";
+    Layout = "_LayoutSinNavbar";
+}
+
+<div class="login-wrapper">
+    <div class="login-card">
+        <div class="login-header">
+            <i class="bi bi-house-door-fill"></i>
+            <h1>InmobiliariaApp</h1>
+        </div>
+        <form asp-controller="Account" asp-action="Login" asp-route-returnUrl="@ViewBag.ReturnUrl" method="post">
+            @Html.AntiForgeryToken()
+
+            <h2>Iniciar Sesión</h2>
+
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+            <div class="input-box">
+                <input asp-for="Email" type="text" placeholder="Email" autocomplete="username">
+                <i class="bi bi-envelope-fill"></i>
+            </div>
+            <span asp-validation-for="Email" class="text-danger"></span>
+
+            <div class="input-box">
+                <input asp-for="Password" type="password" placeholder="Contraseña" autocomplete="current-password">
+                <i class="bi bi-lock-fill"></i>
+            </div>
+            <span asp-validation-for="Password" class="text-danger"></span>
+
+            <div class="form-check text-start mb-3">
+                <input asp-for="RecordarMe" class="form-check-input">
+                <label asp-for="RecordarMe" class="form-check-label">Recordarme</label>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Ingresar</button>
+        </form>
+    </div>
+</div>
