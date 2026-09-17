@@ -17,7 +17,7 @@ namespace InmobiliariaApp.Controllers
         private readonly IInmuebleFiltroService _inmuebleFiltroService;
         private const int TamPaginaDefault = 10;
 
-        public InmueblesController(IInmuebleService service, ITipoInmuebleService tipoService, IPropietarioService propietarioService)
+        public InmueblesController(IInmuebleService service, ITipoInmuebleService tipoService, IPropietarioService propietarioService, IInmuebleFiltroService inmuebleFiltroService)
         {
             _service = service;
             _tipoService = tipoService;

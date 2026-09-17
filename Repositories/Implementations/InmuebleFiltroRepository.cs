@@ -20,7 +20,7 @@ namespace InmobiliariaApp.Repositories.Implementations
                 var sql = @"SELECT i.*,
                                    p.Nombre AS PropietarioNombre, p.Apellido AS PropietarioApellido,
                                    t.Tipo AS TipoNombre,
-                                   (CASE 
+                                   (CASE
                                         WHEN @fechaDesde IS NOT NULL AND @fechaHasta IS NOT NULL AND EXISTS (
                                             SELECT 1 FROM reserva r2
                                             WHERE r2.InmuebleId = i.Id
@@ -69,6 +69,17 @@ namespace InmobiliariaApp.Repositories.Implementations
                 }
 
                 sql += " GROUP BY i.Id, p.Id, t.Id";
+
+                string expresionEstado = @"(CASE
+                                            WHEN @fechaDesde IS NOT NULL AND @fechaHasta IS NOT NULL AND EXISTS (
+                                                SELECT 1 FROM reserva r2
+                                                WHERE r2.InmuebleId = i.Id
+                                                  AND r2.Estado = 'Vigente'
+                                                  AND r2.FechaDesde < @fechaHasta
+                                                  AND r2.FechaHasta > @fechaDesde
+                                            ) THEN 'Reservado'
+                                            ELSE 'Disponible'
+                                        END)";
 
                 if (filtro.MasReservadosUltimoAno)
                 {
