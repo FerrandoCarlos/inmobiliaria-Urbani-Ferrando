@@ -112,5 +112,34 @@ namespace InmobiliariaApp.Controllers
                 return StatusCode(500, new { success = false, message = "Ocurrió un error inesperado al elimianr el pago."});
             }
         }
+        // POST /Pagos/Cancelar/ID
+        public IActionResult Cancelar(int id)
+        {
+            try
+            {
+                _service.ModificacionEstado("Cancelado", id);
+                return Ok(new { success = true, message = "Pago cancelado correctamente."});
+            } catch (AppException ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message});
+            } catch (Exception)
+            {
+                return BadRequest(new { success = false, message = "Ocurrió un error inesperado. Intente de nuevo más tarde."});
+            }
+        }
+        public IActionResult Confirmar (int id)
+        {
+            try
+            {
+                _service.ModificacionEstado("Pagado", id);
+                return Ok(new { success = true, message = "Pago acreditado correctamente."});
+            } catch (AppException ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message});
+            } catch (Exception)
+            {
+                return BadRequest(new { success = false, message = "Ocurrió un error inesperado. Intente de nuevo más tarde."});
+            }
+        }
     }
 }

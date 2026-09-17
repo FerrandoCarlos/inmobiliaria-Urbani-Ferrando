@@ -50,7 +50,39 @@ namespace InmobiliariaApp.Services.Implementations
                 throw new AppException("La reserva ya se encuentra finalizada.");
             }
 
-            return _repositorio.Finalizar(id);
+            DateTime fechaTerminacion = DateTime.Now;
+
+            if (fechaTerminacion.Date < reserva.FechaHasta.Date)
+            {
+                int diasTotales = (reserva.FechaHasta - reserva.FechaDesde).Days;
+                if (diasTotales <= 0) diasTotales = 1;
+                int diasOcupados = (fechaTerminacion.Date - reserva.FechaDesde.Date).Days;
+                if (diasOcupados < 1) diasOcupados = 1;
+                int diasRestantes = (reserva.FechaHasta.Date - fechaTerminacion.Date).Days;
+                if (diasRestantes > 0)
+                {
+                    decimal porcentajePenalizacion = (diasOcupados < (diasTotales / 2.0)) ? 0.50m: 0.25m;
+                    decimal costoDiasOcupados = diasOcupados * reserva.MontoPorDia;
+                    decimal costoDiasRestantes = diasRestantes * reserva.MontoPorDia;
+                    decimal montoMulta = costoDiasOcupados + (costoDiasRestantes * porcentajePenalizacion);
+
+                    montoMulta = Math.Round(montoMulta, 2);
+
+                    reserva.Multa = montoMulta;
+                    var pagoMulta = new Pago
+                    {
+                        ReservaId = id,
+                        Monto = montoMulta,
+                        Concepto = "Multa",
+                        Fecha = fechaTerminacion,
+                        Estado = "Pendiente"
+                    };
+                    _pagoRepositorio.Alta(pagoMulta);
+                    _pagoRepositorio.CancelarSaldoRestantePendiente(id);
+                }
+            }
+
+            return _repositorio.Finalizar(reserva);
         }
 
         public int Alta(Reserva reserva)

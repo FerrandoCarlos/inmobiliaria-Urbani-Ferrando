@@ -14,5 +14,7 @@ namespace InmobiliariaApp.Repositories.Interfaces
         IList<Pago> ObtenerListaCancelados(int PaginaNro, int tamPagina);
         IList<Pago> ObtenerListaPagados(int PaginaNro, int tamPagina);
         Pago? BuscarPorReserva(int idReserva);
+        int CancelarSaldoRestantePendiente(int reservaId);
+        int ModificacionConcepto(int id, string nuevoConcepto);
     }
 }

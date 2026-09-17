@@ -172,20 +172,22 @@ namespace InmobiliariaApp.Repositories.Implementations
             return r;
         }
 
-        public int Finalizar(int id)
+        public int Finalizar(Reserva reserva)
         {
             int res = -1;
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql= @"UPDATE reserva
                                 SET Estado = 'Finalizado',
-                                    FechaTerminacion = @fechaTerminacion
+                                    FechaTerminacion = @fechaTerminacion,
+                                    Multa = @multa
                                 WHERE Id = @id AND Estado = 'Vigente'";
                 using (var command = new MySqlCommand(sql,connection))
                 {
                     command.CommandType = CommandType.Text;
-                    command.Parameters.AddWithValue("@id", id);
+                    command.Parameters.AddWithValue("@id", reserva.Id);
                     command.Parameters.AddWithValue("@fechaTerminacion", DateTime.Now);
+                    command.Parameters.AddWithValue("@multa", reserva.Multa);
                     connection.Open();
                     res = command.ExecuteNonQuery();
                 }

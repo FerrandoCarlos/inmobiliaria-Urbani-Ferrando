@@ -151,3 +151,59 @@ async function eliminarPago(id) {
         alert('No se pudo conectar con el servidor. Intente nuevamente más tarde.');
     }
 }
+
+async function cancelarPago(id) {
+    try {
+        const respuesta = await fetch (`/Pagos/Cancelar/${id}`, {
+            method: 'POST',
+            headers: {
+                'RequestVerificationToken' : obtenerTokenAntiForgeryPago(),
+            },
+        });
+        const resultado = await respuesta.json();
+        if (respuesta.ok && resultado.success){
+            const fila = document.getElementById(`fila-${id}`);
+            if (fila){
+                const celdaEstado = fila.querySelector('.estado-pago');
+                if (celdaEstado) {
+                    celdaEstado.className = 'estado-reserva';
+                    celdaEstado.innerHTML = '<span>Cancelado</span>';
+                }
+                const btnCancelar = fila.querySelector('.btn-cancelar');
+                const btnConfirmar = fila.querySelector('.btn-confirmar');
+                if (btnCancelar) btnCancelar.remove();
+                if (btnConfirmar) btnConfirmar.remove();
+            }
+        }
+    } catch (err) {
+        alert('No se pudo concetar con el servidor, Intente nuevamente más tarde.');
+    }
+}
+
+async function confirmarPago(id){
+    try {
+        const respuesta = await fetch (`/Pagos/Cancelar/${id}`, {
+            method: 'POST',
+            headers: {
+                'RequestVerificationToken' : obtenerTokenAntiForgeryPago(),
+            },
+        });
+        const resultado = await respuesta.json();
+        if (respuesta.ok && resultado.success) {
+            const fila = document.getElementById(`fila-${id}`);
+            if (fila) {
+                const celdaEstado = fila.querySelector('.estado-pago');
+                if (celdaEstado.className = 'estado-reserva'){
+                    celdaEstado.className = 'estado-reserva';
+                    celdaEstado.innerHTML = '<span>Pagado</span>';
+                }
+                const btnConfirmar = fila.querySelector('.btn-confirmar');
+                const btnCancelar = fila.querySelector('.btn-cancelar');
+                if (btnConfirmar) btnConfirmar.remove();
+                if (btnCancelar) btnCancelar.remove();
+            }
+        }
+    } catch (err) {
+        alert ('No se pudo conectar con el servidor, Intente nuevamente más tarde.');
+    }
+}

@@ -51,16 +51,34 @@
                     <td>@pago.Id</td>
                     <td>@(inmueble != null ? $"{inmueble.Direccion}" : "Sin Inmueble")</td>
                     <td>@(inquilino != null ? $"{inquilino.Nombre} {inquilino.Apellido}" : "Sin Inquilino")</td>
-                    <td>@pago.Monto</td>
+                    <td>@pago.Monto.ToString("C2")</td>
                     <td>@pago.Concepto</td>
-                    <td>@pago.Estado</td>
+                    <td class ="estado-pago">
+                        <span>
+                            @pago.Estado
+                        </span>
+                    </td>
                     <td>@pago.Fecha</td>
                     <td>
+                        @if (pago.Estado == "Cancelado" || pago.Estado == "Pagado"){
+                            <a asp-action="Edit" asp-route-id="@pago.Id"
+                                class="btn btn-sm btn-outline-secondary">Editar</a>
+                            <button type="button" class="btn btn-sm btn-outline-danger btn-eliminar" data-id="@pago.Id">
+                                Eliminar
+                            </button>
+                        } else {
                         <a asp-action="Edit" asp-route-id="@pago.Id"
                            class="btn btn-sm btn-outline-secondary">Editar</a>
+                        <button type="button" class="btn btn-sm btn-outline-danger btn-cancelar" onclick="cancelarPago(@pago.Id)">
+                                Cancelar
+                            </button>
                         <button type="button" class="btn btn-sm btn-outline-danger btn-eliminar" data-id="@pago.Id">
                             Eliminar
                         </button>
+                        <button type="button" class="btn btn-success btn-Confirmar" onclick="confirmarPago(@pago.Id)">
+                            Confirmar
+                        </button>
+                        }
                     </td>
                 </tr>
             }

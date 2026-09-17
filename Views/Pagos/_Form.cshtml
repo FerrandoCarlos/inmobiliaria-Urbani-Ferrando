@@ -1,30 +1,39 @@
 @model InmobiliariaApp.Models.Pago
+@{
+    bool esEdicion = Model != null && Model.Id != 0;
+}
 
 <form id="formPago">
     @Html.AntiForgeryToken()
     <input type="hidden" id="Id" name="Id" value="@Model.Id" />
+    @if (esEdicion)
+    {
+        <input type="hidden" name="ReservaId" value="@Model.ReservaId" />
+        <input type="hidden" name="Monto" value="@Model.Monto" />
+        <input type="hidden" name="Estado" value="@Model.Estado" />
+    }
 
     <div class="mb-3">
         <label for="Reserva" class="form-label">Reserva ID</label>
-        <input type="text" class="form-control" id="ReservaId" name="ReservaId" value="@Model.ReservaId" maxlength="9" required />
+        <input type="text" class="form-control" id="ReservaId" name="@(esEdicion ? "" : "ReservaId")" value="@(Model?.ReservaId != 0 ? Model?.ReservaId : "")" maxlength="9"  readonly="@esEdicion" disabled= "@esEdicion" required />
         <span class="text-danger" id="error-ReservaId"></span>
     </div>
 
     <div class="mb-3">
         <label for="Monto" class="form-label">Monto</label>
-        <input type="text" class="form-control" id="Monto" name="Monto" value="@Model.Monto" maxlength="20" required />
+        <input type="text" class="form-control" id="Monto" name="@(esEdicion ? "" : "Monto")" value="@(esEdicion ? Model.Monto.ToString("N2") : (Model?.Monto != 0 ? Model?.Monto.ToString() : ""))" maxlength="20" readonly="@esEdicion" disabled="@esEdicion" required />
         <span class="text-danger" id="error-Monto"></span>
     </div>
 
     <div class="mb-3">
         <label for="Concepto" class="form-label">Concepto</label>
-        <input type="text" class="form-control" id="Concepto" name="Concepto" value="@Model.Concepto" maxlength="100" required />
+        <input type="text" class="form-control" id="Concepto" name="Concepto" value="@Model?.Concepto" maxlength="100" required />
         <span class="text-danger" id="error-Concepto"></span>
     </div>
 
     <div class="mb-3">
         <label for="Estado" class="form-label">Estado</label>
-        <input type="text" class="form-control" id="Estado" name="Estado" value="@Model.Estado" maxlength="40" required />
+        <input type="text" class="form-control" id="Estado" name="@(esEdicion ? "" : "Estado")" value="@(string.IsNullOrEmpty(Model?.Estado) ? "Pendiente" : Model.Estado)" maxlength="40" readonly="@esEdicion" disabled="@esEdicion" required />
         <span class="text-danger" id="error-Estado"></span>
     </div>
 
