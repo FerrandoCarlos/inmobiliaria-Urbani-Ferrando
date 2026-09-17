@@ -6,97 +6,175 @@
 CREATE DATABASE IF NOT EXISTS inmobiliaria_db;
 USE inmobiliaria_db;
 
--- =====================================================
--- 1. Propietario
--- =====================================================
-DROP TABLE IF EXISTS Reserva;
-DROP TABLE IF EXISTS imagenesInmueble;
-DROP TABLE IF EXISTS inmueble;
-DROP TABLE IF EXISTS Inquilino;
-DROP TABLE IF EXISTS Propietario;
+-- Desactivar temporalmente el chequeo de claves foráneas para la recreación
+SET FOREIGN_KEY_CHECKS = 0;
 
-CREATE TABLE Propietario (
-    Id             INT AUTO_INCREMENT PRIMARY KEY,
-    Dni            VARCHAR(15)   NOT NULL,
-    Nombre         VARCHAR(100)  NOT NULL,
-    Apellido       VARCHAR(100)  NOT NULL,
-    Telefono       VARCHAR(20)   NULL,
-    Email          VARCHAR(150)  NOT NULL,
-    Activo         TINYINT(1)    NOT NULL DEFAULT 1,
-    FechaCreacion  DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT UQ_Propietario_Dni UNIQUE (Dni)
-);
+DROP TABLE IF EXISTS `pago`;
+DROP TABLE IF EXISTS `reserva`;
+DROP TABLE IF EXISTS `imagenesinmueble`;
+DROP TABLE IF EXISTS `inmueble`;
+DROP TABLE IF EXISTS `tipoinmueble`;
+DROP TABLE IF EXISTS `usuario`;
+DROP TABLE IF EXISTS `rol`;
+DROP TABLE IF EXISTS `inquilino`;
+DROP TABLE IF EXISTS `propietario`;
 
+SET FOREIGN_KEY_CHECKS = 1;
 -- =====================================================
--- 2. Inquilino
+-- 1. Roles y Usuarios
 -- =====================================================
-CREATE TABLE Inquilino (
-    Id             INT AUTO_INCREMENT PRIMARY KEY,
-    Dni            VARCHAR(15)   NOT NULL,
-    Nombre         VARCHAR(100)  NOT NULL,
-    Apellido       VARCHAR(100)  NOT NULL,
-    Telefono       VARCHAR(20)   NULL,
-    Email          VARCHAR(150)  NOT NULL,
-    Activo         TINYINT(1)    NOT NULL DEFAULT 1,
-    FechaCreacion  DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT UQ_Inquilino_Dni UNIQUE (Dni)
-);
+CREATE TABLE `rol` (
+  `Id` INT NOT NULL AUTO_INCREMENT,
+  `Nombre` VARCHAR(50) NOT NULL,
+  PRIMARY KEY (`Id`),
+  UNIQUE INDEX `UX_Rol_Nombre` (`Nombre`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Aceleran búsquedas por apellido, típico filtro en listados ABM
-CREATE INDEX IX_Propietario_Apellido ON Propietario (Apellido);
-CREATE INDEX IX_Inquilino_Apellido ON Inquilino (Apellido);
-
--- =====================================================
--- 3. Inmueble
--- =====================================================
-CREATE TABLE inmueble (
-    Id                 INT AUTO_INCREMENT PRIMARY KEY,
-    PropietarioId      INT NOT NULL,
-    ImgPortadaURL      VARCHAR(255),
-    Cupo               INT NOT NULL,
-    Direccion          VARCHAR(255) NOT NULL,
-    Tipo               VARCHAR(50) NOT NULL,
-    Latitud            DECIMAL(18,2) NOT NULL,
-    Longitud           DECIMAL(18,2) NOT NULL,
-    Activo             TINYINT(1) NOT NULL DEFAULT 1,
-    PrecioXDia         DECIMAL(18,2) NOT NULL,
-    Estado             VARCHAR(50) NOT NULL DEFAULT 'Disponible',
-    PorcentajeReserva  DECIMAL(18,2) NOT NULL,
-    CONSTRAINT fk_inmueble_propietario FOREIGN KEY (PropietarioId) REFERENCES Propietario(Id)
-);
+CREATE TABLE `usuario` (
+  `Id` INT NOT NULL AUTO_INCREMENT,
+  `Email` VARCHAR(150) NOT NULL,
+  `PasswordHash` VARCHAR(255) NOT NULL,
+  `Nombre` VARCHAR(100) NOT NULL,
+  `Apellido` VARCHAR(100) NOT NULL,
+  `Avatar` VARCHAR(255) NULL DEFAULT NULL,
+  `RolId` INT NOT NULL,
+  `Activo` TINYINT(1) NOT NULL DEFAULT 1,
+  `FechaCreacion` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`Id`),
+  UNIQUE INDEX `UX_Usuario_Email` (`Email`),
+  KEY `IX_Usuario_RolId` (`RolId`),
+  CONSTRAINT `fk_usuario_rol` FOREIGN KEY (`RolId`) REFERENCES `rol` (`Id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
--- 4. ImagenesInmueble
+-- 2. Propietario
 -- =====================================================
-CREATE TABLE imagenesInmueble (
-    Id          INT AUTO_INCREMENT PRIMARY KEY,
-    InmuebleId  INT NOT NULL,
-    ImgURL      VARCHAR(255),
-    CONSTRAINT fk_imagen_inmueble FOREIGN KEY (InmuebleId) REFERENCES inmueble(Id)
-);
+CREATE TABLE `propietario` (
+  `Id` INT NOT NULL AUTO_INCREMENT,
+  `Dni` VARCHAR(15) NOT NULL,
+  `Nombre` VARCHAR(100) NOT NULL,
+  `Apellido` VARCHAR(100) NOT NULL,
+  `Telefono` VARCHAR(20) NULL DEFAULT NULL,
+  `Email` VARCHAR(150) NULL DEFAULT NULL,
+  `Activo` TINYINT(1) NOT NULL DEFAULT 1,
+  `FechaCreacion` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`Id`),
+  UNIQUE INDEX `UQ_Propietario_Dni` (`Dni`),
+  KEY `IX_Propietario_Apellido` (`Apellido`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
--- 5. Reserva
+-- 3. Inquilino
 -- =====================================================
-CREATE TABLE reserva (
-    Id                INT AUTO_INCREMENT PRIMARY KEY,
-    InquilinoId       INT NOT NULL,
-    InmuebleId        INT NOT NULL,
-    FechaDesde        DATE NOT NULL,
-    FechaHasta        DATE NOT NULL,
-    FechaTerminacion  DATE NULL,
-    MontoPorDia       DECIMAL(10,2) NOT NULL,
-    Multa             DECIMAL(10,2) NULL,
-    Estado            VARCHAR(20) NOT NULL DEFAULT 'Vigente',
-    FechaCreacion     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_reserva_inquilino FOREIGN KEY (InquilinoId) REFERENCES Inquilino(Id),
-    CONSTRAINT fk_reserva_inmueble FOREIGN KEY (InmuebleId) REFERENCES inmueble(Id)
-);
+CREATE TABLE `inquilino` (
+  `Id` INT NOT NULL AUTO_INCREMENT,
+  `Dni` VARCHAR(15) NOT NULL,
+  `Nombre` VARCHAR(100) NOT NULL,
+  `Apellido` VARCHAR(100) NOT NULL,
+  `Telefono` VARCHAR(20) NULL DEFAULT NULL,
+  `Email` VARCHAR(150) NULL DEFAULT NULL,
+  `Activo` TINYINT(1) NOT NULL DEFAULT 1,
+  `FechaCreacion` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`Id`),
+  UNIQUE INDEX `UQ_Inquilino_Dni` (`Dni`),
+  KEY `IX_Inquilino_Apellido` (`Apellido`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- 4. Tipo de Inmueble
+-- =====================================================
+CREATE TABLE `tipoinmueble` (
+  `Id` INT NOT NULL AUTO_INCREMENT,
+  `Tipo` VARCHAR(50) NOT NULL,
+  `Activo` TINYINT(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`Id`),
+  UNIQUE INDEX `UX_tipoInmueble_Tipo` (`Tipo`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- 5. Inmueble
+-- =====================================================
+CREATE TABLE `inmueble` (
+  `Id` INT NOT NULL AUTO_INCREMENT,
+  `TipoInmuebleId` INT NOT NULL,
+  `PropietarioId` INT NOT NULL,
+  `ImgPortadaURL` VARCHAR(255) NULL DEFAULT NULL,
+  `Cupo` INT NOT NULL,
+  `Direccion` VARCHAR(255) NOT NULL,
+  `PrecioXDia` DECIMAL(18,2) NOT NULL,
+  `Estado` VARCHAR(50) NOT NULL DEFAULT 'Disponible',
+  `PorcentajeReserva` DECIMAL(18,2) NOT NULL,
+  `Latitud` DECIMAL(18,2) NOT NULL,
+  `Longitud` DECIMAL(18,2) NOT NULL,
+  `Activo` TINYINT(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`Id`),
+  KEY `IX_Inmueble_PropietarioId` (`PropietarioId`),
+  KEY `IX_Inmueble_TipoInmuebleId` (`TipoInmuebleId`),
+  CONSTRAINT `fk_inmueble_propietario` FOREIGN KEY (`PropietarioId`) REFERENCES `propietario` (`Id`),
+  CONSTRAINT `fk_inmueble_tipoinmueble` FOREIGN KEY (`TipoInmuebleId`) REFERENCES `tipoinmueble` (`Id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- 6. Imágenes de Inmueble
+-- =====================================================
+CREATE TABLE `imagenesinmueble` (
+  `Id` INT NOT NULL AUTO_INCREMENT,
+  `InmuebleId` INT NOT NULL,
+  `ImgURL` VARCHAR(255) NULL DEFAULT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `IX_ImagenesInmueble_InmuebleId` (`InmuebleId`),
+  CONSTRAINT `fk_imagenesinmueble_inmueble` FOREIGN KEY (`InmuebleId`) REFERENCES `inmueble` (`Id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- 7. Reserva
+-- =====================================================
+CREATE TABLE `reserva` (
+  `Id` INT NOT NULL AUTO_INCREMENT,
+  `InquilinoId` INT NOT NULL,
+  `InmuebleId` INT NOT NULL,
+  `FechaDesde` DATE NOT NULL,
+  `FechaHasta` DATE NOT NULL,
+  `FechaTerminacion` DATE NULL DEFAULT NULL,
+  `MontoPorDia` DECIMAL(10,2) NOT NULL,
+  `Multa` DECIMAL(10,2) NULL DEFAULT NULL,
+  `Estado` VARCHAR(20) NOT NULL DEFAULT 'Vigente',
+  `FechaCreacion` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`Id`),
+  KEY `IX_Reserva_InquilinoId` (`InquilinoId`),
+  KEY `IX_Reserva_InmuebleId` (`InmuebleId`),
+  CONSTRAINT `fk_reserva_inquilino` FOREIGN KEY (`InquilinoId`) REFERENCES `inquilino` (`Id`),
+  CONSTRAINT `fk_reserva_inmueble` FOREIGN KEY (`InmuebleId`) REFERENCES `inmueble` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- 8. Pago
+-- =====================================================
+CREATE TABLE `pago` (
+  `Id` INT NOT NULL AUTO_INCREMENT,
+  `ReservaId` INT NOT NULL,
+  `Monto` DECIMAL(18,2) NOT NULL DEFAULT 0.00,
+  `Concepto` VARCHAR(50) NOT NULL,
+  `Estado` VARCHAR(50) NOT NULL,
+  `Activo` TINYINT(1) NOT NULL DEFAULT 1,
+  `Fecha` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`Id`),
+  KEY `IX_Pago_ReservaId` (`ReservaId`),
+  CONSTRAINT `fk_pago_reserva` FOREIGN KEY (`ReservaId`) REFERENCES `reserva` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- Datos mínimos de ejemplo
 -- (para un set más grande, correr Database/datos_prueba.sql)
 -- =====================================================
+INSERT INTO `rol` (`Id`, `Nombre`) VALUES
+(1, 'Administrador'),
+(2, 'Empleado');
+
+INSERT INTO `tipoinmueble` (`Id`, `Tipo`, `Activo`) VALUES
+(1, 'Departamento', 1),
+(2, 'Casa', 1),
+(3, 'Monoambiente', 1);
 
 INSERT INTO Propietario (Dni, Nombre, Apellido, Telefono, Email, Activo) VALUES
 ('30111222', 'Marcelo', 'Fernandez', '3814001122', 'marcelo.fernandez@mail.com', 1),
@@ -116,3 +194,6 @@ INSERT INTO inmueble (PropietarioId, ImgPortadaURL, Cupo, Direccion, Tipo, Latit
 INSERT INTO reserva (InquilinoId, InmuebleId, FechaDesde, FechaHasta, MontoPorDia, Estado, FechaCreacion) VALUES
 (1, 1, '2026-09-01', '2026-09-05', 15000.00, 'Vigente', NOW()),
 (2, 2, '2026-09-10', '2026-09-15', 28000.00, 'Vigente', NOW());
+
+INSERT INTO `pago` (`ReservaId`, `Monto`, `Concepto`, `Estado`, `Activo`) VALUES
+(1, 15000.00, 'Seña de reserva', 'Aprobado', 1);
