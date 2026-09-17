@@ -158,6 +158,7 @@ namespace InmobiliariaApp.Controllers
         }
 
         // POST: /Reservas/Finalizar/ID
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Finalizar(int id)

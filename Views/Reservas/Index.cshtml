@@ -57,13 +57,16 @@
                                class="btn btn-sm btn-outline-secondary btn-extender">
                                 Extender
                             </a>
-                            <button type="button" class="btn btn-sm btn-outline-danger btn-eliminar" data-id="@reserva.Id">
-                                Eliminar
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-danger btn-finalizar"
-                                    onclick="finalizarReserva(@reserva.Id)">
-                                Finalizar
-                            </button>
+                            @if (User.IsInRole("Administrador"))
+                            {
+                                <button type="button" class="btn btn-sm btn-outline-danger btn-eliminar" data-id="@reserva.Id">
+                                    Eliminar
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-danger btn-finalizar"
+                                        onclick="finalizarReserva(@reserva.Id)">
+                                    Finalizar
+                                </button>
+                            }
                         }
                         else
                         {
