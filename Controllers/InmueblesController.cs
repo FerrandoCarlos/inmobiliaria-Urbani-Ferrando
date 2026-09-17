@@ -1,6 +1,8 @@
+using System.Security.Cryptography;
 using InmobiliariaApp.Common.Exceptions;
 using InmobiliariaApp.Models;
 using InmobiliariaApp.Repositories.Interfaces;
+using InmobiliariaApp.Services.Implementations;
 using InmobiliariaApp.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,27 +13,35 @@ namespace InmobiliariaApp.Controllers
         private readonly IInmuebleService _service;
         private readonly ITipoInmuebleService _tipoService;
         private readonly IPropietarioService _propietarioService;
+        private readonly IInmuebleFiltroService _inmuebleFiltroService;
         private const int TamPaginaDefault = 10;
 
-        public InmueblesController(IInmuebleService service, ITipoInmuebleService tipoService,IPropietarioService propietarioService)
+        public InmueblesController(IInmuebleService service, ITipoInmuebleService tipoService, IPropietarioService propietarioService, IInmuebleFiltroService inmuebleFiltroService)
         {
             _service = service;
             _tipoService = tipoService;
             _propietarioService = propietarioService;
+            _inmuebleFiltroService = inmuebleFiltroService;
         }
 
         //GET : /Inmuebles
 
-        public IActionResult Index(int paginaNro = 1)
+        public IActionResult Index(InmuebleFiltro filtro, int paginaNro = 1)
         {
+            ViewBag.Propietarios = _propietarioService.ObtenerLista();
+            ViewBag.TiposInmueble = _tipoService.ObtenerLista();
+            ViewBag.FiltroActual = filtro ?? new InmuebleFiltro();
             try
             {
-                var lista = _service.ObtenerListaActivos(paginaNro, TamPaginaDefault);
-                var cantidadTotal = _service.ObtenerCantidad();
-
+                var listaFiltrada = _inmuebleFiltroService.ObtenerPorFiltro(filtro ?? new InmuebleFiltro());
+                int cantidadTotal = listaFiltrada.Count;
+                int paginasTotal = (int) Math.Ceiling(cantidadTotal / (double)TamPaginaDefault);
+                if (paginaNro < 1) paginaNro = 1;
+                if (paginasTotal > 0 && paginaNro > paginasTotal) paginaNro = paginasTotal;
+                var listaPaginada = listaFiltrada.Skip((paginaNro -1) * TamPaginaDefault).Take(TamPaginaDefault).ToList();
                 ViewBag.PaginaNro = paginaNro;
-                ViewBag.TotalPaginas = (int)Math.Ceiling(cantidadTotal / (double)TamPaginaDefault);
-                return View(lista);
+                ViewBag.TotalPaginas = paginasTotal;
+                return View(listaPaginada);
             }
 
             catch (Exception)

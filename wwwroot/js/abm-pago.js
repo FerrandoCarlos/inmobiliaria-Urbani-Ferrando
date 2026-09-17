@@ -166,7 +166,6 @@ async function cancelarPago(id) {
             if (fila){
                 const celdaEstado = fila.querySelector('.estado-pago');
                 if (celdaEstado) {
-                    celdaEstado.className = 'estado-reserva';
                     celdaEstado.innerHTML = '<span>Cancelado</span>';
                 }
                 const btnCancelar = fila.querySelector('.btn-cancelar');
@@ -182,7 +181,7 @@ async function cancelarPago(id) {
 
 async function confirmarPago(id){
     try {
-        const respuesta = await fetch (`/Pagos/Cancelar/${id}`, {
+        const respuesta = await fetch (`/Pagos/Confirmar/${id}`, {
             method: 'POST',
             headers: {
                 'RequestVerificationToken' : obtenerTokenAntiForgeryPago(),
@@ -194,7 +193,6 @@ async function confirmarPago(id){
             if (fila) {
                 const celdaEstado = fila.querySelector('.estado-pago');
                 if (celdaEstado.className = 'estado-reserva'){
-                    celdaEstado.className = 'estado-reserva';
                     celdaEstado.innerHTML = '<span>Pagado</span>';
                 }
                 const btnConfirmar = fila.querySelector('.btn-confirmar');
