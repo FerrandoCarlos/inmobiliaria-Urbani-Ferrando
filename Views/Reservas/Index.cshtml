@@ -53,21 +53,27 @@
                         @if (reserva.Estado == "Vigente")
                         {
                             <a asp-action="Edit" asp-route-id="@reserva.Id" class="btn btn-sm btn-outline-secondary">Editar</a>
-                            <a asp-action="Create" asp-route-reservaOriginalId="@reserva.Id" class="btn btn-sm btn-outline-secondary btn-extender">
+                            <a asp-action="Create" asp-route-reservaOriginalId="@reserva.Id"
+                               class="btn btn-sm btn-outline-secondary btn-extender">
                                 Extender
                             </a>
                             <button type="button" class="btn btn-sm btn-outline-danger btn-eliminar" data-id="@reserva.Id">
                                 Eliminar
                             </button>
-                            <button type="button" class="btn btn-sm btn-outline-danger btn-finalizar" onclick="finalizarReserva(@reserva.Id)">
+                            <button type="button" class="btn btn-sm btn-outline-danger btn-finalizar"
+                                    onclick="finalizarReserva(@reserva.Id)">
                                 Finalizar
                             </button>
-                        } else 
+                        }
+                        else
                         {
                             <a asp-action="Edit" asp-route-id="@reserva.Id" class="btn btn-sm btn-outline-secondary">Editar</a>
-                            <button type="button" class="btn btn-sm btn-outline-danger btn-eliminar" data-id="@reserva.Id">
-                                Eliminar
-                            </button>
+                            @if (User.IsInRole("Administrador"))
+                            {
+                                <button type="button" class="btn btn-sm btn-outline-danger btn-eliminar" data-id="@reserva.Id">
+                                    Eliminar
+                                </button>
+                            }
                         }
                     </td>
                 </tr>

@@ -36,9 +36,12 @@
                     <td>@propietario.Apellido</td>
                     <td>@propietario.Nombre</td>
                     <td>
-                        <button type="button" class="btn btn-sm btn-reactivar" data-id='@propietario.Id'>
-                            Reactivar
-                        </button>
+                        @if (User.IsInRole("Administrador"))
+                        {
+                            <button type="button" class="btn btn-sm btn-reactivar" data-id='@propietario.Id'>
+                                Reactivar
+                            </button>
+                        }
                     </td>
                 </tr>
             }

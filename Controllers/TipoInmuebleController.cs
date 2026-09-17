@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using InmobiliariaApp.Common.Exceptions;
 using InmobiliariaApp.Models;
 using InmobiliariaApp.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InmobiliariaApp.Controllers
@@ -64,19 +65,19 @@ namespace InmobiliariaApp.Controllers
                 var errores = ModelState
                     .Where(kvp => kvp.Value?.Errors.Count > 0)
                     .SelectMany(kvp => kvp.Value!.Errors.Select(e => e.ErrorMessage));
-                return BadRequest(new { success = false, message = string.Join(" ", errores)});
+                return BadRequest(new { success = false, message = string.Join(" ", errores) });
             }
             try
             {
                 if (tipoInmueble.Id == 0)
                 {
                     var nuevoId = _service.Alta(tipoInmueble);
-                    return Ok(new { success = true, message = "Tipo de inmueble creado correctamente.", data = new {id = nuevoId}});
+                    return Ok(new { success = true, message = "Tipo de inmueble creado correctamente.", data = new { id = nuevoId } });
                 }
                 else
                 {
                     _service.Modificacion(tipoInmueble);
-                    return Ok(new { success = true, message = "Tipo de inmueble actualizado correctamente."});
+                    return Ok(new { success = true, message = "Tipo de inmueble actualizado correctamente." });
                 }
             }
             catch (AppException ex)
@@ -86,11 +87,12 @@ namespace InmobiliariaApp.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error inesperado al guardar el tipo de inmueble.");
-                return StatusCode(500, new { success = false, message = "Ocurrió un error inesperado al guardar el tipo de inmueble."});
+                return StatusCode(500, new { success = false, message = "Ocurrió un error inesperado al guardar el tipo de inmueble." });
             }
         }
 
         // POST /TipoInmueble/Eliminar/ID
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
 
@@ -99,7 +101,7 @@ namespace InmobiliariaApp.Controllers
             try
             {
                 _service.Baja(id);
-                return Ok(new { success = true, message = "Tipo de inmueble dado de baja correctamente. "});
+                return Ok(new { success = true, message = "Tipo de inmueble dado de baja correctamente. " });
             }
             catch (AppException ex)
             {
@@ -108,7 +110,7 @@ namespace InmobiliariaApp.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error inesperado al eliminar el tipo de inmueble.");
-                return StatusCode(500, new { success = false, message = "Ocurrió un error inesperado al eliminar el tipo de inmueble."});
+                return StatusCode(500, new { success = false, message = "Ocurrió un error inesperado al eliminar el tipo de inmueble." });
             }
         }
     }

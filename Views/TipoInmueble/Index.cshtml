@@ -1,6 +1,6 @@
 @model IList<InmobiliariaApp.Models.TipoInmueble>
 @{
-    ViewData[index : "Title"] = "Tipos de inmuebles";
+    ViewData[index: "Title"] = "Tipos de inmuebles";
     int paginaNro = ViewBag.PaginaNro ?? 1;
     int totalPaginas = ViewBag.TotalPaginas ?? 1;
 }
@@ -39,9 +39,12 @@
                     <td>
                         <a asp-action="Edit" asp-route-id="@tipoInmueble.Id"
                            class="btn btn-sm btn-outline-secondary">Editar</a>
-                        <button type="button" class="btn btn-sm btn-outline-danger btn-eliminar" data-id="@tipoInmueble.Id">
-                            Eliminar
-                        </button>
+                        @if (User.IsInRole("Administrador"))
+                        {
+                            <button type="button" class="btn btn-sm btn-outline-danger btn-eliminar" data-id="@tipoInmueble.Id">
+                                Eliminar
+                            </button>
+                        }
                     </td>
                 </tr>
             }

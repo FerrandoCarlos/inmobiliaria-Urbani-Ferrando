@@ -1,6 +1,7 @@
 using InmobiliariaApp.Common.Exceptions;
 using InmobiliariaApp.Models;
 using InmobiliariaApp.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InmobiliariaApp.Controllers
@@ -135,7 +136,7 @@ namespace InmobiliariaApp.Controllers
             }
         }
         // POST: /Reservas/Eliminar/ID
-
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Eliminar(int id)
@@ -164,14 +165,16 @@ namespace InmobiliariaApp.Controllers
             try
             {
                 _service.Finalizar(id);
-                return Ok(new { success = true, message = "Reserva finalizada correctamente."});
-            } catch (AppException ex)
+                return Ok(new { success = true, message = "Reserva finalizada correctamente." });
+            }
+            catch (AppException ex)
             {
                 return BadRequest(new { success = false, message = ex.Message });
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 _logger.LogError(ex, "Error al finalizar la reserva.");
-                return StatusCode(500, new { success = false, message = "Ocurrió un error inesperado al finalizar la reserva."});
+                return StatusCode(500, new { success = false, message = "Ocurrió un error inesperado al finalizar la reserva." });
             }
         }
 

@@ -2,7 +2,7 @@
 @inject InmobiliariaApp.Services.Interfaces.IPropietarioService PropietarioService;
 @inject InmobiliariaApp.Services.Interfaces.ITipoInmuebleService TipoInmuebleService;
 @{
-    ViewData[index : "Title"] = "Inmuebles";
+    ViewData[index: "Title"] = "Inmuebles";
     int paginaNro = ViewBag.PaginaNro ?? 1;
     int totalPaginas = ViewBag.TotalPaginas ?? 1;
 }
@@ -55,13 +55,15 @@
                     <td>@inmueble.Estado</td>
                     <td>@inmueble.PorcentajeReserva</td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@inmueble.Id"
-                           class="btn btn-sm btn-outline-secondary">Editar</a>
+                        <a asp-action="Edit" asp-route-id="@inmueble.Id" class="btn btn-sm btn-outline-secondary">Editar</a>
                         <a asp-action="ImagenesInmueble" asp-route-id="@inmueble.Id"
                            class="btn btn-sm btn-outline-secondary">Cargar Imágenes</a>
-                        <button type="button" class="btn btn-sm btn-outline-danger btn-eliminar" data-id="@inmueble.Id">
-                            Eliminar
-                        </button>
+                        @if (User.IsInRole("Administrador"))
+                        {
+                            <button type="button" class="btn btn-sm btn-outline-danger btn-eliminar" data-id="@inmueble.Id">
+                                Eliminar
+                            </button>
+                        }
                     </td>
                 </tr>
             }

@@ -1,6 +1,7 @@
 using InmobiliariaApp.Common.Exceptions;
 using InmobiliariaApp.Models;
 using InmobiliariaApp.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InmobiliariaApp.Controllers
@@ -111,6 +112,7 @@ namespace InmobiliariaApp.Controllers
         }
 
         // POST: /Inquilinos/Eliminar/ID
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Eliminar(int id)
@@ -133,6 +135,7 @@ namespace InmobiliariaApp.Controllers
 
 
         // POST: /Propietarios/Reactivar/ID
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Reactivar(int id)

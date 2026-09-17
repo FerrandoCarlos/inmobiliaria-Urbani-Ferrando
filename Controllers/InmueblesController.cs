@@ -2,6 +2,7 @@ using InmobiliariaApp.Common.Exceptions;
 using InmobiliariaApp.Models;
 using InmobiliariaApp.Repositories.Interfaces;
 using InmobiliariaApp.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InmobiliariaApp.Controllers
@@ -13,7 +14,7 @@ namespace InmobiliariaApp.Controllers
         private readonly IPropietarioService _propietarioService;
         private const int TamPaginaDefault = 10;
 
-        public InmueblesController(IInmuebleService service, ITipoInmuebleService tipoService,IPropietarioService propietarioService)
+        public InmueblesController(IInmuebleService service, ITipoInmuebleService tipoService, IPropietarioService propietarioService)
         {
             _service = service;
             _tipoService = tipoService;
@@ -46,7 +47,7 @@ namespace InmobiliariaApp.Controllers
 
         public IActionResult Create()
         {
-            ViewBag.TipoInmueble = _tipoService.ObtenerLista(1,100) ?? new List<TipoInmueble>();
+            ViewBag.TipoInmueble = _tipoService.ObtenerLista(1, 100) ?? new List<TipoInmueble>();
             return View();
         }
 
@@ -69,7 +70,7 @@ namespace InmobiliariaApp.Controllers
             {
                 return NotFound();
             }
-            ViewBag.TipoInmueble = _tipoService.ObtenerLista(1,100) ?? new List<TipoInmueble>();
+            ViewBag.TipoInmueble = _tipoService.ObtenerLista(1, 100) ?? new List<TipoInmueble>();
             return View(inmueble);
         }
 
@@ -98,7 +99,7 @@ namespace InmobiliariaApp.Controllers
             return View(inmueble);
         }
 
-         // POST : /Inmuebles/ImgPortadaURL
+        // POST : /Inmuebles/ImgPortadaURL
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult ImgPortadaURL(ImagenesInmueble entidad, [FromServices] IWebHostEnvironment environment)
@@ -149,15 +150,16 @@ namespace InmobiliariaApp.Controllers
                 }
                 _service.ModificarPortada(entidad.InmuebleId, entidad.ImgURL);
                 TempData["Mensaje"] = "Portada actualizada correctamente";
-                return RedirectToAction(nameof(ImagenesInmueble), new { id = entidad.InmuebleId});
-            } catch (Exception ex)
+                return RedirectToAction(nameof(ImagenesInmueble), new { id = entidad.InmuebleId });
+            }
+            catch (Exception ex)
             {
                 TempData["Error"] = ex.Message;
-                return RedirectToAction(nameof(ImagenesInmueble), new { id = entidad.InmuebleId});
+                return RedirectToAction(nameof(ImagenesInmueble), new { id = entidad.InmuebleId });
             }
         }
 
-        
+
 
         //POST: /Inmuebles/Guardar
         [HttpPost]
@@ -169,8 +171,8 @@ namespace InmobiliariaApp.Controllers
                 var errores = ModelState
                     .Where(kvp => kvp.Value?.Errors.Count > 0)
                     .SelectMany(kvp => kvp.Value!.Errors.Select(e => e.ErrorMessage));
-                
-                return BadRequest(new { success = false, message = string.Join(" ", errores)});
+
+                return BadRequest(new { success = false, message = string.Join(" ", errores) });
             }
 
             try
@@ -178,27 +180,29 @@ namespace InmobiliariaApp.Controllers
                 var propietarioExiste = _propietarioService.ObtenerPorId(inmueble.PropietarioId);
                 if (propietarioExiste == null)
                 {
-                    return BadRequest(new { success = false, message = $"El propietario con ID {inmueble.PropietarioId} no existe."});
+                    return BadRequest(new { success = false, message = $"El propietario con ID {inmueble.PropietarioId} no existe." });
                 }
                 var tipoExiste = _tipoService.ObtenerPorId(inmueble.TipoInmuebleId);
                 if (tipoExiste == null)
                 {
-                    return BadRequest(new { success = false, message = $"El TipoInmueble con ID {inmueble.TipoInmuebleId} no existe."});
+                    return BadRequest(new { success = false, message = $"El TipoInmueble con ID {inmueble.TipoInmuebleId} no existe." });
                 }
                 if (inmueble.Id == 0)
                 {
                     var nuevoId = _service.Alta(inmueble);
-                    return Ok(new { success = true, message = "Inmueble creado correctamente.", data = new { id = nuevoId} });
+                    return Ok(new { success = true, message = "Inmueble creado correctamente.", data = new { id = nuevoId } });
                 }
                 else
                 {
                     _service.Modificacion(inmueble);
-                    return Ok(new { success = true, message = "Inmueble actualizado correctamente. "});
+                    return Ok(new { success = true, message = "Inmueble actualizado correctamente. " });
                 }
-            } catch (AppException ex)
+            }
+            catch (AppException ex)
             {
                 return BadRequest(new { success = false, message = ex.Message });
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return StatusCode(500, new { success = false, message = $"Error: {ex.Message}" });
                 //return StatusCode(500, new { success = false, message = "Ocurrió un error inesperado al guardar el inmueble."});
@@ -206,6 +210,7 @@ namespace InmobiliariaApp.Controllers
         }
 
         // POST : /Inmuebles/Eliminar/ID
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Eliminar(int id)
@@ -217,11 +222,11 @@ namespace InmobiliariaApp.Controllers
             }
             catch (AppException ex)
             {
-                return BadRequest(new { success = false, message = ex.Message});
+                return BadRequest(new { success = false, message = ex.Message });
             }
             catch (Exception)
             {
-                return StatusCode(500, new { success = false, message = "Ocurrió un error inesperado al eliminar el inmueble."});
+                return StatusCode(500, new { success = false, message = "Ocurrió un error inesperado al eliminar el inmueble." });
             }
         }
     }

@@ -55,9 +55,12 @@
                     <td>
                         <a asp-action="Edit" asp-route-id="@inquilino.Id"
                            class="btn btn-sm btn-outline-secondary">Editar</a>
-                        <button type="button" class="btn btn-sm btn-outline-danger btn-eliminar" data-id="@inquilino.Id">
-                            Eliminar
-                        </button>
+                        @if (User.IsInRole("Administrador"))
+                        {
+                            <button type="button" class="btn btn-sm btn-outline-danger btn-eliminar" data-id="@inquilino.Id">
+                                Eliminar
+                            </button>
+                        }
                     </td>
                 </tr>
             }

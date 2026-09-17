@@ -4,6 +4,7 @@ using MySqlConnector;
 using InmobiliariaApp.Services.Interfaces;
 using InmobiliariaApp.Services.Implementations;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using InmobiliariaApp.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -72,5 +73,31 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
+// Seed inicial:crea un Admin y un empleado con la DB vacía. si hay datos no hace nada
+using (var scope = app.Services.CreateScope())
+{
+    var usuarioService = scope.ServiceProvider.GetRequiredService<IUsuarioService>();
+    var usuarioRepo = scope.ServiceProvider.GetRequiredService<IUsuarioRepository>();
 
+    if (usuarioRepo.ObtenerCantidad() == 0)
+    {
+        var admin = new Usuario
+        {
+            Email = "admin@inmobiliaria.com",
+            Nombre = "Admin",
+            Apellido = "Sistema",
+            RolId = 1
+        };
+        usuarioService.Alta(admin, "Admin123!");
+
+        var empleado = new Usuario
+        {
+            Email = "empleado@inmobiliaria.com",
+            Nombre = "Empleado",
+            Apellido = "Sistema",
+            RolId = 2
+        };
+        usuarioService.Alta(empleado, "Empleado123!");
+    }
+}
 app.Run();
