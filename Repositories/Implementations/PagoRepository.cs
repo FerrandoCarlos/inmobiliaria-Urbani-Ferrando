@@ -102,6 +102,26 @@ namespace InmobiliariaApp.Repositories.Implementations
             return res;
         }
 
+        public int ModificacionConcepto(int id, string nuevoConcepto)
+        {
+            int res = -1;
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = @"UPDATE pago
+                                SET Concepto = @concepto
+                                WHERE Id = @id";
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@concepto", nuevoConcepto);
+                    command.Parameters.AddWithValue("@id", id);
+                    connection.Open();
+                    res = command.ExecuteNonQuery();
+                }
+            }
+            return res;
+        }
+
         public int Reactivar(int id)
         {
             int res = -1;
@@ -297,6 +317,27 @@ namespace InmobiliariaApp.Repositories.Implementations
                     command.CommandType = CommandType.Text;
                     connection.Open();
                     res = Convert.ToInt32(command.ExecuteScalar());
+                }
+            }
+            return res;
+        }
+
+        public int CancelarSaldoRestantePendiente(int reservaId)
+        {
+            int res = -1;
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = @"UPDATE pago 
+                               SET Estado = 'Cancelado'
+                               WHERE ReservaId = @reservaId
+                                AND Concepto = 'Saldo Restante'
+                                AND Estado = 'Pendiente'";
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@reservaId", reservaId);
+                    connection.Open();
+                    res = command.ExecuteNonQuery();
                 }
             }
             return res;

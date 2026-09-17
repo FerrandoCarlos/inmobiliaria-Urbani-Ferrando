@@ -16,6 +16,9 @@ namespace InmobiliariaApp.Services.Interfaces
         IList<Pago> ObtenerLista(int PaginaNro, int tamPagina);
         Pago? BuscarPorReserva(int idReserva);
         int ObtenerCantidad();
+        int CancelarSaldoRestantePendiente(int reservaId);
+
+        int ModificacionConcepto(int id, string nuevoConcepto);
         
     }
 }

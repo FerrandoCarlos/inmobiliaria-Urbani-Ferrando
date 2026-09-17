@@ -80,5 +80,17 @@ namespace InmobiliariaApp.Services.Implementations
             return _repositorio.ObtenerCantidad();
         }
 
+        public int CancelarSaldoRestantePendiente(int reservaId)
+        {
+            return _repositorio.CancelarSaldoRestantePendiente(reservaId);
+        }
+
+        public int ModificacionConcepto(int id, string nuevoConcepto)
+        {
+            var existente = _repositorio.ObtenerPorId(id)
+                ?? throw new AppException("El pago que intenta modificar no existe.");
+            return _repositorio.ModificacionConcepto(id, nuevoConcepto);
+        }
+
     }
 }

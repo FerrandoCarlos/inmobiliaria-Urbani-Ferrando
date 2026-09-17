@@ -1,14 +1,88 @@
 @model IList<InmobiliariaApp.Models.Inmueble>
 @inject InmobiliariaApp.Services.Interfaces.IPropietarioService PropietarioService;
 @inject InmobiliariaApp.Services.Interfaces.ITipoInmuebleService TipoInmuebleService;
+@inject InmobiliariaApp.Services.Interfaces.IInmuebleFiltroService InmuebleFiltroService;
 @{
     ViewData[index: "Title"] = "Inmuebles";
     int paginaNro = ViewBag.PaginaNro ?? 1;
     int totalPaginas = ViewBag.TotalPaginas ?? 1;
+
+    var filtro = ViewBag.FiltroActual as InmobiliariaApp.Models.InmuebleFiltro ?? new
+InmobiliariaApp.Models.InmuebleFiltro();
+    var propietarios = ViewBag.Propietarios as IEnumerable<InmobiliariaApp.Models.Propietario> ?? new
+List<InmobiliariaApp.Models.Propietario>();
+    var tiposInmueble = ViewBag.TiposInmueble as IEnumerable<InmobiliariaApp.Models.TipoInmueble> ?? new
+List<InmobiliariaApp.Models.TipoInmueble>();
 }
 
 <div class="page-header">
     <h1>Inmuebles</h1>
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">Búsqueda Avanzada y Filtros</h5>
+        </div>
+        <div class="card-body">
+            <form asp-controller="Inmuebles" asp-action="Index" method="get">
+                <div class="row g-3">
+
+                    <div class="col-md-3">
+                        <label class="form-label font-weight-bold">Disponible Desde</label>
+                        <input type="date" name="FechaDesde" class="form-control"
+                               value="@(filtro.FechaDesde?.ToString("yyyy-MM-dd"))" />
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label font-weight-bold">Disponible Hasta</label>
+                        <input type="date" name="FechaHasta" class="form-control"
+                               value="@(filtro.FechaHasta?.ToString("yyyy-MM-dd"))" />
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label font-weight-bold">Propietario</label>
+                        <input type="text" name="PropietarioTexto" class="form-control"
+                               placeholder="Nombre o apellido..." value="@filtro.PropietarioTexto" />
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label font-weight-bold">Tipo de Inmueble</label>
+                        <select name="TipoInmuebleId" class="form-select">
+                            <option value="">Todos...</option>
+                            @foreach (var t in tiposInmueble)
+                            {
+                                <option value="@t.Id" selected="@(t.Id == filtro.TipoInmuebleId ? "selected" : null)">
+                                    @t.Tipo
+                                </option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label font-weight-bold">Sin reservas hace (días)</label>
+                        <input type="number" name="SinReservasDias" class="form-control" placeholder="Ej: 30" min="1"
+                               value="@filtro.SinReservasDias" />
+                    </div>
+
+                    <div class="col-md-6 d-flex align-items-end">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" name="MasReservadosUltimoAno" value="true"
+                                   id="chkMasReservados" @(filtro.MasReservadosUltimoAno ? "checked" : "") />
+                            <label class="form-check-label fw-bold" for="chkMasReservados">
+                                Más reservados en el último año
+                            </label>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="mt-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-search"></i> Buscar
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Limpiar Filtros</a>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <form style="display:none">@Html.AntiForgeryToken()</form>
@@ -81,7 +155,17 @@
                 @for (int i = 1; i <= totalPaginas; i++)
                 {
                     <li class="page-item @(i == paginaNro ? "active" : "")">
-                        <a class="page-link" asp-action="Index" asp-route-paginaNro="@i">@i</a>
+                        <a class="page-link" 
+                           asp-action="Index" 
+                           asp-route-paginaNro="@i"
+                           asp-route-FechaDesde="@(filtro.FechaDesde?.ToString("yyyy-MM-dd"))"
+                           asp-route-FechaHasta="@(filtro.FechaHasta?.ToString("yyyy-MM-dd"))"
+                           asp-route-PropietarioTexto="@filtro.PropietarioTexto"
+                           asp-route-TipoInmuebleId="@filtro.TipoInmuebleId"
+                           asp-route-SinReservasDias="@filtro.SinReservasDias"
+                           asp-route-MasReservadosUltimoAno="@filtro.MasReservadosUltimoAno">
+                            @i
+                        </a>
                     </li>
                 }
             </ul>
