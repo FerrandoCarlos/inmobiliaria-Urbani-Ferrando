@@ -19,16 +19,16 @@ namespace InmobiliariaApp.Repositories.Implementations
             using (var connection = new MySqlConnection(connectionString))
             {
                 string sql = @"
-                    INSERT INTO reserva (InquilinoId, InmuebleId, FechaDesde, FechaHasta, MontoPorDia, Estado, FechaCreacion)
-                    VALUES (@inquilinoId, @inmuebleId,@fechaDesde,@fechaHasta,@montoPorDia,@estado,@fechaCreacion);
+                    INSERT INTO reserva (InquilinoId, InmuebleId, FechaDesde, FechaHasta, MontoPorDia, Estado, FechaCreacion, CreadoPorId)
+                    VALUES (@inquilinoId, @inmuebleId,@fechaDesde,@fechaHasta,@montoPorDia,@estado,@fechaCreacion,@creadoPorId);
                     SELECT LAST_INSERT_ID();
                 ";
-
                 using (var command = new MySqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
                     AgregarParametros(command, entidad);
                     command.Parameters.AddWithValue("@fechaCreacion", DateTime.Now);
+                    command.Parameters.AddWithValue("@creadoPorId", (object?)entidad.CreadoPorId ?? DBNull.Value);
 
                     connection.Open();
                     res = Convert.ToInt32(command.ExecuteScalar());
@@ -51,6 +51,25 @@ namespace InmobiliariaApp.Repositories.Implementations
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@id", id);
 
+                    connection.Open();
+                    res = command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return res;
+        }
+
+        public int Baja(int id, int? usuarioId)
+        {
+            int res = -1;
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = "UPDATE reserva SET Estado = 'Finalizada', TerminadoPorId = @terminadoPorId WHERE Id = @id";
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@id", id);
+                    command.Parameters.AddWithValue("@terminadoPorId", (object?)usuarioId ?? DBNull.Value);
                     connection.Open();
                     res = command.ExecuteNonQuery();
                     connection.Close();
@@ -177,17 +196,19 @@ namespace InmobiliariaApp.Repositories.Implementations
             int res = -1;
             using (var connection = new MySqlConnection(connectionString))
             {
-                string sql= @"UPDATE reserva
-                                SET Estado = 'Finalizado',
+                string sql = @"UPDATE reserva
+                                SET Estado = 'Finalizada',
                                     FechaTerminacion = @fechaTerminacion,
-                                    Multa = @multa
+                                    Multa = @multa,
+                                    TerminadoPorId = @terminadoPorId
                                 WHERE Id = @id AND Estado = 'Vigente'";
-                using (var command = new MySqlCommand(sql,connection))
+                using (var command = new MySqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@id", reserva.Id);
                     command.Parameters.AddWithValue("@fechaTerminacion", DateTime.Now);
-                    command.Parameters.AddWithValue("@multa", reserva.Multa);
+                    command.Parameters.AddWithValue("@multa", (object?)reserva.Multa ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@terminadoPorId", (object?)reserva.TerminadoPorId ?? DBNull.Value);
                     connection.Open();
                     res = command.ExecuteNonQuery();
                 }

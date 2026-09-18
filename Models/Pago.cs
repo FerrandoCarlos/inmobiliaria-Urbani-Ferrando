@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace InmobiliariaApp.Models
 {
-   public class Pago()
+    public class Pago()
     {
         [Key]
         [Display(Name = "Código Int.")]
@@ -28,5 +28,13 @@ namespace InmobiliariaApp.Models
         public bool Activo { get; set; } = true;
         [Display(Name = "Fecha del pago")]
         public DateTime Fecha { get; set; }
-    } 
+
+        [Display(Name = "Creado por")]
+        [BindNever]
+        public int CreadoPorId { get; set; }
+
+        [Display(Name = "Anulado por")]
+        [BindNever]
+        public int? AnuladoPorId { get; set; }
+    }
 }

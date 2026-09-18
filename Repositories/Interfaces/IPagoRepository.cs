@@ -16,5 +16,6 @@ namespace InmobiliariaApp.Repositories.Interfaces
         Pago? BuscarPorReserva(int idReserva);
         int CancelarSaldoRestantePendiente(int reservaId);
         int ModificacionConcepto(int id, string nuevoConcepto);
+        int Anular(int id, int? usuarioId);
     }
 }

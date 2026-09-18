@@ -7,5 +7,7 @@ namespace InmobiliariaApp.Repositories.Interfaces
         bool ExisteSolapamiento(int inmuebleId, DateTime fechaDesde, DateTime fechaHasta, int idExcluir = 0);
         IList<Reserva> ObtenerPorInmueble(int id);
         int Finalizar(Reserva reserva);
+
+        int Baja(int id, int? usuarioId);
     }
 }

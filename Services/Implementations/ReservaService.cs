@@ -37,7 +37,7 @@ namespace InmobiliariaApp.Services.Implementations
             return _repositorio.ObtenerPorInmueble(id);
         }
 
-        public int Finalizar(int id)
+        public int Finalizar(int id, int? usuarioId)
         {
             var reserva = _repositorio.ObtenerPorId(id);
             if (reserva == null)
@@ -45,12 +45,13 @@ namespace InmobiliariaApp.Services.Implementations
                 throw new AppException("La reserva especificada no existe.");
             }
 
-            if (reserva.Estado == "Finalizado")
+            if (reserva.Estado == "Finalizada")
             {
                 throw new AppException("La reserva ya se encuentra finalizada.");
             }
 
             DateTime fechaTerminacion = DateTime.Now;
+            reserva.TerminadoPorId = usuarioId;
 
             if (fechaTerminacion.Date < reserva.FechaHasta.Date)
             {
@@ -61,7 +62,7 @@ namespace InmobiliariaApp.Services.Implementations
                 int diasRestantes = (reserva.FechaHasta.Date - fechaTerminacion.Date).Days;
                 if (diasRestantes > 0)
                 {
-                    decimal porcentajePenalizacion = (diasOcupados < (diasTotales / 2.0)) ? 0.50m: 0.25m;
+                    decimal porcentajePenalizacion = (diasOcupados < (diasTotales / 2.0)) ? 0.50m : 0.25m;
                     decimal costoDiasOcupados = diasOcupados * reserva.MontoPorDia;
                     decimal costoDiasRestantes = diasRestantes * reserva.MontoPorDia;
                     decimal montoMulta = costoDiasOcupados + (costoDiasRestantes * porcentajePenalizacion);
@@ -75,7 +76,8 @@ namespace InmobiliariaApp.Services.Implementations
                         Monto = montoMulta,
                         Concepto = "Multa",
                         Fecha = fechaTerminacion,
-                        Estado = "Pendiente"
+                        Estado = "Pendiente",
+                        CreadoPorId = usuarioId ?? 0
                     };
                     _pagoRepositorio.Alta(pagoMulta);
                     _pagoRepositorio.CancelarSaldoRestantePendiente(id);
@@ -101,7 +103,7 @@ namespace InmobiliariaApp.Services.Implementations
             reserva.MontoPorDia = inmueble.PrecioXDia;
             reserva.Estado = "Vigente";
 
-            int reservaId= _repositorio.Alta(reserva);
+            int reservaId = _repositorio.Alta(reserva);
 
             decimal porcentajeReserva = inmueble?.PorcentajeReserva ?? 30m;
             int cantidadDias = (reserva.FechaHasta - reserva.FechaDesde).Days;
@@ -117,7 +119,8 @@ namespace InmobiliariaApp.Services.Implementations
                 Monto = montoSeña,
                 Concepto = "Porcentaje Reserva",
                 Fecha = DateTime.Now,
-                Estado = "Pendiente"
+                Estado = "Pendiente",
+                CreadoPorId = reserva.CreadoPorId ?? 0
             };
             _pagoRepositorio.Alta(pagoSeña);
 
@@ -127,10 +130,11 @@ namespace InmobiliariaApp.Services.Implementations
                 Monto = montoSaldo,
                 Concepto = "Saldo Restante",
                 Fecha = DateTime.Now,
-                Estado = "Pendiente"
+                Estado = "Pendiente",
+                CreadoPorId = reserva.CreadoPorId ?? 0
             };
             _pagoRepositorio.Alta(pagoSaldo);
-            
+
             return reservaId;
         }
         public int Modificacion(Reserva reserva)
@@ -158,6 +162,14 @@ namespace InmobiliariaApp.Services.Implementations
                 ?? throw new AppException("La reserva que intenta modificar no existe.");
 
             return _repositorio.Baja(id);
+        }
+
+        public int Baja(int id, int? usuarioId)
+        {
+            var existente = _repositorio.ObtenerPorId(id)
+                ?? throw new AppException("La reserva que intenta modificar no existe.");
+
+            return _repositorio.Baja(id, usuarioId);
         }
 
         private static void ValidarFechas(DateTime fechaDesde, DateTime fechaHasta)

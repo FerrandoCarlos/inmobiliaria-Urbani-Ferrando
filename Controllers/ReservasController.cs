@@ -116,6 +116,7 @@ namespace InmobiliariaApp.Controllers
             {
                 if (reserva.Id == 0)
                 {
+                    reserva.CreadoPorId = ObtenerUsuarioActualId();
                     var nuevoId = _service.Alta(reserva);
                     return Ok(new { success = true, message = "Reserva creada correctamente.", data = new { id = nuevoId } });
                 }
@@ -143,7 +144,7 @@ namespace InmobiliariaApp.Controllers
         {
             try
             {
-                _service.Baja(id);
+                _service.Baja(id, ObtenerUsuarioActualId());
                 return Ok(new { success = true, message = "Reserva finalizada correctamente." });
             }
             catch (AppException ex)
@@ -165,7 +166,7 @@ namespace InmobiliariaApp.Controllers
         {
             try
             {
-                _service.Finalizar(id);
+                _service.Finalizar(id, ObtenerUsuarioActualId());
                 return Ok(new { success = true, message = "Reserva finalizada correctamente." });
             }
             catch (AppException ex)
@@ -183,6 +184,12 @@ namespace InmobiliariaApp.Controllers
         {
             ViewBag.Inquilinos = _inquilinoService.ObtenerLista(1, 1000);
             ViewBag.Inmuebles = _inmuebleService.ObtenerListaActivos(1, 1000);
+        }
+
+        private int? ObtenerUsuarioActualId()
+        {
+            var claim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            return int.TryParse(claim, out var id) ? id : null;
         }
     }
 }

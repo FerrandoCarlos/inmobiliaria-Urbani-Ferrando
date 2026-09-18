@@ -21,8 +21,8 @@ namespace InmobiliariaApp.Repositories.Implementations
                     entidad.Fecha = DateTime.Now;
                 }
                 string sql = @"
-                    INSERT INTO pago (ReservaId, Monto, Concepto, Estado, Activo, Fecha)
-                    VALUES (@reservaId, @monto, @concepto, @estado, @activo, @fecha);
+                    INSERT INTO pago (ReservaId, Monto, Concepto, Estado, Activo, Fecha, CreadoPorId)
+                    VALUES (@reservaId, @monto, @concepto, @estado, @activo, @fecha, @creadoPorId);
                     SELECT LAST_INSERT_ID();";
                 using (var command = new MySqlCommand(sql, connection))
                 {
@@ -33,6 +33,7 @@ namespace InmobiliariaApp.Repositories.Implementations
                     command.Parameters.AddWithValue("@estado", entidad.Estado);
                     command.Parameters.AddWithValue("@activo", entidad.Activo);
                     command.Parameters.AddWithValue("@fecha", entidad.Fecha);
+                    command.Parameters.AddWithValue("@creadoPorId", entidad.CreadoPorId);
                     connection.Open();
                     res = Convert.ToInt32(command.ExecuteScalar());
                     entidad.Id = res;
@@ -81,7 +82,7 @@ namespace InmobiliariaApp.Repositories.Implementations
             int res = -1;
             using (var connection = new MySqlConnection(connectionString))
             {
-                string sql = @"UPDATE pago 
+                string sql = @"UPDATE pago
                             SET ReservaId = @reservaId,
                                 Monto = @monto,
                                 Concepto = @concepto,
@@ -327,7 +328,7 @@ namespace InmobiliariaApp.Repositories.Implementations
             int res = -1;
             using (var connection = new MySqlConnection(connectionString))
             {
-                string sql = @"UPDATE pago 
+                string sql = @"UPDATE pago
                                SET Estado = 'Cancelado'
                                WHERE ReservaId = @reservaId
                                 AND Concepto = 'Saldo Restante'
@@ -345,7 +346,7 @@ namespace InmobiliariaApp.Repositories.Implementations
 
         private static string ObtenerSelectBase()
         {
-            return @"SELECT 
+            return @"SELECT
                 p.Id AS PagoId, p.ReservaId, p.Monto, p.Concepto, p.Estado, p.Activo, p.Fecha,
                 r.InmuebleId, r.InquilinoId, r.FechaDesde, r.FechaHasta, r.FechaTerminacion, r.MontoPorDia, r.Multa
                 FROM pago p
@@ -375,6 +376,24 @@ namespace InmobiliariaApp.Repositories.Implementations
                     Multa = reader[nameof(Reserva.Multa)] == DBNull.Value ? 0 : reader.GetDecimal(nameof(Reserva.Multa))
                 }
             };
+        }
+
+        public int Anular(int id, int? usuarioId)
+        {
+            int res = -1;
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = "UPDATE pago SET Activo = 0, AnuladoPorId = @anuladoPorId WHERE Id = @id";
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@id", id);
+                    command.Parameters.AddWithValue("@anuladoPorId", (object?)usuarioId ?? DBNull.Value);
+                    connection.Open();
+                    res = command.ExecuteNonQuery();
+                }
+            }
+            return res;
         }
     }
 }

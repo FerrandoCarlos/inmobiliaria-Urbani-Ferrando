@@ -53,5 +53,19 @@ namespace InmobiliariaApp.Models
 
         [Display(Name = "Fecha de creación")]
         public DateTime FechaCreacion { get; set; }
+
+        [Display(Name = "Creado por")]
+        public int? CreadoPorId { get; set; }
+
+        [ForeignKey(nameof(CreadoPorId))]
+        [BindNever]
+        public Usuario? CreadoPor { get; set; }
+
+        [Display(Name = "Terminado por")]
+        public int? TerminadoPorId { get; set; }
+
+        [ForeignKey(nameof(TerminadoPorId))]
+        [BindNever]
+        public Usuario? TerminadoPor { get; set; }
     }
 }
