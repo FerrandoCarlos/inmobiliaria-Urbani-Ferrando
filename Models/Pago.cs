@@ -33,8 +33,16 @@ namespace InmobiliariaApp.Models
         [BindNever]
         public int CreadoPorId { get; set; }
 
+        [ForeignKey(nameof(CreadoPorId))]
+        [BindNever]
+        public Usuario? CreadoPor { get; set; }
+
         [Display(Name = "Anulado por")]
         [BindNever]
         public int? AnuladoPorId { get; set; }
+
+        [ForeignKey(nameof(AnuladoPorId))]
+        [BindNever]
+        public Usuario? AnuladoPor { get; set; }
     }
 }

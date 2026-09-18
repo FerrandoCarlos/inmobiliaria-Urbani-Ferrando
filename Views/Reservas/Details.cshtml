@@ -38,6 +38,18 @@
                 <dt class="col-sm-4">Multa</dt>
                 <dd class="col-sm-8">$@Model.Multa</dd>
             }
+
+            @if (User.IsInRole("Administrador"))
+            {
+                <dt class="col-sm-4">Creada por</dt>
+                <dd class="col-sm-8">@(Model.CreadoPor?.Nombre ?? "Sin registro")</dd>
+
+                @if (Model.TerminadoPorId.HasValue)
+                {
+                    <dt class="col-sm-4">Finalizada por</dt>
+                    <dd class="col-sm-8">@(Model.TerminadoPor?.Nombre ?? "Sin registro")</dd>
+                }
+            }
         </dl>
 
         <a asp-action="Index" class="btn btn-secondary">Volver a Reservas</a>

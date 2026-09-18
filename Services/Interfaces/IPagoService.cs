@@ -19,6 +19,6 @@ namespace InmobiliariaApp.Services.Interfaces
         int CancelarSaldoRestantePendiente(int reservaId);
 
         int ModificacionConcepto(int id, string nuevoConcepto);
-        
+
     }
 }

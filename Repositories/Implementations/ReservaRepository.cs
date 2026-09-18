@@ -224,11 +224,15 @@ namespace InmobiliariaApp.Repositories.Implementations
                 string sql = @"
                     SELECT r.Id, r.InquilinoId, r.InmuebleId, r.FechaDesde, r.FechaHasta,
                            r.FechaTerminacion, r.MontoPorDia, r.Multa, r.Estado, r.FechaCreacion,
+                           r.CreadoPorId, r.TerminadoPorId,
                            i.Nombre as InquilinoNombre, i.Apellido AS InquilinoApellido, i.Dni AS InquilinoDni,
-                           m.Direccion AS InmuebleDireccion
+                           m.Direccion AS InmuebleDireccion,
+                           uc.Nombre AS CreadoPorNombre, ut.Nombre AS TerminadoPorNombre
                     From reserva r
                     INNER JOIN inquilino i ON r.InquilinoId = i.Id
                     INNER JOIN inmueble m ON r.InmuebleId = m.Id
+                    LEFT JOIN usuario uc ON r.CreadoPorId = uc.Id
+                    LEFT JOIN usuario ut ON r.TerminadoPorId = ut.Id
                     WHERE r.Id = @id";
 
                 using (var command = new MySqlCommand(sql, connection))
@@ -291,6 +295,14 @@ namespace InmobiliariaApp.Repositories.Implementations
                     ? null : reader.GetDecimal(nameof(Reserva.Multa)),
                 Estado = reader.GetString(nameof(Reserva.Estado)),
                 FechaCreacion = reader.GetDateTime(nameof(Reserva.FechaCreacion)),
+                CreadoPorId = reader.IsDBNull(reader.GetOrdinal(nameof(Reserva.CreadoPorId)))
+                    ? null : reader.GetInt32(nameof(Reserva.CreadoPorId)),
+                TerminadoPorId = reader.IsDBNull(reader.GetOrdinal(nameof(Reserva.TerminadoPorId)))
+                    ? null : reader.GetInt32(nameof(Reserva.TerminadoPorId)),
+                CreadoPor = reader.IsDBNull(reader.GetOrdinal("CreadoPorNombre"))
+                    ? null : new Usuario { Nombre = reader.GetString("CreadoPorNombre") },
+                TerminadoPor = reader.IsDBNull(reader.GetOrdinal("TerminadoPorNombre"))
+                    ? null : new Usuario { Nombre = reader.GetString("TerminadoPorNombre") },
                 Inquilino = new Inquilino
                 {
                     Id = reader.GetInt32(nameof(Reserva.InquilinoId)),

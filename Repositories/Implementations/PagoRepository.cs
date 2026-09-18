@@ -348,9 +348,14 @@ namespace InmobiliariaApp.Repositories.Implementations
         {
             return @"SELECT
                 p.Id AS PagoId, p.ReservaId, p.Monto, p.Concepto, p.Estado, p.Activo, p.Fecha,
-                r.InmuebleId, r.InquilinoId, r.FechaDesde, r.FechaHasta, r.FechaTerminacion, r.MontoPorDia, r.Multa
+                p.CreadoPorId, p.AnuladoPorId,
+                r.InmuebleId, r.InquilinoId, r.FechaDesde, r.FechaHasta, r.FechaTerminacion, r.MontoPorDia, r.Multa,
+                uc.Nombre AS CreadoPorNombre, uc.Apellido AS CreadoPorApellido,
+                ua.Nombre AS AnuladoPorNombre, ua.Apellido AS AnuladoPorApellido
                 FROM pago p
-                INNER JOIN reserva r ON p.ReservaId = r.Id";
+                INNER JOIN reserva r ON p.ReservaId = r.Id
+                LEFT JOIN usuario uc ON p.CreadoPorId = uc.Id
+                LEFT JOIN usuario ua ON p.AnuladoPorId = ua.Id";
         }
 
         private static Pago MapearPago(MySqlDataReader reader)
@@ -364,6 +369,13 @@ namespace InmobiliariaApp.Repositories.Implementations
                 Estado = reader[nameof(Pago.Estado)] == DBNull.Value ? "" : reader.GetString(nameof(Pago.Estado)),
                 Activo = reader.GetBoolean(nameof(Pago.Activo)),
                 Fecha = reader.GetDateTime(nameof(Pago.Fecha)),
+                CreadoPorId = reader.GetInt32(nameof(Pago.CreadoPorId)),
+                AnuladoPorId = reader.IsDBNull(reader.GetOrdinal(nameof(Pago.AnuladoPorId)))
+                    ? null : reader.GetInt32(nameof(Pago.AnuladoPorId)),
+                CreadoPor = reader.IsDBNull(reader.GetOrdinal("CreadoPorNombre"))
+                    ? null : new Usuario { Nombre = reader.GetString("CreadoPorNombre"), Apellido = reader.GetString("CreadoPorApellido") },
+                AnuladoPor = reader.IsDBNull(reader.GetOrdinal("AnuladoPorNombre"))
+                    ? null : new Usuario { Nombre = reader.GetString("AnuladoPorNombre"), Apellido = reader.GetString("AnuladoPorApellido") },
                 Reserva = new Reserva
                 {
                     Id = reader.GetInt32(nameof(Pago.ReservaId)),

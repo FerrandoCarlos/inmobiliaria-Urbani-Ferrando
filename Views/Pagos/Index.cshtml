@@ -3,7 +3,7 @@
 @inject InmobiliariaApp.Services.Interfaces.IInmuebleService InmuebleService
 @inject InmobiliariaApp.Services.Interfaces.IInquilinoService InquilinoService
 @{
-    ViewData[index: "Title"] = "Pagos";
+    ViewData["Title"] = "Pagos";
     int paginaNro = ViewBag.PaginaNro ?? 1;
     int totalPaginas = ViewBag.TotalPaginas ?? 1;
 }
@@ -60,6 +60,7 @@
                     </td>
                     <td>@pago.Fecha</td>
                     <td>
+                        <a asp-action="Details" asp-route-id="@pago.Id" class="btn btn-sm btn-outline-secondary">Detalle</a>
                         <a asp-action="Edit" asp-route-id="@pago.Id" class="btn btn-sm btn-outline-secondary">Editar</a>
                         @if (User.IsInRole("Administrador"))
                         {

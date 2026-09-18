@@ -1,0 +1,45 @@
+@model InmobiliariaApp.Models.Pago
+@{
+    ViewData["Title"] = "Detalle de Pago";
+}
+
+<div class="page-header">
+    <h1>Detalle de Pago</h1>
+</div>
+
+<div class="table-panel">
+    <div class="blueprint-card" style="max-width: 640px;">
+        <dl class="row">
+            <dt class="col-sm-4">Reserva</dt>
+            <dd class="col-sm-8">#@Model.ReservaId</dd>
+
+            <dt class="col-sm-4">Concepto</dt>
+            <dd class="col-sm-8">@Model.Concepto</dd>
+
+            <dt class="col-sm-4">Monto</dt>
+            <dd class="col-sm-8">$@Model.Monto</dd>
+
+            <dt class="col-sm-4">Estado</dt>
+            <dd class="col-sm-8">@Model.Estado</dd>
+
+            <dt class="col-sm-4">Fecha</dt>
+            <dd class="col-sm-8">@Model.Fecha.ToString("dd/MM/yyyy")</dd>
+
+            @if (User.IsInRole("Administrador"))
+            {
+                <dt class="col-sm-4">Creado por</dt>
+                <dd class="col-sm-8">@(Model.CreadoPor != null ? $"{Model.CreadoPor.Nombre} {Model.CreadoPor.Apellido}" :
+                                              "Sin registro")</dd>
+
+                    @if (!Model.Activo)
+                    {
+                        <dt class="col-sm-4">Anulado por</dt>
+                        <dd class="col-sm-8">@(Model.AnuladoPor != null ? $"{Model.AnuladoPor.Nombre} {Model.AnuladoPor.Apellido}" :
+                                                           "Sin registro")</dd>
+                        }
+                    }
+                </dl>
+
+                <a asp-action="Index" class="btn btn-secondary">Volver a Pagos</a>
+            </div>
+        </div>

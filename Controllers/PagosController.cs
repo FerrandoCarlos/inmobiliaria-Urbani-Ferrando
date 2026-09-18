@@ -57,6 +57,17 @@ namespace InmobiliariaApp.Controllers
             return View(pago);
         }
 
+        // GET: /Pagos/Details/ID
+        public IActionResult Details(int id)
+        {
+            var pago = _service.ObtenerPorId(id);
+            if (pago == null)
+            {
+                return NotFound();
+            }
+            return View(pago);
+        }
+
         // POST: /Pagos/Guardar
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -123,27 +134,31 @@ namespace InmobiliariaApp.Controllers
             try
             {
                 _service.ModificacionEstado("Cancelado", id);
-                return Ok(new { success = true, message = "Pago cancelado correctamente."});
-            } catch (AppException ex)
+                return Ok(new { success = true, message = "Pago cancelado correctamente." });
+            }
+            catch (AppException ex)
             {
-                return BadRequest(new { success = false, message = ex.Message});
-            } catch (Exception)
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+            catch (Exception)
             {
-                return BadRequest(new { success = false, message = "Ocurrió un error inesperado. Intente de nuevo más tarde."});
+                return BadRequest(new { success = false, message = "Ocurrió un error inesperado. Intente de nuevo más tarde." });
             }
         }
-        public IActionResult Confirmar (int id)
+        public IActionResult Confirmar(int id)
         {
             try
             {
                 _service.ModificacionEstado("Pagado", id);
-                return Ok(new { success = true, message = "Pago acreditado correctamente."});
-            } catch (AppException ex)
+                return Ok(new { success = true, message = "Pago acreditado correctamente." });
+            }
+            catch (AppException ex)
             {
-                return BadRequest(new { success = false, message = ex.Message});
-            } catch (Exception)
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+            catch (Exception)
             {
-                return BadRequest(new { success = false, message = "Ocurrió un error inesperado. Intente de nuevo más tarde."});
+                return BadRequest(new { success = false, message = "Ocurrió un error inesperado. Intente de nuevo más tarde." });
             }
         }
     }
