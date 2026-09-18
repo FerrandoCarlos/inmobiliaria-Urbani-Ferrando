@@ -63,9 +63,20 @@
                         <a asp-action="Details" asp-route-id="@pago.Id" class="btn btn-sm btn-outline-secondary">Detalle</a>
                         <a asp-action="Edit" asp-route-id="@pago.Id" class="btn btn-sm btn-outline-secondary">Editar</a>
                         @if (User.IsInRole("Administrador"))
-                        {
+                        {   
+                            @if (pago.Estado == "Cancelado" || pago.Estado == "Pagado"){
+                                <button type="button" class="btn btn-sm btn-outline-danger btn-eliminar" data-id="@pago.Id">
+                                    Eliminar
+                                </button>
+                            }
+                            <button type="button" class="btn btn-sm btn-outline-danger btn-cancelar" onclick="cancelarPago(@pago.Id)">
+                                Cancelar
+                            </button>
                             <button type="button" class="btn btn-sm btn-outline-danger btn-eliminar" data-id="@pago.Id">
                                 Eliminar
+                            </button>
+                            <button type="button" class="btn btn-success btn-confirmar" onclick="confirmarPago(@pago.Id)">
+                                Confirmar
                             </button>
                         }
                     </td>
