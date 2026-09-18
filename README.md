@@ -33,6 +33,33 @@ Cada entidad (`Propietario`, `Inquilino`) implementa la interfaz genérica `IRep
 
 ```mermaid
 erDiagram
+    ROL ||--o{ USUARIO : "posee"
+    USUARIO ||--o{ RESERVA : "crea/termina"
+    USUARIO ||--o{ PAGO : "crea/anula"
+
+    PROPIETARIO ||--o{ INMUEBLE : "posee"
+    TIPOINMUEBLE ||--o{ INMUEBLE : "clasifica"
+    INMUEBLE ||--o{ IMAGENINMUEBLE : "tiene"
+    INMUEBLE ||--o{ RESERVA : "se reserva en"
+
+    INQUILINO ||--o{ RESERVA : "realiza"
+    RESERVA ||--o{ PAGO : "recibe"
+
+    ROL {
+        int Id PK
+        varchar Nombre
+    }
+
+    USUARIO {
+        int Id PK
+        varchar Email UK
+        varchar PasswordHash
+        varchar Nombre
+        varchar Apellido
+        int RolId FK
+        boolean Activo
+    }
+
     PROPIETARIO {
         int Id PK
         varchar Dni UK
@@ -41,7 +68,6 @@ erDiagram
         varchar Telefono
         varchar Email
         boolean Activo
-        datetime FechaCreacion
     }
 
     INQUILINO {
@@ -52,22 +78,25 @@ erDiagram
         varchar Telefono
         varchar Email
         boolean Activo
-        datetime FechaCreacion
+    }
+
+    TIPOINMUEBLE {
+        int Id PK
+        varchar Tipo
+        boolean Activo
     }
 
     INMUEBLE {
         int Id PK
+        int TipoInmuebleId FK
         int PropietarioId FK
         varchar ImgPortadaURL
         int Cupo
         varchar Direccion
-        varchar Tipo
-        decimal Latitud
-        decimal Longitud
-        boolean Activo
         decimal PrecioXDia
         varchar Estado
         decimal PorcentajeReserva
+        boolean Activo
     }
 
     IMAGENINMUEBLE {
@@ -82,20 +111,22 @@ erDiagram
         int InmuebleId FK
         date FechaDesde
         date FechaHasta
-        date FechaTerminacion
         decimal MontoPorDia
-        decimal Multa
         varchar Estado
-        datetime FechaCreacion
+        int CreadoPorId FK
+        int TerminadoPorId FK
     }
 
-    PROPIETARIO ||--o{ INMUEBLE : "posee"
-    INMUEBLE ||--o{ IMAGENINMUEBLE : "tiene"
-    INMUEBLE ||--o{ RESERVA : "se reserva en"
-    INQUILINO ||--o{ RESERVA : "realiza"
+    PAGO {
+        int Id PK
+        int ReservaId FK
+        decimal Monto
+        varchar Concepto
+        varchar Estado
+        int CreadoPorId FK
+        int AnuladoPorId FK
+    }
 ```
-
-> **Nota sobre alcance:** siguiendo la narrativa del proyecto, `Reserva` (llamada "Contrato" en etapas tempranas del diseño) todavía no incluye `Pago`, cálculo de multa por terminación anticipada, renovación, ni el módulo de `Usuario`/`Rol` con autenticación — funcionalidades previstas para entregas futuras. El campo `Email` es obligatorio en Propietario e Inquilino desde esta entrega.
 
 ## Instalación y puesta en marcha
 
@@ -118,9 +149,9 @@ cd inmobiliaria-Urbani-Ferrando
 2. Abrí tu cliente SQL preferido y conectate con las credenciales de tu instalación local (por defecto en Laragon: usuario `root`, sin contraseña, puerto `3306`).
 3. Ejecutá el script `Database/script_inicial.sql`. Este script:
    - Crea la base de datos `inmobiliaria_db`.
-   - Crea las tablas `Propietario`, `Inquilino`, `inmueble`, `imagenesInmueble` y `reserva`.
-   - Inserta un pequeño set de datos de ejemplo (3 propietarios, 3 inquilinos, 3 inmuebles, 2 reservas).
-4. **Opcional:** para probar paginación, filtros y listados con más volumen, ejecutá también `Database/datos_prueba.sql` a continuación. Este script reemplaza los datos mínimos por un set de 20 registros por entidad.
+   - Crea el esquema completo de tablas: `rol`, `usuario`, `propietario`, `inquilino`, `tipoinmueble`, `inmueble`, `imagenesinmueble`, `reserva` y `pago`.
+   - Inserta los roles (Administrador, Empleado), los usuarios de prueba iniciales.
+4. Para probar paginación, filtros y listados con más volumen, ejecutá también `Database/datos_prueba.sql` a continuación. Este script carga un set de 20 registros por entidad.
 
 ### 3. Configurar la cadena de conexión
 
@@ -147,25 +178,43 @@ dotnet restore
 dotnet run
 ```
 
-La consola va a indicar la URL local (por ejemplo `http://localhost:5104`). Abrí esa URL en el navegador y navegá a `/Propietarios`, `/Inquilinos`, `/Inmuebles` o `/Reservas` para ver el ABM funcionando.
+La consola va a indicar la URL local (por ejemplo `http://localhost:5104`). Abrí esa URL en el navegador:
+
+1. El sistema te redirigirá a la pantalla de **Inicio de Sesión**.
+2. Ingresá con alguna de las credenciales de prueba (ej. `admin@inmobiliaria.com`).
+3. Una vez autenticado, vas a poder navegar por las distintas secciones desde el menú principal: `/Propietarios`, `/Inquilinos`, `/Inmuebles`, `/Reservas`, `/Pagos` y `/Usuarios`.
+
+## 🔐 Usuarios y Credenciales de prueba
+
+El sistema cuenta con un módulo de autenticación y control de acceso basado en roles (`Administrador` y `Empleado`).
+
+Al ejecutar el script de base de datos (`script_inicial.sql` o `datos_prueba.sql`), se crean automáticamente los siguientes usuarios de prueba para ingresar al sistema:
+
+| Rol               | Email                       | Contraseña     | Permisos principales                                                                                                   |
+| :---------------- | :-------------------------- | :------------- | :--------------------------------------------------------------------------------------------------------------------- |
+| **Administrador** | `admin@inmobiliaria.com`    | _Admin123!_    | Acceso total: ABM de usuarios, eliminación/anulación de registros, gestión completa de propiedades, reservas y pagos.  |
+| **Empleado**      | `empleado@inmobiliaria.com` | _Empleado123!_ | Operativa diaria: consulta y edición de propietarios, inquilinos, inmuebles, creación de reservas y registro de pagos. |
+
+> **Nota de seguridad:** Las contraseñas en la base de datos se encuentran protegidas mediante _hashing_ seguro (`PasswordHash`) compatible con ASP.NET Core Identity.
 
 ## Funcionalidades de esta entrega
 
-- ABM completo (Alta, Baja lógica, Modificación, Listado paginado) de **Propietarios**, **Inquilinos**, **Inmuebles** y **Reservas**.
-- Vista de detalle para cada entidad.
-- Validación doble: Data Annotations en el servidor (`ModelState`) + validación espejo en JavaScript antes de cada petición asincrónica.
-- Validación de negocio en `Reserva`: fechas coherentes (hasta > desde) y sin solapamiento de fechas con otra reserva Vigente del mismo inmueble.
-- El monto por día de una Reserva se fija en el servidor a partir del precio vigente del Inmueble; nunca se toma del valor enviado por el cliente.
-- Protección contra inyección SQL: 100% de las consultas parametrizadas, sin concatenación de strings.
-- Protección CSRF: `[ValidateAntiForgeryToken]` en cada endpoint de escritura, token incluido en cada `fetch` desde el cliente.
-- Baja lógica (campo `Activo`, o `Estado = 'Finalizada'` en el caso de Reserva) en vez de `DELETE` físico.
-- Reactivación de registros dados de baja (Propietario, Inquilino, Inmueble).
-- Manejo de errores diferenciado: excepciones de negocio (`AppException`) devuelven HTTP 400 con mensaje claro; errores técnicos inesperados se registran vía `ILogger` y devuelven HTTP 500 sin exponer detalles internos al cliente.
-
-## Próximas entregas (fuera de alcance actual)
-
-- Entidad `Pago`, asociada a `Reserva`.
-- Terminación anticipada de `Reserva` con cálculo de multa.
-- Renovación/extensión de `Reserva` sin modificar la original.
-- Autenticación y autorización de usuarios (`Usuario`, `Rol`).
-- Buscador con filtro en servidor para los combos de selección (Inquilino/Inmueble en el formulario de Reserva), en vez de listar todos los valores.
+- ## Módulo de Autenticación y Autorización:
+  - Login y Logout con control de acceso basado en roles (Administrador y Empleado).
+  - Gestión de sesiones y protección de rutas según el rol del usuario.
+- ## ABM completo (Alta, Baja lógica, Modificación, Listado paginado):
+  - Propietarios e Inquilinos.
+  - Tipos de Inmueble e Inmuebles (con carga y gestión de imágenes).
+  - Reservas y Pagos.
+  - Usuarios (con asignación de roles y actualización de datos/clave/avatar).
+- ## Gestión de Reservas y Pagos:
+  - Validación de negocio en Reserva: fechas coherentes (hasta > desde) y control anti-solapamiento de fechas con reservas vigentes del mismo inmueble.
+  - El monto por día de la reserva se asigna en el servidor a partir del precio vigente del inmueble (evitando manipulación desde el cliente).
+  - Registro de cobros (Pago) asociados a la reserva con auditoría de usuario creador (CreadoPorId).
+  - Cancelación/terminación de reservas y anulación de pagos.
+- ## Seguridad y Arquitectura:
+  - Protección contra inyección SQL: 100% de las consultas parametrizadas vía ADO.NET puro con MySqlConnector.
+  - Protección CSRF: [ValidateAntiForgeryToken] en endpoints de escritura y envío de tokens en peticiones fetch.
+  - Validación doble: Data Annotations en backend (ModelState) + validación cliente mediante JavaScript asincrónico.
+  - Baja lógica mediante campos Activo o cambios de Estado (en lugar de DELETE físico) con soporte para reactivación de registros.
+  - Manejo diferenciado de excepciones: AppException (negocio) devuelve HTTP 400 con mensaje descriptivo; errores técnicos registran logs vía ILogger y retornan HTTP 500 sin exponer datos sensibles.
