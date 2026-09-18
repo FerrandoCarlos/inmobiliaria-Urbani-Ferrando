@@ -1,24 +1,31 @@
 -- =====================================================
 -- InmobiliariaApp - Datos de prueba (opcional)
--- Correr DESPUÉS de script_inicial.sql para cargar un
--- volumen mayor de datos (20 registros por entidad),
--- útil para probar paginación, filtros y listados.
+-- Correr DESPUÉS de script_inicial.sql. No toca rol/usuario.
 -- =====================================================
 
 USE inmobiliaria_db;
 
--- Limpia los datos mínimos de ejemplo antes de cargar el set grande
-DELETE FROM reserva;
-DELETE FROM imagenesInmueble;
-DELETE FROM inmueble;
-DELETE FROM Inquilino;
-DELETE FROM Propietario;
-ALTER TABLE Propietario AUTO_INCREMENT = 1;
-ALTER TABLE Inquilino AUTO_INCREMENT = 1;
-ALTER TABLE inmueble AUTO_INCREMENT = 1;
-ALTER TABLE reserva AUTO_INCREMENT = 1;
+SET FOREIGN_KEY_CHECKS = 0;
 
+DELETE FROM pago;
+DELETE FROM reserva;
+DELETE FROM imagenesinmueble;
+DELETE FROM inmueble;
+DELETE FROM inquilino;
+DELETE FROM propietario;
+
+ALTER TABLE propietario AUTO_INCREMENT = 1;
+ALTER TABLE inquilino AUTO_INCREMENT = 1;
+ALTER TABLE inmueble AUTO_INCREMENT = 1;
+ALTER TABLE imagenesinmueble AUTO_INCREMENT = 1;
+ALTER TABLE reserva AUTO_INCREMENT = 1;
+ALTER TABLE pago AUTO_INCREMENT = 1;
+
+SET FOREIGN_KEY_CHECKS = 1;
+
+-- =====================================================
 -- 1. 20 Propietarios
+-- =====================================================
 INSERT INTO Propietario (Dni, Nombre, Apellido, Telefono, Email, Activo) VALUES
 ('10000001', 'Juan', 'Pérez', '2664000001', 'juan.perez@email.com', 1),
 ('10000002', 'María', 'Gómez', '2664000002', 'maria.gomez@email.com', 1),
@@ -41,7 +48,9 @@ INSERT INTO Propietario (Dni, Nombre, Apellido, Telefono, Email, Activo) VALUES
 ('10000019', 'Federico', 'Medina', '2664000019', 'federico.medina@email.com', 1),
 ('10000020', 'Valentina', 'Herrera', '2664000020', 'valentina.herrera@email.com', 1);
 
+-- =====================================================
 -- 2. 20 Inquilinos
+-- =====================================================
 INSERT INTO Inquilino (Dni, Nombre, Apellido, Telefono, Email, Activo) VALUES
 ('20000001', 'Roberto', 'Castillo', '2664110001', 'roberto.c@email.com', 1),
 ('20000002', 'Patricia', 'Castro', '2664110002', 'patricia.c@email.com', 1),
@@ -64,31 +73,36 @@ INSERT INTO Inquilino (Dni, Nombre, Apellido, Telefono, Email, Activo) VALUES
 ('20000019', 'Ezequiel', 'Vázquez', '2664110019', 'ezequiel.v@email.com', 1),
 ('20000020', 'Sol', 'Ramos', '2664110020', 'sol.ramos@email.com', 1);
 
+-- =====================================================
 -- 3. 20 Inmuebles
-INSERT INTO inmueble (PropietarioId, ImgPortadaURL, Cupo, Direccion, Tipo, Latitud, Longitud, Activo, PrecioXDia, Estado, PorcentajeReserva) VALUES
-(1, 'https://picsum.photos/400/300?id=1', 4, 'Av. Illia 120', 'Departamento', -33.2980, -66.3350, 1, 15000.00, 'Disponible', 20.00),
-(2, 'https://picsum.photos/400/300?id=2', 6, 'Calle Rivadavia 450', 'Casa', -33.2991, -66.3361, 1, 28000.00, 'Disponible', 30.00),
-(3, 'https://picsum.photos/400/300?id=3', 2, 'San Martín 780', 'Monoambiente', -33.3010, -66.3375, 1, 10000.00, 'Disponible', 15.00),
-(4, 'https://picsum.photos/400/300?id=4', 5, 'Belgrano 1100', 'Casa', -33.3025, -66.3380, 1, 24000.00, 'Disponible', 25.00),
-(5, 'https://picsum.photos/400/300?id=5', 3, 'Pringles 320', 'Departamento', -33.3032, -66.3392, 1, 13500.00, 'Disponible', 20.00),
-(6, 'https://picsum.photos/400/300?id=6', 4, 'Chacabuco 890', 'Departamento', -33.3040, -66.3401, 1, 16000.00, 'Disponible', 20.00),
-(7, 'https://picsum.photos/400/300?id=7', 8, 'Av. España 1500', 'Cabaña', -33.3051, -66.3415, 1, 35000.00, 'Disponible', 30.00),
-(8, 'https://picsum.photos/400/300?id=8', 2, 'Mitre 540', 'Monoambiente', -33.3060, -66.3420, 1, 11000.00, 'Disponible', 15.00),
-(9, 'https://picsum.photos/400/300?id=9', 4, 'Junín 230', 'Departamento', -33.3072, -66.3431, 1, 17500.00, 'Disponible', 20.00),
-(10, 'https://picsum.photos/400/300?id=10', 6, 'Lavalle 670', 'Casa', -33.3080, -66.3440, 1, 29000.00, 'Disponible', 25.00),
-(11, 'https://picsum.photos/400/300?id=11', 3, 'Colón 1050', 'Departamento', -33.3091, -66.3452, 1, 14000.00, 'Disponible', 20.00),
-(12, 'https://picsum.photos/400/300?id=12', 5, 'Bolívar 410', 'Casa', -33.3100, -66.3460, 1, 23000.00, 'Disponible', 25.00),
-(13, 'https://picsum.photos/400/300?id=13', 2, 'Ayacucho 930', 'Monoambiente', -33.3112, -66.3471, 1, 9500.00, 'Disponible', 15.00),
-(14, 'https://picsum.photos/400/300?id=14', 4, 'Lafinur 1400', 'Departamento', -33.3120, -66.3480, 1, 18000.00, 'Disponible', 20.00),
-(15, 'https://picsum.photos/400/300?id=15', 7, 'Av. del Viento 200', 'Cabaña', -33.3131, -66.3492, 1, 32000.00, 'Disponible', 30.00),
-(16, 'https://picsum.photos/400/300?id=16', 3, 'Constitución 340', 'Departamento', -33.3140, -66.3501, 1, 13000.00, 'Disponible', 20.00),
-(17, 'https://picsum.photos/400/300?id=17', 5, 'Ascasubi 510', 'Casa', -33.3152, -66.3510, 1, 26000.00, 'Disponible', 25.00),
-(18, 'https://picsum.photos/400/300?id=18', 2, 'Caseros 1120', 'Monoambiente', -33.3160, -66.3522, 1, 10500.00, 'Disponible', 15.00),
-(19, 'https://picsum.photos/400/300?id=19', 4, 'Sucre 760', 'Departamento', -33.3171, -66.3530, 1, 16500.00, 'Disponible', 20.00),
-(20, 'https://picsum.photos/400/300?id=20', 6, 'San Luis 980', 'Casa', -33.3180, -66.3541, 1, 30000.00, 'Disponible', 30.00);
+-- TipoInmuebleId: 1=Departamento, 2=Casa, 3=Monoambiente (rotando)
+-- =====================================================
+INSERT INTO inmueble (PropietarioId, TipoInmuebleId, ImgPortadaURL, Cupo, Direccion, Latitud, Longitud, Activo, PrecioXDia, Estado, PorcentajeReserva) VALUES
+(1, 1, 'https://picsum.photos/400/300?id=1', 4, 'Av. Illia 120', -33.2980, -66.3350, 1, 15000.00, 'Disponible', 20.00),
+(2, 2, 'https://picsum.photos/400/300?id=2', 6, 'Calle Rivadavia 450', -33.2991, -66.3361, 1, 28000.00, 'Disponible', 30.00),
+(3, 3, 'https://picsum.photos/400/300?id=3', 2, 'San Martín 780', -33.3010, -66.3375, 1, 10000.00, 'Disponible', 15.00),
+(4, 2, 'https://picsum.photos/400/300?id=4', 5, 'Belgrano 1100', -33.3025, -66.3380, 1, 24000.00, 'Disponible', 25.00),
+(5, 1, 'https://picsum.photos/400/300?id=5', 3, 'Pringles 320', -33.3032, -66.3392, 1, 13500.00, 'Disponible', 20.00),
+(6, 1, 'https://picsum.photos/400/300?id=6', 4, 'Chacabuco 890', -33.3040, -66.3401, 1, 16000.00, 'Disponible', 20.00),
+(7, 2, 'https://picsum.photos/400/300?id=7', 8, 'Av. España 1500', -33.3051, -66.3415, 1, 35000.00, 'Disponible', 30.00),
+(8, 3, 'https://picsum.photos/400/300?id=8', 2, 'Mitre 540', -33.3060, -66.3420, 1, 11000.00, 'Disponible', 15.00),
+(9, 1, 'https://picsum.photos/400/300?id=9', 4, 'Junín 230', -33.3072, -66.3431, 1, 17500.00, 'Disponible', 20.00),
+(10, 2, 'https://picsum.photos/400/300?id=10', 6, 'Lavalle 670', -33.3080, -66.3440, 1, 29000.00, 'Disponible', 25.00),
+(11, 1, 'https://picsum.photos/400/300?id=11', 3, 'Colón 1050', -33.3091, -66.3452, 1, 14000.00, 'Disponible', 20.00),
+(12, 2, 'https://picsum.photos/400/300?id=12', 5, 'Bolívar 410', -33.3100, -66.3460, 1, 23000.00, 'Disponible', 25.00),
+(13, 3, 'https://picsum.photos/400/300?id=13', 2, 'Ayacucho 930', -33.3112, -66.3471, 1, 9500.00, 'Disponible', 15.00),
+(14, 1, 'https://picsum.photos/400/300?id=14', 4, 'Lafinur 1400', -33.3120, -66.3480, 1, 18000.00, 'Disponible', 20.00),
+(15, 2, 'https://picsum.photos/400/300?id=15', 7, 'Av. del Viento 200', -33.3131, -66.3492, 1, 32000.00, 'Disponible', 30.00),
+(16, 1, 'https://picsum.photos/400/300?id=16', 3, 'Constitución 340', -33.3140, -66.3501, 1, 13000.00, 'Disponible', 20.00),
+(17, 2, 'https://picsum.photos/400/300?id=17', 5, 'Ascasubi 510', -33.3152, -66.3510, 1, 26000.00, 'Disponible', 25.00),
+(18, 3, 'https://picsum.photos/400/300?id=18', 2, 'Caseros 1120', -33.3160, -66.3522, 1, 10500.00, 'Disponible', 15.00),
+(19, 1, 'https://picsum.photos/400/300?id=19', 4, 'Sucre 760', -33.3171, -66.3530, 1, 16500.00, 'Disponible', 20.00),
+(20, 2, 'https://picsum.photos/400/300?id=20', 6, 'San Luis 980', -33.3180, -66.3541, 1, 30000.00, 'Disponible', 30.00);
 
+-- =====================================================
 -- 4. Imágenes de Inmuebles
-INSERT INTO imagenesInmueble (InmuebleId, ImgURL) VALUES
+-- =====================================================
+INSERT INTO imagenesinmueble (InmuebleId, ImgURL) VALUES
 (1, 'https://picsum.photos/800/600?id=101'), (1, 'https://picsum.photos/800/600?id=102'),
 (2, 'https://picsum.photos/800/600?id=103'), (2, 'https://picsum.photos/800/600?id=104'),
 (3, 'https://picsum.photos/800/600?id=105'), (4, 'https://picsum.photos/800/600?id=106'),
@@ -100,25 +114,42 @@ INSERT INTO imagenesInmueble (InmuebleId, ImgURL) VALUES
 (15, 'https://picsum.photos/800/600?id=117'), (16, 'https://picsum.photos/800/600?id=118'),
 (17, 'https://picsum.photos/800/600?id=119'), (18, 'https://picsum.photos/800/600?id=120');
 
--- 5. 20 Reservas
-INSERT INTO reserva (InquilinoId, InmuebleId, FechaDesde, FechaHasta, MontoPorDia, Multa, Estado, FechaCreacion) VALUES
-(1, 1, '2026-09-01', '2026-09-05', 15000.00, NULL, 'Vigente', NOW()),
-(2, 2, '2026-09-02', '2026-09-07', 28000.00, NULL, 'Vigente', NOW()),
-(3, 3, '2026-09-05', '2026-09-10', 10000.00, NULL, 'Vigente', NOW()),
-(4, 4, '2026-09-10', '2026-09-15', 24000.00, NULL, 'Vigente', NOW()),
-(5, 5, '2026-09-12', '2026-09-14', 13500.00, NULL, 'Vigente', NOW()),
-(6, 6, '2026-09-15', '2026-09-20', 16000.00, NULL, 'Vigente', NOW()),
-(7, 7, '2026-09-18', '2026-09-25', 35000.00, NULL, 'Vigente', NOW()),
-(8, 8, '2026-09-20', '2026-09-22', 11000.00, NULL, 'Vigente', NOW()),
-(9, 9, '2026-09-21', '2026-09-26', 17500.00, NULL, 'Vigente', NOW()),
-(10, 10, '2026-09-25', '2026-09-30', 29000.00, NULL, 'Vigente', NOW()),
-(11, 11, '2026-10-01', '2026-10-05', 14000.00, NULL, 'Vigente', NOW()),
-(12, 12, '2026-10-03', '2026-10-08', 23000.00, NULL, 'Vigente', NOW()),
-(13, 13, '2026-10-05', '2026-10-07', 9500.00, NULL, 'Vigente', NOW()),
-(14, 14, '2026-10-10', '2026-10-15', 18000.00, NULL, 'Vigente', NOW()),
-(15, 15, '2026-10-12', '2026-10-19', 32000.00, NULL, 'Vigente', NOW()),
-(16, 16, '2026-10-15', '2026-10-18', 13000.00, NULL, 'Vigente', NOW()),
-(17, 17, '2026-10-20', '2026-10-25', 26000.00, NULL, 'Vigente', NOW()),
-(18, 18, '2026-10-22', '2026-10-24', 10500.00, NULL, 'Vigente', NOW()),
-(19, 19, '2026-10-25', '2026-10-30', 16500.00, NULL, 'Vigente', NOW()),
-(20, 20, '2026-11-01', '2026-11-06', 30000.00, NULL, 'Vigente', NOW());
+-- =====================================================
+-- 5. 20 Reservas (CreadoPorId = 1, el admin)
+-- =====================================================
+INSERT INTO reserva (InquilinoId, InmuebleId, FechaDesde, FechaHasta, MontoPorDia, Estado, FechaCreacion, CreadoPorId) VALUES
+(1, 1, '2026-09-01', '2026-09-05', 15000.00, 'Vigente', NOW(), 1),
+(2, 2, '2026-09-02', '2026-09-07', 28000.00, 'Vigente', NOW(), 1),
+(3, 3, '2026-09-05', '2026-09-10', 10000.00, 'Vigente', NOW(), 1),
+(4, 4, '2026-09-10', '2026-09-15', 24000.00, 'Vigente', NOW(), 1),
+(5, 5, '2026-09-12', '2026-09-14', 13500.00, 'Vigente', NOW(), 1),
+(6, 6, '2026-09-15', '2026-09-20', 16000.00, 'Vigente', NOW(), 1),
+(7, 7, '2026-09-18', '2026-09-25', 35000.00, 'Vigente', NOW(), 1),
+(8, 8, '2026-09-20', '2026-09-22', 11000.00, 'Vigente', NOW(), 1),
+(9, 9, '2026-09-21', '2026-09-26', 17500.00, 'Vigente', NOW(), 1),
+(10, 10, '2026-09-25', '2026-09-30', 29000.00, 'Vigente', NOW(), 1),
+(11, 11, '2026-10-01', '2026-10-05', 14000.00, 'Vigente', NOW(), 1),
+(12, 12, '2026-10-03', '2026-10-08', 23000.00, 'Vigente', NOW(), 1),
+(13, 13, '2026-10-05', '2026-10-07', 9500.00, 'Vigente', NOW(), 1),
+(14, 14, '2026-10-10', '2026-10-15', 18000.00, 'Vigente', NOW(), 1),
+(15, 15, '2026-10-12', '2026-10-19', 32000.00, 'Vigente', NOW(), 1),
+(16, 16, '2026-10-15', '2026-10-18', 13000.00, 'Vigente', NOW(), 1),
+(17, 17, '2026-10-20', '2026-10-25', 26000.00, 'Vigente', NOW(), 1),
+(18, 18, '2026-10-22', '2026-10-24', 10500.00, 'Vigente', NOW(), 1),
+(19, 19, '2026-10-25', '2026-10-30', 16500.00, 'Vigente', NOW(), 1),
+(20, 20, '2026-11-01', '2026-11-06', 30000.00, 'Vigente', NOW(), 1);
+
+-- =====================================================
+-- 6. Pagos de prueba (uno por cada una de las primeras 10 reservas)
+-- =====================================================
+INSERT INTO pago (ReservaId, Monto, Concepto, Estado, Activo, CreadoPorId) VALUES
+(1, 15000.00, 'Seña de reserva', 'Aprobado', 1, 1),
+(2, 28000.00, 'Seña de reserva', 'Aprobado', 1, 1),
+(3, 10000.00, 'Seña de reserva', 'Aprobado', 1, 1),
+(4, 24000.00, 'Seña de reserva', 'Aprobado', 1, 1),
+(5, 13500.00, 'Seña de reserva', 'Aprobado', 1, 1),
+(6, 16000.00, 'Seña de reserva', 'Aprobado', 1, 1),
+(7, 35000.00, 'Seña de reserva', 'Aprobado', 1, 1),
+(8, 11000.00, 'Seña de reserva', 'Aprobado', 1, 1),
+(9, 17500.00, 'Seña de reserva', 'Aprobado', 1, 1),
+(10, 29000.00, 'Seña de reserva', 'Aprobado', 1, 1);

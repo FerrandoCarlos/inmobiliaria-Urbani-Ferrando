@@ -140,11 +140,16 @@ CREATE TABLE `reserva` (
   `Multa` DECIMAL(10,2) NULL DEFAULT NULL,
   `Estado` VARCHAR(20) NOT NULL DEFAULT 'Vigente',
   `FechaCreacion` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `CreadoPorId` INT NOT NULL,
+  `TerminadoPorId` INT NULL DEFAULT NULL,
   PRIMARY KEY (`Id`),
   KEY `IX_Reserva_InquilinoId` (`InquilinoId`),
   KEY `IX_Reserva_InmuebleId` (`InmuebleId`),
+  KEY `IX_Reserva_CreadoPorId` (`CreadoPorId`),
   CONSTRAINT `fk_reserva_inquilino` FOREIGN KEY (`InquilinoId`) REFERENCES `inquilino` (`Id`),
-  CONSTRAINT `fk_reserva_inmueble` FOREIGN KEY (`InmuebleId`) REFERENCES `inmueble` (`Id`)
+  CONSTRAINT `fk_reserva_inmueble` FOREIGN KEY (`InmuebleId`) REFERENCES `inmueble` (`Id`),
+  CONSTRAINT `fk_reserva_creado_por` FOREIGN KEY (`CreadoPorId`) REFERENCES `Usuario` (`Id`),
+  CONSTRAINT `fk_reserva_terminado_por` FOREIGN KEY (`TerminadoPorId`) REFERENCES `Usuario` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
@@ -158,9 +163,14 @@ CREATE TABLE `pago` (
   `Estado` VARCHAR(50) NOT NULL,
   `Activo` TINYINT(1) NOT NULL DEFAULT 1,
   `Fecha` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `CreadoPorId` INT NOT NULL,
+  `AnuladoPorId` INT NULL DEFAULT NULL,
   PRIMARY KEY (`Id`),
   KEY `IX_Pago_ReservaId` (`ReservaId`),
-  CONSTRAINT `fk_pago_reserva` FOREIGN KEY (`ReservaId`) REFERENCES `reserva` (`Id`)
+  KEY `IX_Pago_CreadoPorId` (`CreadoPorId`),
+  CONSTRAINT `fk_pago_reserva` FOREIGN KEY (`ReservaId`) REFERENCES `reserva` (`Id`),
+  CONSTRAINT `fk_pago_creado_por` FOREIGN KEY (`CreadoPorId`) REFERENCES `usuario` (`Id`),
+  CONSTRAINT `fk_pago_anulado_por` FOREIGN KEY (`AnuladoPorId`) REFERENCES `usuario` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
@@ -171,29 +181,11 @@ INSERT INTO `rol` (`Id`, `Nombre`) VALUES
 (1, 'Administrador'),
 (2, 'Empleado');
 
+INSERT INTO `usuario` (`Id`, `Email`, `PasswordHash`, `Nombre`, `Apellido`, `RolId`, `Activo`) VALUES
+(1, 'admin@inmobiliaria.com', 'AQAAAAIAAYagAAAAEDVhH48zGJF825pq440yl/mDEyd0BqXVA8HimJQMP5uSJGRrZpNTVDY13j+WXYUglg==', 'Admin', 'Sistema', 1, 1),
+(2, 'empleado@inmobiliaria.com', 'AQAAAAIAAYagAAAAEIW8p5wvA4GYEEFRysWZzlF8ph9ID9lUEB4CD+wyJSbOu2e+zsWLuitxNEoTbo3MpQ==', 'Empleado', 'Sistema', 2, 1);
+
 INSERT INTO `tipoinmueble` (`Id`, `Tipo`, `Activo`) VALUES
 (1, 'Departamento', 1),
 (2, 'Casa', 1),
 (3, 'Monoambiente', 1);
-
-INSERT INTO Propietario (Dni, Nombre, Apellido, Telefono, Email, Activo) VALUES
-('30111222', 'Marcelo', 'Fernandez', '3814001122', 'marcelo.fernandez@mail.com', 1),
-('28555666', 'Laura', 'Gimenez', '3814003344', 'laura.gimenez@mail.com', 1),
-('29887766', 'Silvina', 'Castro', '3814991122', 's.castro@outlook.com', 1);
-
-INSERT INTO Inquilino (Dni, Nombre, Apellido, Telefono, Email, Activo) VALUES
-('32444555', 'Ana', 'Lopez', '3814007788', 'ana.lopez1@mail.com', 1),
-('29777111', 'Diego', 'Martinez', '3814009900', 'diego.martinez@mail.com', 1),
-('40123456', 'Carla', 'Rojas', '3814012345', 'carla.rojas@mail.com', 1);
-
-INSERT INTO inmueble (PropietarioId, ImgPortadaURL, Cupo, Direccion, Tipo, Latitud, Longitud, Activo, PrecioXDia, Estado, PorcentajeReserva) VALUES
-(1, 'https://picsum.photos/400/300?id=1', 4, 'Av. Illia 120', 'Departamento', -33.2980, -66.3350, 1, 15000.00, 'Disponible', 20.00),
-(2, 'https://picsum.photos/400/300?id=2', 6, 'Calle Rivadavia 450', 'Casa', -33.2991, -66.3361, 1, 28000.00, 'Disponible', 30.00),
-(3, 'https://picsum.photos/400/300?id=3', 2, 'San Martín 780', 'Monoambiente', -33.3010, -66.3375, 1, 10000.00, 'Disponible', 15.00);
-
-INSERT INTO reserva (InquilinoId, InmuebleId, FechaDesde, FechaHasta, MontoPorDia, Estado, FechaCreacion) VALUES
-(1, 1, '2026-09-01', '2026-09-05', 15000.00, 'Vigente', NOW()),
-(2, 2, '2026-09-10', '2026-09-15', 28000.00, 'Vigente', NOW());
-
-INSERT INTO `pago` (`ReservaId`, `Monto`, `Concepto`, `Estado`, `Activo`) VALUES
-(1, 15000.00, 'Seña de reserva', 'Aprobado', 1);
