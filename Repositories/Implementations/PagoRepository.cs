@@ -265,7 +265,7 @@ namespace InmobiliariaApp.Repositories.Implementations
             List<Pago> res = new List<Pago>();
             using (var connection = new MySqlConnection(connectionString))
             {
-                string sql = ObtenerSelectBase() + " WHERE Activo = 1 LIMIT @limit OFFSET @offset";
+                string sql = ObtenerSelectBase() + " WHERE p.Activo = 1 LIMIT @limit OFFSET @offset";
                 using (var command = new MySqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;

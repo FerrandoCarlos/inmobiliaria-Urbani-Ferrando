@@ -112,11 +112,15 @@ namespace InmobiliariaApp.Repositories.Implementations
                 string sql = @"
                     SELECT r.Id, r.InquilinoId, r.InmuebleId, r.FechaDesde, r.FechaHasta,
                            r.FechaTerminacion, r.MontoPorDia, r.Multa, r.Estado, r.FechaCreacion,
+                           r.CreadoPorId, r.TerminadoPorId,
                            i.Nombre as InquilinoNombre, i.Apellido AS InquilinoApellido, i.Dni AS InquilinoDni,
-                           m.Direccion AS InmuebleDireccion
+                           m.Direccion AS InmuebleDireccion,
+                           uc.Nombre AS CreadoPorNombre, ut.Nombre AS TerminadoPorNombre
                     From reserva r
                     INNER JOIN inquilino i ON r.InquilinoId = i.Id
                     INNER JOIN inmueble m ON r.InmuebleId = m.Id
+                    LEFT JOIN usuario uc ON r.CreadoPorId = uc.Id
+                    LEFT JOIN usuario ut ON r.TerminadoPorId = ut.Id
                     ORDER BY r.FechaDesde DESC
                     LIMIT @tamPagina OFFSET @offset";
 
@@ -168,11 +172,15 @@ namespace InmobiliariaApp.Repositories.Implementations
                 string sql = @"
                 SELECT r.Id, r.InquilinoId, r.InmuebleId, r.FechaDesde, r.FechaHasta,
                            r.FechaTerminacion, r.MontoPorDia, r.Multa, r.Estado, r.FechaCreacion,
+                           r.CreadoPorId, r.TerminadoPorId,
                            i.Nombre as InquilinoNombre, i.Apellido AS InquilinoApellido, i.Dni AS InquilinoDni,
-                           m.Direccion AS InmuebleDireccion
+                           m.Direccion AS InmuebleDireccion,
+                           uc.Nombre AS CreadoPorNombre, ut.Nombre AS TerminadoPorNombre
                     From reserva r
                     INNER JOIN inquilino i ON r.InquilinoId = i.Id
                     INNER JOIN inmueble m ON r.InmuebleId = m.Id
+                    LEFT JOIN usuario uc ON r.CreadoPorId = uc.Id
+                    LEFT JOIN usuario ut ON r.TerminadoPorId = ut.Id
                     WHERE r.InmuebleId = @id AND r.Estado = 'Vigente'
                     ORDER BY r.FechaDesde DESC";
                 using (var command = new MySqlCommand(sql, connection))
