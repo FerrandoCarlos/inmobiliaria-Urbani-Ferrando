@@ -1,0 +1,100 @@
+@model InmobiliariaApp.Models.PerfilViewModel
+@{
+    ViewData["Title"] = "Mi Perfil";
+}
+
+<div class="page-header">
+    <h1>Mi Perfil</h1>
+</div>
+
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-success">@TempData["Mensaje"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div class="table-panel">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-panel">
+                <div class="form-panel-header is-edit">
+                    <h2>Datos Personales</h2>
+                </div>
+                <div class="form-panel-body">
+                    <form asp-controller="Perfil" asp-action="ActualizarDatos" method="post"
+                          enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-3 text-center">
+                            @if (!string.IsNullOrEmpty(Model.AvatarActual))
+                            {
+                                <img src="@Model.AvatarActual" class="avatar-circle avatar-lg" alt="Avatar" />
+                            }
+                            else
+                            {
+                                <span class="avatar-circle avatar-iniciales avatar-lg">
+                                    @(Model.Nombre.Length > 0 ? Model.Nombre[0] : "")@(Model.Apellido.Length > 0 ?
+                                    Model.Apellido[0] : "")
+                                </span>
+                            }
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Avatar</label>
+                            <input type="file" name="AvatarFile" class="form-control" accept="image/*" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="text" class="form-control" value="@Model.Email" disabled />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Nombre</label>
+                            <input type="text" name="Nombre" class="form-control" value="@Model.Nombre" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Apellido</label>
+                            <input type="text" name="Apellido" class="form-control" value="@Model.Apellido" required />
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-panel">
+                <div class="form-panel-header is-create">
+                    <h2>Cambiar contraseña</h2>
+                </div>
+                <div class="form-panel-body">
+                    <form asp-controller="Perfil" asp-action="CambiarPassword" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-3">
+                            <label class="form-label">Contraseña actual</label>
+                            <input type="password" name="passwordActual" class="form-control" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Contraseña nueva</label>
+                            <input type="password" name="passwordNueva" class="form-control" required minlength="6" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Confirmar contraseña nueva</label>
+                            <input type="password" name="passwordConfirmar" class="form-control" required
+                                   minlength="6" />
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Cambiar contraseña</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,6 +1,6 @@
-# Inmobiliaria Urbani Ferrando— Entrega 1
+# Inmobiliaria Urbani Ferrando— Entrega Final
 
-Sistema web de gestión inmobiliaria desarrollado con ASP.NET Core MVC, C# y MySQL. Esta primera entrega cubre el ABM (Alta, Baja, Modificación) completo de **Propietarios** e **Inquilinos**.
+Sistema web de gestión inmobiliaria desarrollado con ASP.NET Core MVC, C# y MySQL.
 
 ## Integrantes del grupo
 

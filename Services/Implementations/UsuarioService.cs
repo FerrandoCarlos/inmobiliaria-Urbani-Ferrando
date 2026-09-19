@@ -111,5 +111,15 @@ namespace InmobiliariaApp.Services.Implementations
             var nuevoHash = _hasher.HashPassword(usuario, passwordNueva);
             _repositorio.CambiarPassword(id, nuevoHash);
         }
+
+        public void ActualizarPerfil(int id, string nombre, string apellido, string? nuevoAvatarUrl)
+        {
+            var usuario = _repositorio.ObtenerPorId(id)
+                ?? throw new AppException("El usuario no existe.");
+
+            string? avatarFinal = nuevoAvatarUrl ?? usuario.Avatar;
+
+            _repositorio.ActualizarPerfil(id, nombre, apellido, avatarFinal);
+        }
     }
 }

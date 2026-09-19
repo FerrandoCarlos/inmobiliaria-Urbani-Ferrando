@@ -101,6 +101,26 @@ namespace InmobiliariaApp.Repositories.Implementations
             return res;
         }
 
+        public int ActualizarPerfil(int id, string nombre, string apellido, string? avatarUrl)
+        {
+            int res = -1;
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = "UPDATE Usuario SET Nombre = @nombre, Apellido = @apellido, Avatar = @avatar WHERE Id = @id";
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@nombre", nombre);
+                    command.Parameters.AddWithValue("@apellido", apellido);
+                    command.Parameters.AddWithValue("@avatar", (object?)avatarUrl ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@id", id);
+                    connection.Open();
+                    res = command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return res;
+        }
         public IList<Usuario> ObtenerLista(int paginaNro = 1, int tamPagina = 10)
         {
             IList<Usuario> res = new List<Usuario>();

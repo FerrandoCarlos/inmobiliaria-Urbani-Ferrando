@@ -7,5 +7,7 @@ namespace InmobiliariaApp.Repositories.Interfaces
         Usuario? ObtenerPorEmail(string email);
         bool ExisteEmail(string email, int idExcluir = 0);
         int CambiarPassword(int id, string nuevoHash);
+
+        int ActualizarPerfil(int id, string nombre, string apellido, string? avatarUrl);
     }
 }

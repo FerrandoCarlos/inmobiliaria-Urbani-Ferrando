@@ -676,3 +676,30 @@ button:focus-visible,
   font-size: 0.8rem;
   font-family: var(--font-body);
 }
+
+/* ---Perfil Avatar--- */
+.avatar-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid var(--line);
+}
+
+.avatar-iniciales {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--brass);
+  color: var(--white);
+  font-weight: 700;
+  font-size: 0.8rem;
+  font-family: var(--font-body);
+}
+
+.avatar-lg {
+  width: 80px;
+  height: 80px;
+  font-size: 1.5rem;
+}

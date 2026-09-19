@@ -19,5 +19,7 @@ namespace InmobiliariaApp.Services.Interfaces
 
         // Reseteo por un Administrador: no exige la contraseña anterior.
         void ResetearPassword(int id, string passwordNueva);
+
+        void ActualizarPerfil(int id, string nombre, string apellido, string? nuevoAvatarUrl);
     }
 }

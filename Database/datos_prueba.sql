@@ -143,13 +143,13 @@ INSERT INTO reserva (InquilinoId, InmuebleId, FechaDesde, FechaHasta, MontoPorDi
 -- 6. Pagos de prueba (uno por cada una de las primeras 10 reservas)
 -- =====================================================
 INSERT INTO pago (ReservaId, Monto, Concepto, Estado, Activo, CreadoPorId) VALUES
-(1, 15000.00, 'Seña de reserva', 'Aprobado', 1, 1),
-(2, 28000.00, 'Seña de reserva', 'Aprobado', 1, 1),
-(3, 10000.00, 'Seña de reserva', 'Aprobado', 1, 1),
-(4, 24000.00, 'Seña de reserva', 'Aprobado', 1, 1),
-(5, 13500.00, 'Seña de reserva', 'Aprobado', 1, 1),
-(6, 16000.00, 'Seña de reserva', 'Aprobado', 1, 1),
-(7, 35000.00, 'Seña de reserva', 'Aprobado', 1, 1),
-(8, 11000.00, 'Seña de reserva', 'Aprobado', 1, 1),
-(9, 17500.00, 'Seña de reserva', 'Aprobado', 1, 1),
-(10, 29000.00, 'Seña de reserva', 'Aprobado', 1, 1);
+(1, 15000.00, 'Seña de reserva', 'Aprobada', 1, 1),
+(2, 28000.00, 'Seña de reserva', 'Aprobada', 1, 1),
+(3, 10000.00, 'Seña de reserva', 'Aprobada', 1, 1),
+(4, 24000.00, 'Seña de reserva', 'Aprobada', 1, 1),
+(5, 13500.00, 'Seña de reserva', 'Aprobada', 1, 1),
+(6, 16000.00, 'Seña de reserva', 'Aprobada', 1, 1),
+(7, 35000.00, 'Seña de reserva', 'Aprobada', 1, 1),
+(8, 11000.00, 'Seña de reserva', 'Aprobada', 1, 1),
+(9, 17500.00, 'Seña de reserva', 'Aprobada', 1, 1),
+(10, 29000.00, 'Seña de reserva', 'Aprobada', 1, 1);
