@@ -703,3 +703,72 @@ button:focus-visible,
   height: 80px;
   font-size: 1.5rem;
 }
+/* --- Menú de usuario (dropdown del avatar) --- */
+
+.user-menu .dropdown-toggle-noicon {
+  padding: 0.2rem 0.4rem;
+}
+
+.user-menu .dropdown-toggle-noicon::after {
+  display: none;
+}
+
+.user-menu-panel {
+  min-width: 260px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(28, 43, 57, 0.15);
+  padding: 0.5rem 0;
+}
+
+.user-menu-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+}
+
+.user-menu-name {
+  font-weight: 700;
+  color: var(--ink);
+  font-size: 0.95rem;
+}
+
+.user-menu-email {
+  color: var(--ink-soft);
+  font-size: 0.82rem;
+}
+
+.avatar-md {
+  width: 44px;
+  height: 44px;
+  font-size: 1rem;
+}
+
+.user-menu-panel .dropdown-item {
+  padding: 0.55rem 1rem;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.user-menu-panel .dropdown-item i {
+  color: var(--brass);
+  width: 1.1rem;
+}
+
+.user-menu-panel .dropdown-item:hover {
+  background-color: var(--canvas);
+}
+
+.user-menu-panel form {
+  margin: 0;
+}
+
+.user-menu-panel form button.dropdown-item {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+}
