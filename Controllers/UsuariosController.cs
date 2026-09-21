@@ -139,18 +139,17 @@ namespace InmobiliariaApp.Controllers
             try
             {
                 _service.Baja(id);
-                TempData["Mensaje"] = "Usuario dedo de baja correctamente.";
+                return Ok(new { success = true, message = "Usuario dado de baja correctamente." });
             }
             catch (AppException ex)
             {
-                TempData["Error"] = ex.Message;
+                return BadRequest(new { success = false, message = ex.Message });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error inesperado al eliminar el usuario.");
-                TempData["Error"] = "Ocurrió un error inesperado.";
+                return StatusCode(500, new { success = false, message = "Ocurrió un error inesperado." });
             }
-            return RedirectToAction(nameof(Index));
         }
     }
 }

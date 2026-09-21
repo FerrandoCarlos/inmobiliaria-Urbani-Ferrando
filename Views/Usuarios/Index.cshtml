@@ -7,6 +7,9 @@
 <div class="page-header">
     <h1>Usuarios</h1>
 </div>
+
+<form style="display: none;">@Html.AntiForgeryToken()</form>
+
 @if (TempData["Mensaje"] != null)
 {
     <div class="alert alert-success">@TempData["Mensaje"]</div>
@@ -37,11 +40,9 @@
                     <td>@usuario.Rol?.Nombre</td>
                     <td>
                         <a asp-action="Edit" asp-route-id="@usuario.Id" class="btn btn-sm btn-outline-secondary">Editar</a>
-                        <form asp-action="Eliminar" asp-route-id="@usuario.Id" method="post" class="d-inline"
-                              onsubmit="return confirm('¿Dar de baja a este usuario?');">
-                            @Html.AntiForgeryToken()
-                            <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
-                        </form>
+                        <button type="button" class="btn btn-sm btn-outline-danger btn-eliminar" data-id="@usuario.Id">
+                            Eliminar
+                        </button>
                     </td>
                 </tr>
             }
@@ -65,3 +66,11 @@
         </nav>
     }
 </div>
+
+@await Html.PartialAsync("_ModalConfirmarBaja")
+
+@section Scripts
+{
+    <script src="~/js/abm-usuario.js"></script>
+    <script>inicializarBotonesEliminarUsuario()</script>
+}
