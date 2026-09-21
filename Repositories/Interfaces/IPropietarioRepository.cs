@@ -17,5 +17,7 @@ namespace InmobiliariaApp.Repositories.Interfaces
         /// Cantidad de registros inactivos, para el contador del botón en Index.
         int ObtenerCantidadInactivos();
 
+        IList<Propietario> Buscar(string query, int limite = 10);
+
     }
 }

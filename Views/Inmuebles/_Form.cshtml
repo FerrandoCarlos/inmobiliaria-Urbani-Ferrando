@@ -7,8 +7,13 @@
     <input type="hidden" id="Id" name="Id" value="@Model.Id" />
 
     <div class="mb-3">
-        <label for="Propietario" class="form-label">Propietario ID</label>
-        <input type="text" class="form-control" id="PropietarioId" name="PropietarioId" value="@Model.PropietarioId" maxlength="9" required />
+        <label for="PropietarioBuscar" class="form-label">Propietario</label>
+        <div class="buscador-wrapper">
+            <input type="text" class="form-control" id="PropietarioBuscar"
+                   placeholder="Buscar por nombre, apellido o DNI..." autocomplete="off" required />
+            <input type="hidden" id="PropietarioId" name="PropietarioId" value="@Model.PropietarioId" />
+            <div id="PropietarioResultados" class="buscador-resultados d-none"></div>
+        </div>
         <span class="text-danger" id="error-PropietarioId"></span>
     </div>
 
@@ -20,13 +25,15 @@
 
     <div class="mb-3">
         <label for="Direccion" class="form-label">Dirección</label>
-        <input type="text" class="form-control" id="Direccion" name="Direccion" value="@Model.Direccion" maxlength="100" required />
+        <input type="text" class="form-control" id="Direccion" name="Direccion" value="@Model.Direccion" maxlength="100"
+               required />
         <span class="text-danger" id="error-Direccion"></span>
     </div>
 
     <div class="mb-3">
         <label for="TipoInmuebleId" class="form-label">Tipo</label>
-        <select name="TipoInmuebleId" id="TipoInmuebleId" class="form-control" required onchange="redireccionarSiNuevoTipo(this)">
+        <select name="TipoInmuebleId" id="TipoInmuebleId" class="form-control" required
+                onchange="redireccionarSiNuevoTipo(this)">
             <option value="">Seleccione un tipo de inmueble...</option>
             @foreach (var TipoInmueble in tipoInmuebles)
             {
@@ -41,31 +48,36 @@
 
     <div class="mb-3">
         <label for="PrecioXDia" class="form-label">Precio por día</label>
-        <input type="text" class="form-control" id="PrecioXDia" name="PrecioXDia" value="@Model.PrecioXDia" maxlength="20" required />
+        <input type="text" class="form-control" id="PrecioXDia" name="PrecioXDia" value="@Model.PrecioXDia"
+               maxlength="20" required />
         <span class="text-danger" id="error-PrecioXDia"></span>
     </div>
 
     <div class="mb-3">
         <label for="Estado" class="form-label">Estado</label>
-        <input type="text" class="form-control" id="Estado" name="Estado" value="@Model.Estado" maxlength="20" required />
+        <input type="text" class="form-control" id="Estado" name="Estado" value="@Model.Estado" maxlength="20"
+               required />
         <span class="text-danger" id="error-Estado"></span>
     </div>
-    
+
     <div class="mb-3">
         <label for="PorcentajeReserva" class="form-label">Porcentaje de reserva</label>
-        <input type="text" class="form-control" id="PorcentajeReserva" name="PorcentajeReserva" value="@Model.PorcentajeReserva" maxlength="5" required />
+        <input type="text" class="form-control" id="PorcentajeReserva" name="PorcentajeReserva"
+               value="@Model.PorcentajeReserva" maxlength="5" required />
         <span class="text-danger" id="error-PorcentajeReserva"></span>
     </div>
-    
+
     <div class="mb-3">
         <label for="Latitud" class="form-label">Latitud</label>
-        <input type="text" class="form-control" id="Latitud" name="Latitud" value="@Model.Latitud" maxlength="15" required />
+        <input type="text" class="form-control" id="Latitud" name="Latitud" value="@Model.Latitud" maxlength="15"
+               required />
         <span class="text-danger" id="error-Latitud"></span>
     </div>
 
     <div class="mb-3">
         <label for="Longitud" class="form-label">Longitud</label>
-        <input type="text" class="form-control" id="Longitud" name="Longitud" value="@Model.Longitud" maxlength="15" required />
+        <input type="text" class="form-control" id="Longitud" name="Longitud" value="@Model.Longitud" maxlength="15"
+               required />
         <span class="text-danger" id="error-Longitud"></span>
     </div>
 
@@ -74,3 +86,17 @@
     <button type="submit" class="btn btn-primary">Guardar</button>
     <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
 </form>
+
+<script src="~/js/buscador-select.js"></script>
+<script>
+    inicializarBuscadorSelect({
+        inputTextoId: 'PropietarioBuscar',
+        inputHiddenId: 'PropietarioId',
+        endpoint: '/Propietarios/Buscar',
+        resultadosId: 'PropietarioResultados',
+    @if (Model.Id != 0 && Model.Propietario != null)
+        {
+            @:valorInicialTexto: '@Html.Raw($"{Model.Propietario.Apellido}, {Model.Propietario.Nombre} (DNI {Model.Propietario.Dni})")',
+        }
+    });
+</script>

@@ -772,3 +772,38 @@ button:focus-visible,
   background: none;
   border: none;
 }
+
+/* --- Buscador con debounce (select con búsqueda) --- */
+
+.buscador-wrapper {
+  position: relative;
+}
+
+.buscador-resultados {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-top: none;
+  max-height: 220px;
+  overflow-y: auto;
+  box-shadow: 0 8px 20px rgba(28, 43, 57, 0.12);
+}
+
+.buscador-item {
+  padding: 0.6rem 0.9rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.buscador-item:last-child {
+  border-bottom: none;
+}
+
+.buscador-item:hover {
+  background-color: var(--canvas);
+}

@@ -14,5 +14,7 @@ namespace InmobiliariaApp.Services.Interfaces
         IList<Propietario> ObtenerListaInactivos();
         int ObtenerCantidadInactivos();
         int Reactivar(int id);
+
+        IList<Propietario> Buscar(string query, int limite = 10);
     }
 }

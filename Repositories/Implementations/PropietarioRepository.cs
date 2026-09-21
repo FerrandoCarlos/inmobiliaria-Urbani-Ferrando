@@ -261,6 +261,36 @@ namespace InmobiliariaApp.Repositories.Implementations
             return existe;
         }
 
+        public IList<Propietario> Buscar(string query, int limite = 10)
+        {
+            IList<Propietario> res = new List<Propietario>();
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = @"
+                    SELECT Id, Dni, Nombre, Apellido, Telefono, Email, Activo, FechaCreacion
+                    FROM Propietario
+                    WHERE Activo = 1
+                        AND (Dni LIKE @query OR Nombre LIKE @query OR Apellido LIKE @query)
+                    ORDER BY Apellido, Nombre
+                    LIMIT @limite";
+
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@query", $"%{query}%");
+                    command.Parameters.AddWithValue("@limite", limite);
+
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        res.Add(MapearPropietario(reader));
+                    }
+                    connection.Close();
+                }
+            }
+            return res;
+        }
 
         /// Mapea una fila del DataReader a un objeto Propietario.
         /// Centralizado acá para evitar duplicar el mapeo en cada método (DRY).

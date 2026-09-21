@@ -79,5 +79,10 @@ namespace InmobiliariaApp.Services.Implementations
 
             return _repositorio.Reactivar(id);
         }
+
+        public IList<Propietario> Buscar(string query, int limite = 10)
+        {
+            return _repositorio.Buscar(query, limite);
+        }
     }
 }
