@@ -659,8 +659,8 @@ button:focus-visible,
 }
 
 .avatar-circle {
-  width: 32px;
-  height: 32px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
