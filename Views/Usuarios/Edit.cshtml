@@ -1,0 +1,54 @@
+@model InmobiliariaApp.Models.Usuario
+@{
+    ViewData["Title"] = "Editar Usuario";
+}
+
+<div class="form-panel">
+    <div class="form-panel-header is-edit">
+        <h2>Editar Usuario</h2>
+    </div>
+    <div class="form-panel-body">
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div asp-validation-summary="All" class="alert alert-danger"></div>
+        }
+
+        <form asp-action="Edit" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input asp-for="Email" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Nombre</label>
+                <input asp-for="Nombre" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Apellido</label>
+                <input asp-for="Apellido" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Rol</label>
+                <select asp-for="RolId" class="form-control">
+                    <option value="1">Administrador</option>
+                    <option value="2">Empleado</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+        </form>
+
+        <hr />
+
+        <h3 class="mt-3" style="font-size:1rem;">Resetear contraseña</h3>
+        <form asp-action="ResetearPassword" asp-route-id="@Model.Id" method="post" class="d-flex gap-2">
+            @Html.AntiForgeryToken()
+            <input type="password" name="nuevaPassword" class="form-control" placeholder="Nueva contraseña" required
+                   minlength="6" />
+            <button type="submit" class="btn btn-outline-secondary">Resetear</button>
+        </form>
+    </div>
+</div>

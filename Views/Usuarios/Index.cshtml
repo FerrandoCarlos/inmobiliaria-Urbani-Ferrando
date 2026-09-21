@@ -1,0 +1,67 @@
+@model IList<InmobiliariaApp.Models.Usuario>
+@{
+    ViewData["Title"] = "Usuarios";
+    int paginaNro = ViewBag.PaginaNro ?? 1;
+    int totalPaginas = ViewBag.TotalPaginas ?? 1;
+}
+<div class="page-header">
+    <h1>Usuarios</h1>
+</div>
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-success">@TempData["Mensaje"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+<div class="table-panel">
+    <p><a asp-action="Create" class="btn btn-primary">Nuevo Usuario</a></p>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Apellido</th>
+                <th>Nombre</th>
+                <th>Rol</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var usuario in Model)
+            {
+                <tr>
+                    <td>@usuario.Email</td>
+                    <td>@usuario.Apellido</td>
+                    <td>@usuario.Nombre</td>
+                    <td>@usuario.Rol?.Nombre</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@usuario.Id" class="btn btn-sm btn-outline-secondary">Editar</a>
+                        <form asp-action="Eliminar" asp-route-id="@usuario.Id" method="post" class="d-inline"
+                              onsubmit="return confirm('¿Dar de baja a este usuario?');">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (!Model.Any())
+    {
+        <p>No hay usuarios cargados.</p>
+    }
+    @if (totalPaginas > 1)
+    {
+        <nav>
+            <ul class="pagination">
+                @for (int i = 1; i <= totalPaginas; i++)
+                {
+                    <li class="page-item @(i == paginaNro ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-paginaNro="@i">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+</div>

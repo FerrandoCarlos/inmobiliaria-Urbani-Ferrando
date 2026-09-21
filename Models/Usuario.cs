@@ -10,7 +10,7 @@ namespace InmobiliariaApp.Models
         public int Id { get; set; }
 
         [Required(ErrorMessage = "El email es obligatorio.")]
-        [RegularExpression(@"^[^\s@]+@[^\s@]+\.[^\s@]+$", ErrorMessage = "El formato del email no es válido.")]
+        [RegularExpression(@"^[^\s@]+@inmobiliaria\.com$", ErrorMessage = "El email debe pertenecer al dominio @inmobiliaria.com.")]
         public string Email { get; set; } = string.Empty;
 
         [BindNever]
