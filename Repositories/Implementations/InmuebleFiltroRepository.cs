@@ -21,6 +21,7 @@ namespace InmobiliariaApp.Repositories.Implementations
                                    p.Nombre AS PropietarioNombre, p.Apellido AS PropietarioApellido,
                                    t.Tipo AS TipoNombre,
                                    (CASE
+                                        WHEN i.Estado = 'Mantenimiento' THEN 'Mantenimiento'
                                         WHEN @fechaDesde IS NOT NULL AND @fechaHasta IS NOT NULL AND EXISTS (
                                             SELECT 1 FROM reserva r2
                                             WHERE r2.InmuebleId = i.Id

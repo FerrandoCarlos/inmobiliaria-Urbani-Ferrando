@@ -166,7 +166,8 @@ namespace InmobiliariaApp.Repositories.Implementations
                                       p.Nombre, p.Apellido, p.Dni
                                FROM inmueble i 
                                INNER JOIN propietario p ON i.PropietarioId = p.Id
-                               WHERE i.Activo = 1
+                               WHERE i.Estado = 'Disponible'
+                                AND i.Activo = 1
                                ORDER BY i.Id
                                LIMIT @tamPagina OFFSET @offset";
 
