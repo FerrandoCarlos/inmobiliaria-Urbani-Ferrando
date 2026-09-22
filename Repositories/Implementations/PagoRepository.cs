@@ -284,6 +284,67 @@ namespace InmobiliariaApp.Repositories.Implementations
             return res;
         }
 
+        public IList<Pago> ObtenerPorFiltro(int? reservaId, int PaginaNro, int tamPagina)
+        {
+            var lista = new List<Pago>();
+            int offset = (PaginaNro - 1) * tamPagina;
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                var sql = @"SELECT 
+                        p.Id AS PagoId, p.ReservaId, p.Monto, p.Concepto, p.Estado, p.Activo, p.Fecha, p.CreadoPorId, p.AnuladoPorId,
+                        uc.Nombre AS CreadoPorNombre, uc.Apellido AS CreadoPorApellido,
+                        ua.Nombre AS AnuladoPorNombre, ua.Apellido AS AnuladoPorApellido,
+                        r.InmuebleId, r.InquilinoId, r.FechaDesde, r.FechaHasta, r.FechaTerminacion, r.MontoPorDia, r.Multa
+                    FROM pago p
+                    INNER JOIN reserva r ON p.ReservaId = r.Id
+                    LEFT JOIN usuario uc ON p.CreadoPorId = uc.Id
+                    LEFT JOIN usuario ua ON p.AnuladoPorId = ua.Id
+                    WHERE 1=1";
+                var parameters = new List<MySqlParameter>();
+                if (reservaId.HasValue && reservaId.Value > 0)
+                {
+                    sql += " AND p.ReservaId = @reservaId";
+                    parameters.Add(new MySqlParameter("@reservaId", reservaId.Value));
+                }
+                sql += " ORDER BY p.Fecha DESC LIMIT @tamPagina OFFSET @offset";
+                parameters.Add(new MySqlParameter("@tamPagina", tamPagina));
+                parameters.Add(new MySqlParameter("@offset", offset));
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.Parameters.AddRange(parameters.ToArray());
+                    connection.Open();
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            lista.Add(MapearPago(reader));
+                        }
+                    }
+                }
+            }
+            return lista;
+        }
+
+        public int ObtenerCantidadPorFiltro(int? idReserva)
+        {
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                var sql = "SELECT COUNT(*) FROM pago WHERE 1=1";
+                var parameters = new List<MySqlParameter>();
+                if (idReserva.HasValue && idReserva.Value > 0)
+                {
+                    sql += " AND ReservaId = @reservaId";
+                    parameters.Add(new MySqlParameter("@reservaId", idReserva.Value));
+                }
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.Parameters.AddRange(parameters.ToArray());
+                    connection.Open();
+                    return Convert.ToInt32(command.ExecuteScalar());
+                }
+            }
+        }
+
         public Pago? BuscarPorReserva(int idReserva)
         {
             Pago? entidad = null;

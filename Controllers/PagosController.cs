@@ -4,6 +4,7 @@ using InmobiliariaApp.Repositories.Interfaces;
 using InmobiliariaApp.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace InmobiliariaApp.Controllers
 {
@@ -20,29 +21,45 @@ namespace InmobiliariaApp.Controllers
         }
 
         //GET : /Pagos
-        public IActionResult Index(int paginaNro = 1)
+        public IActionResult Index(int? reservaId, int paginaNro = 1)
         {
             try
             {
-                var lista = _service.ObtenerLista(paginaNro, TamPaginaDefault);
-                var cantidadTotal = _service.ObtenerCantidad();
+                var pagos = _service.ObtenerPorFiltro(reservaId, paginaNro, TamPaginaDefault);
+                var cantidadTotal = _service.ObtenerCantidadPorFiltro(reservaId);
+                ViewBag.ReservaIdSeleccionada = reservaId;
+                if (reservaId.HasValue && reservaId.Value > 0)
+                {
+                    var reservaObj = _reservaService.ObtenerPorId(reservaId.Value);
+                    if (reservaObj != null)
+                    {
+                        ViewBag.ReservaTextoInicial = $"Reserva #{reservaObj.Id} - {reservaObj.Inmueble?.Direccion} ({reservaObj.Inquilino?.Apellido})";
+                    }
+                }
 
                 ViewBag.PaginaNro = paginaNro;
                 ViewBag.TotalPaginas = (int)Math.Ceiling(cantidadTotal / (double)TamPaginaDefault);
-                return View(lista);
+                return View(pagos);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                TempData["Error"] = "Ocurrió un error al cargar el listado de pagos.";
+                TempData["Error"] = "Ocurrió un error al cargar los pagos.";
                 return View(new List<Pago>());
             }
         }
 
         // GET : /Pagos/Create
 
-        public IActionResult Create()
+        public IActionResult Create(int? reservaId)
         {
-            return View();
+            var pago = new Pago();
+            if (reservaId.HasValue && reservaId.Value > 0)
+            {
+                pago.ReservaId = reservaId.Value;
+                var reserva = _reservaService.ObtenerPorId(reservaId.Value);
+            }
+            ViewBag.Reservas = _reservaService.ObtenerLista();
+            return View(pago);
         }
 
         // GET: /Pagos/Edit/ID

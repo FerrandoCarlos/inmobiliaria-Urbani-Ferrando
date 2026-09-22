@@ -13,6 +13,8 @@ namespace InmobiliariaApp.Repositories.Interfaces
         IList<Pago> ObtenerListaMultas(int PaginaNro, int tamPagina);
         IList<Pago> ObtenerListaCancelados(int PaginaNro, int tamPagina);
         IList<Pago> ObtenerListaPagados(int PaginaNro, int tamPagina);
+        IList<Pago> ObtenerPorFiltro(int? reservaId, int PaginaNro, int tamPagina);
+        int ObtenerCantidadPorFiltro(int? idReserva);
         Pago? BuscarPorReserva(int idReserva);
         int CancelarSaldoRestantePendiente(int reservaId);
         int ModificacionConcepto(int id, string nuevoConcepto);

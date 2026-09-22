@@ -1,6 +1,9 @@
 @model InmobiliariaApp.Models.Pago
 @{
     bool esEdicion = Model != null && Model.Id != 0;
+    var reservaInfo = ViewBag.ReservaInfo as string ??
+        (Model?.Reserva != null
+            ? $"Reserva #{Model.Reserva.Id} - {Model.Reserva.Inmueble?.Direccion} ({Model.Reserva.Inquilino?.Apellido})" : "");
 }
 
 <form id="formPago">
@@ -14,8 +17,13 @@
     }
 
     <div class="mb-3">
-        <label for="Reserva" class="form-label">Reserva ID</label>
-        <input type="text" class="form-control" id="ReservaId" name="@(esEdicion ? "" : "ReservaId")" value="@(Model?.ReservaId != 0 ? Model?.ReservaId : "")" maxlength="9"  readonly="@esEdicion" disabled= "@esEdicion" required />
+        <label for="ReservaBuscar" class="form-label">Reserva</label>
+        <div class="buscador-wrapper">
+            <input type="text" class="form-control" id="ReservaBuscar" placeholder="Buscar por número de reserva, inquilino o inmueble..." autocomplete="off" readonly="@esEdicion" disabled="@esEdicion" required />
+            <input type="hidden" id="ReservaId" name="ReservaId" value="@Model.ReservaId" />
+            
+            <div id="ReservaResultados" class="buscador-resultados d-none"></div>
+        </div>
         <span class="text-danger" id="error-ReservaId"></span>
     </div>
 
@@ -42,3 +50,13 @@
     <button type="submit" class="btn btn-primary">Guardar</button>
     <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
 </form>
+<script src="~/js/buscador-select.js"></script>
+<script>
+    inicializarBuscadorSelect({
+        inputTextoId: 'ReservaBuscar',
+        inputHiddenId: 'ReservaId',
+        endpoint: '@Url.Action("Buscar","Reservas")',
+        resultadosId: 'ReservaResultados',
+        valorInicialTexto: '@Html.Raw(reservaInfo)',
+    });
+</script>

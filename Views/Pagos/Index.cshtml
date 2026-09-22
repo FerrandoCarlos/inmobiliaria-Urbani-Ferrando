@@ -6,107 +6,157 @@
     ViewData["Title"] = "Pagos";
     int paginaNro = ViewBag.PaginaNro ?? 1;
     int totalPaginas = ViewBag.TotalPaginas ?? 1;
+    int? reservaIdSeleccionada = ViewBag.ReservaIdSeleccionada as int?;
 }
 
 <div class="page-header">
     <h1>Pagos</h1>
 </div>
 
-<form style="display:none">@Html.AntiForgeryToken()</form>
+<div class="container-fluid mt-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2><i class="bi bi-cash-stack"></i> Listado de Pagos</h2>
+        <a asp-action="Create" asp-route-reservaId="@reservaIdSeleccionada" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Nuevo Pago
+        </a>
+    </div>
 
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger">@TempData["Error"]</div>
-}
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <form asp-controller="Pagos" asp-action="Index" method="get" class="row g-3 align-items-end">
+                <div class="col-md-8">
+                    <label class="form-label fw-bold">Filtrar por Reserva</label>
+                
+                    <div class="buscador-wrapper">
+                        <input type="text" id="txtBuscarReserva" class="form-control"
+                               placeholder="Escriba número de reserva, dirección o inquilino..." autocomplete="off" />
+                    
+                        <input type="hidden" id="hdnReservaId" name="reservaId" value="@reservaIdSeleccionada" />
+                    
+                        <div id="listaResultadosReserva" class="buscador-resultados d-none"></div>
+                    </div>
+                </div>
 
-<div id="alertContainer"></div>
+                <div class="col-md-4 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary w-50">
+                        <i class="bi bi-search"></i> Buscar
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary w-50">Limpiar</a>
+                </div>
+            </form>
+        </div>
+    </div>
 
-<div class="table-panel">
+    <form style="display:none">@Html.AntiForgeryToken()</form>
 
-    <p><a asp-action="Create" class="btn btn-primary">Nuevo Pago</a></p>
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
 
-    <table class="table table-striped" id="tablaPagos">
-        <thead>
-            <tr>
-                <th>Pago</th>
-                <th>Reserva</th>
-                <th>Inquilino</th>
-                <th>Monto</th>
-                <th>Concepto</th>
-                <th>Estado</th>
-                <th>Fecha</th>
-                <th></th>
-            </tr>
-        </thead>
+    <div id="alertContainer"></div>
 
-        <tbody>
-            @foreach (var pago in Model)
-            {
-                <tr id="fila-@pago.Id">
-                    @{
-                        var reserva = ReservaService.ObtenerPorId(pago.ReservaId);
-                        var inmueble = reserva != null ? InmuebleService.ObtenerPorId(reserva.InmuebleId) : null;
-                        var inquilino = reserva != null ? InquilinoService.ObtenerPorId(reserva.InquilinoId) : null;
-                    }
-                    <td>@pago.Id</td>
-                    <td>@(inmueble != null ? $"{inmueble.Direccion}" : "Sin Inmueble")</td>
-                    <td>@(inquilino != null ? $"{inquilino.Nombre} {inquilino.Apellido}" : "Sin Inquilino")</td>
-                    <td>@pago.Monto.ToString("C2")</td>
-                    <td>@pago.Concepto</td>
-                    <td class="estado-pago">
-                        <span>
-                            @pago.Estado
-                        </span>
-                    </td>
-                    <td>@pago.Fecha</td>
-                    <td>
-                        <a asp-action="Details" asp-route-id="@pago.Id" class="btn btn-sm btn-outline-secondary">Detalle</a>
-                        <a asp-action="Edit" asp-route-id="@pago.Id" class="btn btn-sm btn-outline-secondary">Editar</a>
-                        @if (User.IsInRole("Administrador"))
-                        {   
-                            @if (pago.Estado == "Cancelado" || pago.Estado == "Pagado"){
+    <div class="table-panel">
+
+        <table class="table table-striped" id="tablaPagos">
+            <thead>
+                <tr>
+                    <th>Pago</th>
+                    <th>Reserva</th>
+                    <th>Inquilino</th>
+                    <th>Monto</th>
+                    <th>Concepto</th>
+                    <th>Estado</th>
+                    <th>Fecha</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var pago in Model)
+                {
+                    <tr id="fila-@pago.Id">
+                        @{
+                            var reserva = ReservaService.ObtenerPorId(pago.ReservaId);
+                            var inmueble = reserva != null ? InmuebleService.ObtenerPorId(reserva.InmuebleId) : null;
+                            var inquilino = reserva != null ? InquilinoService.ObtenerPorId(reserva.InquilinoId) : null;
+                        }
+                        <td>@pago.Id</td>
+                        <td>@(inmueble != null ? $"{inmueble.Direccion}" : "Sin Inmueble")</td>
+                        <td>@(inquilino != null ? $"{inquilino.Nombre} {inquilino.Apellido}" : "Sin Inquilino")</td>
+                        <td>@pago.Monto.ToString("C2")</td>
+                        <td>@pago.Concepto</td>
+                        <td class="estado-pago">
+                            <span>
+                                @pago.Estado
+                            </span>
+                        </td>
+                        <td>@pago.Fecha</td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@pago.Id"
+                               class="btn btn-sm btn-outline-secondary">Detalle</a>
+                            <a asp-action="Edit" asp-route-id="@pago.Id" class="btn btn-sm btn-outline-secondary">Editar</a>
+                            @if (User.IsInRole("Administrador"))
+                            {
+                                @if (pago.Estado == "Cancelado" || pago.Estado == "Pagado")
+                                {
+                                    <button type="button" class="btn btn-sm btn-outline-danger btn-eliminar" data-id="@pago.Id">
+                                        Eliminar
+                                    </button>
+                                }
+                                <button type="button" class="btn btn-sm btn-outline-danger btn-cancelar"
+                                        onclick="cancelarPago(@pago.Id)">
+                                    Cancelar
+                                </button>
                                 <button type="button" class="btn btn-sm btn-outline-danger btn-eliminar" data-id="@pago.Id">
                                     Eliminar
                                 </button>
+                                <button type="button" class="btn btn-success btn-confirmar" onclick="confirmarPago(@pago.Id)">
+                                    Confirmar
+                                </button>
                             }
-                            <button type="button" class="btn btn-sm btn-outline-danger btn-cancelar" onclick="cancelarPago(@pago.Id)">
-                                Cancelar
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-danger btn-eliminar" data-id="@pago.Id">
-                                Eliminar
-                            </button>
-                            <button type="button" class="btn btn-success btn-confirmar" onclick="confirmarPago(@pago.Id)">
-                                Confirmar
-                            </button>
-                        }
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    @if (!Model.Any())
-    {
-        <p>No hay pagos cargados.</p>
-    }
-
-    @if (totalPaginas > 1)
-    {
-        <nav>
-            <ul class="pagination">
-                @for (int i = 1; i <= totalPaginas; i++)
-                {
-                    <li class="page-item @(i == paginaNro ? "active" : "")">
-                        <a class="page-link" asp-action="Index" asp-route-paginaNro="@i">@i</a>
-                    </li>
+                        </td>
+                    </tr>
                 }
-            </ul>
-        </nav>
+            </tbody>
+        </table>
+        @if (!Model.Any())
+        {
+            <p>No hay pagos cargados.</p>
+        }
+
+        @if (totalPaginas > 1)
+        {
+            <nav>
+                <ul class="pagination">
+                    @for (int i = 1; i <= totalPaginas; i++)
+                    {
+                        <li class="page-item @(i == paginaNro ? "active" : "")">
+                            <a class="page-link" asp-action="Index" asp-route-paginaNro="@i">@i</a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        }
+    </div>
+
+    @await Html.PartialAsync("_ModalConfirmarBaja")
+
+    @section Scripts {
+        <script src="~/js/abm-pago.js"></script>
+        <script>inicializarBotonesEliminarPago();</script>
+        <script src="~/js/buscador-select.js"></script>
+        <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    if (typeof inicializarBuscadorSelect === 'function') {
+                        inicializarBuscadorSelect({
+                            inputTextoId: 'txtBuscarReserva',
+                            inputHiddenId: 'hdnReservaId',
+                            resultadosId: 'listaResultadosReserva',
+                            endpoint: '@Url.Action("Buscar", "Reservas")',
+                            valorInicialTexto: '@Html.Raw(ViewBag.ReservaTextoInicial ?? "")'
+                        });
+                    }
+                });
+        </script>
     }
-</div>
-
-@await Html.PartialAsync("_ModalConfirmarBaja")
-
-@section Scripts {
-    <script src="~/js/abm-pago.js"></script>
-    <script>inicializarBotonesEliminarPago();</script>
-}
