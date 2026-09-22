@@ -256,6 +256,37 @@ namespace InmobiliariaApp.Repositories.Implementations
             return existe;
         }
 
+        public IList<Inquilino> Buscar(string query, int limite = 10)
+        {
+            IList<Inquilino> res = new List<Inquilino>();
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = @"
+            SELECT Id, Dni, Nombre, Apellido, Telefono, Email, Activo, FechaCreacion
+            FROM Inquilino
+            WHERE Activo = 1
+              AND (Dni LIKE @query OR Nombre LIKE @query OR Apellido LIKE @query)
+            ORDER BY Apellido, Nombre
+            LIMIT @limite";
+
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@query", $"%{query}%");
+                    command.Parameters.AddWithValue("@limite", limite);
+
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        res.Add(MapearInquilino(reader));
+                    }
+                    connection.Close();
+                }
+            }
+            return res;
+        }
+
         private static Inquilino MapearInquilino(MySqlDataReader reader)
         {
             return new Inquilino

@@ -86,7 +86,7 @@ namespace InmobiliariaApp.Repositories.Implementations
             {
                 string sql = @"UPDATE inmueble
                     SET TipoInmuebleId=@tipoinmuebleid, PropietarioId=@propietarioid, Cupo=@cupo, Direccion=@direccion,
-                        PrecioXDia=@precioxdia, Estado=@estado, PorcentajeReserva=@porcentajereserva, 
+                        PrecioXDia=@precioxdia, Estado=@estado, PorcentajeReserva=@porcentajereserva,
                         Latitud=@latitud, Longitud=@longitud
                     WHERE Id = @id";
 
@@ -111,7 +111,7 @@ namespace InmobiliariaApp.Repositories.Implementations
             }
             return res;
         }
-        
+
 
         public int Reactivar(int id)
         {
@@ -161,10 +161,10 @@ namespace InmobiliariaApp.Repositories.Implementations
 
             using (var connection = new MySqlConnection(connectionString))
             {
-                string sql = @"SELECT i.Id, i.TipoInmuebleId, i.Cupo, i.Direccion, i.PrecioXDia, i.Estado, 
-                                      i.PorcentajeReserva, i.Latitud, i.Longitud, i.ImgPortadaURL, i.PropietarioId, 
+                string sql = @"SELECT i.Id, i.TipoInmuebleId, i.Cupo, i.Direccion, i.PrecioXDia, i.Estado,
+                                      i.PorcentajeReserva, i.Latitud, i.Longitud, i.ImgPortadaURL, i.PropietarioId,
                                       p.Nombre, p.Apellido, p.Dni
-                               FROM inmueble i 
+                               FROM inmueble i
                                INNER JOIN propietario p ON i.PropietarioId = p.Id
                                WHERE i.Activo = 1
                                ORDER BY i.Id
@@ -196,10 +196,10 @@ namespace InmobiliariaApp.Repositories.Implementations
 
             using (var connection = new MySqlConnection(connectionString))
             {
-                string sql = @"SELECT i.Id, i.TipoInmuebleId, i.Cupo, i.Direccion, i.PrecioXDia, i.Estado, 
-                                      i.PorcentajeReserva, i.Latitud, i.Longitud, i.ImgPortadaURL, i.PropietarioId, 
+                string sql = @"SELECT i.Id, i.TipoInmuebleId, i.Cupo, i.Direccion, i.PrecioXDia, i.Estado,
+                                      i.PorcentajeReserva, i.Latitud, i.Longitud, i.ImgPortadaURL, i.PropietarioId,
                                       p.Nombre, p.Apellido, p.Dni
-                               FROM inmueble i 
+                               FROM inmueble i
                                INNER JOIN propietario p ON i.PropietarioId = p.Id
                                WHERE i.Activo = 0
                                ORDER BY i.Id
@@ -266,15 +266,48 @@ namespace InmobiliariaApp.Repositories.Implementations
             return res;
         }
 
+        public IList<Inmueble> Buscar(string query, int limite = 10)
+        {
+            IList<Inmueble> res = new List<Inmueble>();
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = @"SELECT i.Id, i.TipoInmuebleId, i.Cupo, i.Direccion, i.PrecioXDia, i.Estado,
+                              i.PorcentajeReserva, i.Latitud, i.Longitud, i.ImgPortadaURL, i.PropietarioId,
+                              p.Nombre, p.Apellido, p.Dni
+                       FROM inmueble i
+                       INNER JOIN propietario p ON i.PropietarioId = p.Id
+                       WHERE i.Activo = 1 AND i.Direccion LIKE @query
+                       ORDER BY i.Direccion
+                       LIMIT @limite";
+
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@query", $"%{query}%");
+                    command.Parameters.AddWithValue("@limite", limite);
+
+                    connection.Open();
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            res.Add(MapearInmueble(reader));
+                        }
+                    }
+                }
+            }
+            return res;
+        }
+
         public Inmueble? ObtenerPorId(int id)
         {
             Inmueble? entidad = null;
             using (var connection = new MySqlConnection(connectionString))
             {
-                string sql = @"SELECT i.Id, i.TipoInmuebleId, i.Cupo, i.Direccion, i.PrecioXDia, i.Estado, 
-                                      i.PorcentajeReserva, i.Latitud, i.Longitud, i.ImgPortadaURL, i.PropietarioId, 
+                string sql = @"SELECT i.Id, i.TipoInmuebleId, i.Cupo, i.Direccion, i.PrecioXDia, i.Estado,
+                                      i.PorcentajeReserva, i.Latitud, i.Longitud, i.ImgPortadaURL, i.PropietarioId,
                                       p.Nombre, p.Apellido, p.Dni
-                               FROM inmueble i 
+                               FROM inmueble i
                                INNER JOIN propietario p ON i.PropietarioId = p.Id
                                WHERE i.Id = @id";
 
@@ -301,10 +334,10 @@ namespace InmobiliariaApp.Repositories.Implementations
             List<Inmueble> res = new List<Inmueble>();
             using (var connection = new MySqlConnection(connectionString))
             {
-                string sql = @"SELECT i.Id, i.TipoInmuebleId, i.Cupo, i.Direccion, i.PrecioXDia, i.Estado, 
-                                      i.PorcentajeReserva, i.Latitud, i.Longitud, i.ImgPortadaURL, i.PropietarioId, 
+                string sql = @"SELECT i.Id, i.TipoInmuebleId, i.Cupo, i.Direccion, i.PrecioXDia, i.Estado,
+                                      i.PorcentajeReserva, i.Latitud, i.Longitud, i.ImgPortadaURL, i.PropietarioId,
                                       p.Nombre, p.Apellido, p.Dni
-                               FROM inmueble i 
+                               FROM inmueble i
                                INNER JOIN propietario p ON i.PropietarioId = p.Id
                                WHERE i.PropietarioId = @IdPropietario";
 

@@ -72,6 +72,20 @@ namespace InmobiliariaApp.Controllers
                 return View(new List<Inquilino>());
             }
         }
+        // GET: /Inquilinos/Buscar?q=texto
+        [HttpGet]
+        public IActionResult Buscar(string q)
+        {
+            if (string.IsNullOrWhiteSpace(q) || q.Length < 2)
+            {
+                return Json(new List<object>());
+            }
+
+            var resultados = _service.Buscar(q, 10)
+                .Select(i => new { id = i.Id, texto = $"{i.Apellido}, {i.Nombre} (DNI {i.Dni})" });
+
+            return Json(resultados);
+        }
 
         // POST : /Inquilinos/Guardar
         [HttpPost]

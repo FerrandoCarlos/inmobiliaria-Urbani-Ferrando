@@ -109,6 +109,21 @@ namespace InmobiliariaApp.Controllers
             return View(inmueble);
         }
 
+        // GET: /Inmueble/Buscar?q=texto
+        [HttpGet]
+        public IActionResult Buscar(string q)
+        {
+            if (string.IsNullOrWhiteSpace(q) || q.Length < 2)
+            {
+                return Json(new List<object>());
+            }
+
+            var resultados = _service.Buscar(q, 10)
+                .Select(i => new { id = i.Id, texto = i.Direccion });
+
+            return Json(resultados);
+        }
+
         // POST : /Inmuebles/ImgPortadaURL
         [HttpPost]
         [ValidateAntiForgeryToken]

@@ -19,5 +19,7 @@ namespace InmobiliariaApp.Services.Interfaces
         int ObtenerCantidadInactivos();
         int Reactivar(int id);
 
+        IList<Inquilino> Buscar(string query, int limite = 10);
+
     }
 }

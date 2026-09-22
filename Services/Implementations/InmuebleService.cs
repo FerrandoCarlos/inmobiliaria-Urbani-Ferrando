@@ -38,7 +38,7 @@ namespace InmobiliariaApp.Services.Implementations
         {
             var existente = _repositorio.ObtenerPorId(entidad.Id)
                 ?? throw new AppException("El inmueble que intenta modificar no existe.");
-            
+
             return _repositorio.Modificacion(entidad);
         }
 
@@ -64,7 +64,7 @@ namespace InmobiliariaApp.Services.Implementations
         {
             var existente = _repositorio.ObtenerPorId(id)
                 ?? throw new AppException("El inmueble que intenta reactivar no existe.");
-            
+
             return _repositorio.Reactivar(id);
         }
 
@@ -81,7 +81,7 @@ namespace InmobiliariaApp.Services.Implementations
             var existente = _repositorio.ObtenerPorId(id)
                 ?? throw new AppException("El inmueble que intenta modificar no existe.");
 
-            return _repositorio.ModificarPortada(id, url); 
+            return _repositorio.ModificarPortada(id, url);
         }
 
         public int ObtenerCantidadInactivos()
@@ -92,6 +92,11 @@ namespace InmobiliariaApp.Services.Implementations
         public IList<Inmueble> BuscarPorPropietario(int idPropietario)
         {
             return _repositorio.BuscarPorPropietario(idPropietario);
+        }
+
+        public IList<Inmueble> Buscar(string query, int limite = 10)
+        {
+            return _repositorio.Buscar(query, limite);
         }
     }
 }

@@ -10,36 +10,32 @@
 
     <div class="mb-3">
         <label for="InquilinoId" class="form-label">Inquilino</label>
-        <select name="InquilinoId" id="InquilinoId" class="form-control" required>
-            <option value="">Seleccione un inquilino...</option>
-            @foreach (var inquilino in inquilinos)
-            {
-                <option value="@inquilino.Id" selected="@(inquilino.Id == Model.InquilinoId)">
-                    @inquilino.Apellido, @inquilino.Nombre (DNI @inquilino.Dni)
-                </option>
-            }
-        </select>
+        <div class="buscador-wrapper">
+            <input type="text" class="form-control" id="InquilinoBuscar"
+                   placeholder="Buscar por nombre, apellido o DNI..." autocomplete="off" required />
+            <input type="hidden" id="InquilinoId" name="InquilinoId" value="@Model.InquilinoId" />
+            <div id="InquilinoResultados" class="buscador-resultados d-none"></div>
+        </div>
+
         <span class="text-danger" id="error-inquilinoId"></span>
     </div>
 
     <div class="mb-3">
         <label for="InmuebleId" class="form-label">Inmueble</label>
-        <select name="InmuebleId" id="InmuebleId" class="form-control" required>
-            <option value="">Seleccione un inmueble...</option>
-            @foreach (var inmueble in inmuebles)
-            {
-                <option value="@inmueble.Id" selected="@(inmueble.Id == Model.InmuebleId)">
-                    @inmueble.Direccion (@inmueble.TipoInmuebleId) - $@inmueble.PrecioXDia/dia
-                </option>
-            }
-        </select>
+        <div class="buscador-wrapper">
+            <input type="text" class="form-control" id="InmuebleBuscar" placeholder="Buscar por dirección..."
+                   autocomplete="off" required />
+            <input type="hidden" id="InmuebleId" name="InmuebleId" value="@Model.InmuebleId" />
+            <div id="InmuebleResultados" class="buscador-resultados d-none"></div>
+        </div>
         <span class="text-danger" id="error-inmuebleId"></span>
     </div>
 
     <div class="mb-3">
         <label for="FechaDesde" class="form-label">Fecha desde</label>
         <input type="date" class="form-control" id="FechaDesde" name="FechaDesde"
-               value="@(Model.FechaDesde != DateTime.MinValue ? Model.FechaDesde.ToString("yyyy-MM-dd") : "")" min ="@fechaHoy" required />
+               value="@(Model.FechaDesde != DateTime.MinValue ? Model.FechaDesde.ToString("yyyy-MM-dd") : "")"
+               min="@fechaHoy" required />
         <span class="text-danger" id="error-FechaDesde"></span>
     </div>
 
@@ -55,3 +51,29 @@
     <button type="submit" class="btn btn-primary">Guardar</button>
     <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
 </form>
+
+<script src="~/js/buscador-select.js"></script>
+
+<script>
+    inicializarBuscadorSelect({
+        inputTextoId: 'InquilinoBuscar',
+        inputHiddenId: 'InquilinoId',
+        endpoint: '/Inquilinos/Buscar',
+        resultadosId: 'InquilinoResultados',
+        @if (Model.Id != 0 && Model.Inquilino != null)
+        {
+            @:valorInicialTexto: '@Model.Inquilino.Apellido, @Model.Inquilino.Nombre (DNI @Model.Inquilino.Dni)',
+        }
+    });
+
+    inicializarBuscadorSelect({
+        inputTextoId: 'InmuebleBuscar',
+        inputHiddenId: 'InmuebleId',
+        endpoint: '/Inmuebles/Buscar',
+        resultadosId: 'InmuebleResultados',
+        @if (Model.Id != 0 && Model.Inmueble != null)
+        {
+            @:valorInicialTexto: '@Model.Inmueble.Direccion',
+        }
+    });
+</script>

@@ -64,6 +64,11 @@ namespace InmobiliariaApp.Services.Implementations
             }
         }
 
+        public IList<Inquilino> Buscar(string query, int limite = 10)
+        {
+            return _repositorio.Buscar(query, limite);
+        }
+
         public IList<Inquilino> ObtenerListaInactivos()
         {
             return _repositorio.ObtenerListaInactivos();
