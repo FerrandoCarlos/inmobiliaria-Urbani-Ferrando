@@ -134,6 +134,38 @@ namespace InmobiliariaApp.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+
+        // POST: /Perfil/EliminarAvatar
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult EliminarAvatar([FromServices] IWebHostEnvironment environment)
+        {
+            try
+            {
+                var usuario = _service.ObtenerPorId(UsuarioActualId);
+                if (usuario != null && !string.IsNullOrEmpty(usuario.Avatar))
+                {
+                    string ruta = Path.Combine(environment.WebRootPath, usuario.Avatar.TrimStart('/', '\\'));
+                    if (System.IO.File.Exists(ruta))
+                    {
+                        System.IO.File.Delete(ruta);
+                    }
+                }
+
+                _service.EliminarAvatar(UsuarioActualId);
+                TempData["Mensaje"] = "Avatar eliminado.";
+            }
+            catch (AppException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error inesperado al eliminar el avatar.");
+                TempData["Error"] = "Ocurrió un error inesperado.";
+            }
+            return RedirectToAction(nameof(Index));
+        }
     }
 
 }

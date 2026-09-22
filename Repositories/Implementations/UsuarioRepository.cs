@@ -244,6 +244,25 @@ namespace InmobiliariaApp.Repositories.Implementations
             }
             return existe;
         }
+
+        public int EliminarAvatar(int id)
+        {
+            int res = -1;
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                string sql = "UPDATE Usuario SET Avatar = NULL WHERE Id = @id";
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@id", id);
+                    connection.Open();
+                    res = command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return res;
+        }
+
         private static Usuario MapearUsuario(MySqlDataReader reader)
         {
             return new Usuario

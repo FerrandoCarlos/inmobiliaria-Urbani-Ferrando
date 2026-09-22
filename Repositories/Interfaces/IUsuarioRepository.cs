@@ -9,5 +9,7 @@ namespace InmobiliariaApp.Repositories.Interfaces
         int CambiarPassword(int id, string nuevoHash);
 
         int ActualizarPerfil(int id, string nombre, string apellido, string? avatarUrl);
+
+        int EliminarAvatar(int id);
     }
 }

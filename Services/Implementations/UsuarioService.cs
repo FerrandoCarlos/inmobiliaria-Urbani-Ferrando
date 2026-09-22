@@ -121,5 +121,13 @@ namespace InmobiliariaApp.Services.Implementations
 
             _repositorio.ActualizarPerfil(id, nombre, apellido, avatarFinal);
         }
+
+        public void EliminarAvatar(int id)
+        {
+            var usuario = _repositorio.ObtenerPorId(id)
+                ?? throw new AppException("El usuario no existe.");
+
+            _repositorio.EliminarAvatar(id);
+        }
     }
 }

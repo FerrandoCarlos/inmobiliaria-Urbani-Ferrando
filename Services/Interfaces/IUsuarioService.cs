@@ -21,5 +21,7 @@ namespace InmobiliariaApp.Services.Interfaces
         void ResetearPassword(int id, string passwordNueva);
 
         void ActualizarPerfil(int id, string nombre, string apellido, string? nuevoAvatarUrl);
+
+        void EliminarAvatar(int id);
     }
 }
