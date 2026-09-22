@@ -11,29 +11,38 @@ namespace InmobiliariaApp.Controllers
         private readonly IReservaService _service;
         private readonly IInquilinoService _inquilinoService;
         private readonly IInmuebleService _inmuebleService;
+        private readonly IReservaFiltroService _reservaFiltroService;
         private readonly ILogger<ReservasController> _logger;
         private const int tamPaginaDefault = 10;
 
-        public ReservasController(IReservaService service, IInquilinoService inquilinoService, IInmuebleService inmuebleService, ILogger<ReservasController> logger)
+        public ReservasController(IReservaService service, IInquilinoService inquilinoService, IReservaFiltroService reservaFiltroService, IInmuebleService inmuebleService, ILogger<ReservasController> logger)
         {
             _service = service;
             _inquilinoService = inquilinoService;
             _inmuebleService = inmuebleService;
+            _reservaFiltroService = reservaFiltroService;
             _logger = logger;
         }
 
         // GET: /Reservas
-        public IActionResult Index(int paginaNro = 1)
+        public IActionResult Index(ReservaFiltro filtro, int paginaNro = 1)
         {
             try
             {
-                var lista = _service.ObtenerLista(paginaNro, tamPaginaDefault);
+                filtro ??= new ReservaFiltro();
+                var lista = _reservaFiltroService.ObtenerPorFiltro(filtro);
+
+                var cantidadTotalFiltrada = lista.Count;
+                int totalPaginas = (int)Math.Ceiling(cantidadTotalFiltrada / (double)tamPaginaDefault);
+                paginaNro = Math.Max(1, Math.Min(paginaNro, totalPaginas == 0 ? 1 : totalPaginas));
                 var cantidadTotal = _service.ObtenerCantidad();
+                var listaPaginada = lista.Skip((paginaNro - 1) * tamPaginaDefault).Take(tamPaginaDefault).ToList();
 
+                ViewBag.FiltroActual = filtro;
                 ViewBag.PaginaNro = paginaNro;
-                ViewBag.TotalPaginas = (int)Math.Ceiling(cantidadTotal / (double)tamPaginaDefault);
+                ViewBag.TotalPaginas = totalPaginas;
 
-                return View(lista);
+                return View(listaPaginada);
             }
             catch (Exception ex)
             {
@@ -96,6 +105,38 @@ namespace InmobiliariaApp.Controllers
             }
             CargarListasParaSelects();
             return View(reserva);
+        }
+        public IActionResult Buscar(string q)
+        {
+            try
+            {
+                var filtro = new ReservaFiltro();
+                var lista = _reservaFiltroService.ObtenerPorFiltro(filtro);
+                if (!string.IsNullOrWhiteSpace(q))
+                {
+                    q = q.ToLower().Trim();
+                    lista = lista.Where(r =>
+                                    r.Id.ToString().Contains(q) ||
+                                    (r.Inmueble != null && r.Inmueble.Direccion != null && r.Inmueble.Direccion.ToLower().Contains(q)) ||
+                                    (r.Inquilino != null && (
+                                        (r.Inquilino.Nombre != null && r.Inquilino.Nombre.ToLower().Contains(q)) ||
+                                        (r.Inquilino.Apellido != null && r.Inquilino.Apellido.ToLower().Contains(q))
+                                    ))
+                                ).ToList();
+                }
+                var resultados = lista.Take(15).Select(r => new
+                {
+                    id = r.Id,
+                    texto = $"Reserva #{r.Id} - {r.Inmueble?.Direccion} ({r.Inquilino?.Nombre} {r.Inquilino?.Apellido})"
+                });
+                return Json(resultados);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en el endpoint de búsqueda de reservas.");
+                return Json(new List<object>());
+            }
         }
 
         // POST: /Reservas/Guardar

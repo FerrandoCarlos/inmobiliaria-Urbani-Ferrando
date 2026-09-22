@@ -49,6 +49,8 @@ builder.Services.AddScoped<ITipoInmuebleRepository, TipoInmuebleRepository>();
 builder.Services.AddScoped<ITipoInmuebleService, TipoInmuebleService>();
 builder.Services.AddScoped<IInmuebleFiltroRepository, InmuebleFiltroRepository>();
 builder.Services.AddScoped<IInmuebleFiltroService, InmuebleFiltroService>();
+builder.Services.AddScoped<IReservaFiltroRepository, ReservaFiltroRepository>();
+builder.Services.AddScoped<IReservaFiltroService, ReservaFiltroService>();
 
 
 

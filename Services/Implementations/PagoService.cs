@@ -67,6 +67,14 @@ namespace InmobiliariaApp.Services.Implementations
         {
             return _repositorio.ObtenerLista(PaginaNro, tamPagina);
         }
+        public IList<Pago> ObtenerPorFiltro(int? reservaId, int PaginaNro, int tamPagina)
+        {
+            return _repositorio.ObtenerPorFiltro(reservaId, PaginaNro, tamPagina);
+        }
+        public int ObtenerCantidadPorFiltro(int? idReserva)
+        {
+            return _repositorio.ObtenerCantidadPorFiltro(idReserva);
+        }
 
         public Pago? BuscarPorReserva(int idReserva)
         {   
